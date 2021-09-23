@@ -1,0 +1,118 @@
+/* === CSS modal content background === */
+.d-mc-primary{
+    background-color: rgba(0, 144, 231, 0.14);
+
+}
+.d-mc-warning{
+    background-color: #ffc1073b;
+
+}
+
+.d-mc-danger{
+    background-color: #ff070723;
+
+}
+
+.d-mc-black{
+    background-color: #0000003b;
+
+}
+
+.d-mc-success{
+    background-color: #00d25b12;
+
+}
+
+.d-mc-light{
+    background-color: #00000096;
+
+}
+
+
+/* === css modal dialog border === */
+.d-md-primary{
+    box-shadow: 0 0 15px #17a2b8;
+}
+.d-md-light{
+    box-shadow: 0 0 15px #fdfdfd;
+}
+
+.d-md-danger{
+    box-shadow: 0 0 15px #ff0000;
+}
+
+.d-md-success{
+    box-shadow: 0 0 15px #00d25b79;
+}
+
+.d-md-warning{
+    box-shadow: 0 0 15px #ffc107;
+}
+
+/* === css modal header and footer border === */
+.d-bdr-danger{
+    border-radius: 5px;
+    border-color: #ff07073b;
+}
+
+.d-bdr-black{
+    border-color: #0000003b;
+}
+
+.d-bdr-warning{
+    border-color: #ffd000;
+}
+
+
+/* === css input background === */
+.d-inp-primary{
+    background-color: #094e79;
+}
+
+.d-inp-light{
+    background-color: #15316d85;
+}
+
+.d-inp-warning{
+    background-color: #ffc1076c;
+}
+
+.d-inp-light{
+    background-color: #ffffffbb;
+}
+
+.d-inp-danger{
+    background-color: #ff0a2b23;
+}
+
+
+
+/* === css content wraper === */
+.d-cwr{
+    background: #000000a9;
+}
+
+.d-pri{
+    background: #111215;
+}
+
+/* === css nav item text color === */
+.d-navi{
+    color: #a09a97;
+}
+
+/* === css nav item text color input === */
+.d-t-black{
+    color: #000000;
+}
+
+.pt-3-half { padding-top: 1.4rem; }
+
+.d-card{
+    padding: 10px 10px !important;
+    margin: 0px !important;
+}
+
+.d-mar{
+    margin: 0px 0px 0px 0px !important;
+}
