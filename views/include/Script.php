@@ -26,6 +26,7 @@
 <scrript src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></scrript>
 
 <script src="<?php echo SERVERURL; ?>views/assets/js/alertastoast.js"></script>
+<script src="<?php echo SERVERURL; ?>views/assets/js/cargarDatosModal.js"></script>
 
 
 

@@ -16,7 +16,11 @@
                         <span><?php echo $_SESSION['rol_lmr']; ?></span>
                     </div>
                 </div>
-                <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
+                <?php if ($_SESSION['id_rol_lmr'] == 1) { ?>
+                    <a href="#" id="profile-dropdown" data-toggle="dropdown">
+                        <i class="mdi mdi-dots-vertical"></i>
+                    </a>
+                <?php } ?>
                 <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
                     <a href="#" class="dropdown-item preview-item" data-toggle="modal" data-target="#modalEditarUsuario">
                         <div class="preview-thumbnail">
@@ -53,15 +57,6 @@
                 </a>
             </li>
         <?php } ?>
-        <li class="nav-item menu-items">
-                <a class="nav-link" href="<?php echo SERVERURL; ?>facturacion/">
-                    <span class="menu-icon">
-                        <i class="mdi mdi-shopping text-primary"></i>
-                    </span>
-                    <span class="menu-title text-primary">Usuarios</span>
-
-                </a>
-            </li>
         <li class="nav-item menu-items">
             <a class="nav-link collapsed" data-toggle="collapse" href="#ui-clientes" aria-expanded="false" aria-controls="ui-clientes">
                 <span class="menu-icon">

@@ -198,6 +198,7 @@ class usuarioControlador extends usuarioModelo
 			$contador = $inicio + 1;
 			$registro_inicial = $inicio + 1;
 			foreach ($datos as $rows) {
+				
 				$tabla .= '
 					<tr class="text-center">
                         <td>' . $rows['id_usuario'] . '</td>
@@ -218,10 +219,6 @@ class usuarioControlador extends usuarioModelo
 						</td>
                     </tr>';
 				$contador++;
-				$i=mainModel::encryption($rows['id_usuario']);
-				
-				$a=mainModel::decryption($i);
-				echo $a;
 			}
 			$registro_final = $contador - 1;
 		} else {
@@ -315,4 +312,13 @@ class usuarioControlador extends usuarioModelo
 		}
 		echo json_encode($alerta);
 	} // fin controlador
+
+	// Controlador datos del usuario
+    public function datosUsuarioControlador($tipo, $id){
+		$tipo=mainModel::limpiar_cadena($tipo);
+		$id=mainModel::decryption($id);
+		$id = mainModel::limpiar_cadena($id);
+
+		return usuarioModelo::datosUsuarioModelo($tipo, $id);
+	}//fin controlador
 }

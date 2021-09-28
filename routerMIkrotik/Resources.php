@@ -22,7 +22,7 @@ class RouterR
 			$ARRAYC = $API->parseResponse($READ);
 
 			$API->disconnect();
-			$data->estado =1;
+			$data->estado = 1;
 			$data->tencendido = $ARRAY[0]['uptime'];
 			$data->version = $ARRAY[0]['version'];
 			$data->ffabrica = $ARRAY[0]['build-time'];
@@ -40,7 +40,7 @@ class RouterR
 			$data->plataforma = $ARRAY[0]['platform'];
 			$data->poe = count($ARRAYC);
 		} else {
-			$data->estado =0;
+			$data->estado = 0;
 			$data->tencendido = $desc;
 			$data->version = $desc;
 			$data->ffabrica = $desc;
@@ -62,24 +62,38 @@ class RouterR
 	}
 
 
-	// public static function RouterClientes()
-	// {
-	// 	$API = new RouterosAPI();
-	// 	$conteo = 0;
-	// 	if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
-	// 		$API->write('/ppp/secret/print');
+	public static function RouterClientes()
+	{
+		$API = new RouterosAPI();
+		$data = new StdClass();
+		$hoy = date('Y-m-d');
+		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+			$API->write('/ppp/secret/print');
 
-	// 		$READ = $API->read(false);
-	// 		$ARRAYC = $API->parseResponse($READ);
+			$READ = $API->read(false);
+			$ARRAY = $API->parseResponse($READ);
+			$API->disconnect();
 
-	// 		$API->disconnect();
-	// 		$conteo = count($ARRAYC);
-	// 	} else {
-	// 		echo '<script language="javascript">alert("No se ha podido conectar al router");</script>';
-	// 	}
-	// 	//echo json_encode($ARRAY);
-	// 	return $conteo;
-	// }
+			$count = count($ARRAY);
+
+			$idarray=$ARRAY;
+
+			
+			// if ($count > 0) {
+			// 	for ($i = 0; $i < $count; $i++) {
+
+			// 		$data->id[] = $ARRAY[$i]['.id'];
+			// 		$data->name[] = $ARRAY[$i]['name'];
+			// 		$data->profile[] = $ARRAY[$i]['profile'];
+			// 		$data->password[] = $ARRAY[$i]['password'];
+			// 		$data->remote_address[] = $ARRAY[$i]['remote-address'];
+
+			// 	}
+			// }
+		}
+		return json_encode($idarray);
+		
+	}
 
 	public static function grap()
 	{

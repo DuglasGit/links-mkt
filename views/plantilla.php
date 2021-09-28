@@ -1,6 +1,5 @@
 <?php
 session_start(['name' => 'LMR']);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

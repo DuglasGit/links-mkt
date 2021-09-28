@@ -28,5 +28,18 @@ class usuarioModelo extends mainModel
 
         return $sql;
     }
+
+    // Modelo datos del usuario
+    protected static function datosUsuarioModelo($tipo, $id){
+        if($tipo=="Unico"){
+            $sql = mainModel::conectar()->prepare("SELECT *FROM usuario WHERE id_usuario=:ID");
+            $sql->bindParam(":ID", $id);
+        }elseif($tipo=="Conteo"){
+            $sql = mainModel::conectar()->prepare("SELECT id_usuario FROM usuario WHERE id_usuario='1'");
+        }
+
+        $sql->execute();
+        return $sql;
+
+    }
 }
-?>

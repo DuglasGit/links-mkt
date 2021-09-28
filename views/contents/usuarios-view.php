@@ -20,7 +20,7 @@ if ($_SESSION['id_rol_lmr'] != 1) {
     </div>
     <div class="card-body">
         <div class="row">
-            
+
             <div class="col-sm-12 col-md-8">
 
                 <div class="form-group row justify-content-center>
@@ -58,6 +58,12 @@ if ($_SESSION['id_rol_lmr'] != 1) {
     </div>
 
 </div>
+
+
+
+
+
+
 
 
 <!-- script buscador tabla -->

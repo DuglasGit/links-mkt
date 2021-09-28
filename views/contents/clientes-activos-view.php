@@ -1,3 +1,10 @@
+<?php
+require_once "./routerMIkrotik/Resources.php";
+$clientes = RouterR::RouterClientes();
+
+
+?>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -80,192 +87,44 @@
                         <th class="text-danger col-sm-1">ID</th>
                         <th class="text-danger col-sm-2">NOMBRE CLIENTE</th>
                         <th class="text-danger col-sm-2">PLAN CONTRATADO</th>
-                        <th class="text-danger col-sm-2">IP ASIGNADA</th>
-                        <th class="text-danger col-sm-2">UBICACION</th>
+                        <th class="text-danger col-sm-2">PASSWORD</th>
+                        <th class="text-danger col-sm-2">IP ADDRESS</th>
                         <th class="text-danger col-sm-3">ACCIÓN</th>
                     </tr>
                 </thead>
                 <tbody id="myTable">
-                    <tr>
-                        <td>1</td>
-                        <td class="text-secondary">Anabel</td>
-                        <td class="text-secondary"> Residencial <i class="mdi mdi-home-variant"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td class="text-secondary">Jacob</td>
-                        <td class="text-secondary"> Residencial <i class="mdi mdi-home-variant"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td class="text-secondary">Peter</td>
-                        <td class="text-secondary"> Corporativo <i class="mdi mdi-home-modern"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td class="text-secondary">Lorena</td>
-                        <td class="text-secondary"> Corporativo <i class="mdi mdi-home-modern"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td class="text-secondary">Yolanda</td>
-                        <td class="text-secondary"> Corporativo <i class="mdi mdi-home-modern"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td class="text-secondary">Manuel</td>
-                        <td class="text-secondary"> Corporativo <i class="mdi mdi-home-modern"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td class="text-secondary">Esteban</td>
-                        <td class="text-secondary"> Corporativo <i class="mdi mdi-home-modern"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td class="text-secondary">Mayra</td>
-                        <td class="text-secondary"> Residencial <i class="mdi mdi-home-variant"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>9</td>
-                        <td class="text-secondary">Silvia</td>
-                        <td class="text-secondary"> Residencial <i class="mdi mdi-home-variant"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td class="text-secondary">Carlos</td>
-                        <td class="text-secondary"> Residencial <i class="mdi mdi-home-variant"></i></td>
-                        <td class="text-secondary">192.168.0.100</td>
-                        <td class="text-secondary">abc123-0456</td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-                        </td>
-                    </tr>
+
+                    <?php
+                    
+                    $v = json_decode($clientes, true);
+                    $count=count($v);
+                    
+                    for ($i=0; $i<$count; $i++ ) {
+
+                    ?>
+
+                        <tr>
+
+                            <td class="text-secondary"><?php echo $v[$i]['.id']; ?></td>
+                            <td class="text-secondary"><?php echo $v[$i]['name']; ?></td>
+                            <td class="text-secondary"><?php echo $v[$i]['profile']; ?></td>
+                            <td class="text-secondary"><?php echo $v[$i]['password']; ?></td>
+                            <td class="text-secondary"><?php echo $v[$i]['remote-address']; ?></td>
+                            <td>
+                                <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
+                                    <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
+                                </button>
+                                <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
+                                    <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
+                                </button>
+                                <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
+                                    <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
+                                </button>
+                            </td>
+                        </tr>
+                        
+                    <?php 
+                    } ?>
 
                 </tbody>
             </table>

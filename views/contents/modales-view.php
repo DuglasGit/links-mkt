@@ -57,16 +57,17 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
+                    <input type="text" hidden="" class="form-control border-warning text-warning d-inp-warning" name="" id="idUsuario">
                         <label for="recipient-name" class="col-form-label">NOMBRE USUARIO</label>
-                        <input type="text" class="form-control border-warning text-warning d-inp-warning" value="Nombre de Usuario">
+                        <input type="text" class="form-control border-warning text-warning d-inp-warning" name="" id="nombreUsuario">
                     </div>
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">PASSWORD USUARIO</label>
-                        <input type="text" class="form-control border-warning text-warning d-inp-warning" value="AbcPass">
+                        <input type="text" class="form-control border-warning text-warning d-inp-warning" name="" id="passwordUsuario">
                     </div>
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">ROL USUARIO</label>
-                        <select class="custom-select custom-select-sm form-control form-control border-warning text-warning d-inp-warning">
+                        <select class="custom-select custom-select-sm form-control form-control border-warning text-warning d-inp-warning" name="" id="rolUsuario">
                             <option selected>Elegir...</option>
                             <option value="1">Administrador</option>
                             <option value="2">Oficina</option>

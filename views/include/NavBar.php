@@ -111,18 +111,22 @@
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
-                    <h6 class="p-3 mb-0">Profile</h6>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item" href="<?php echo SERVERURL."usuarios/".$login_controlador->encryption($_SESSION['id_lmr'])."/"; ?>" data-toggle="modal" data-target="#modalEditarUsuario">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-dark rounded-circle">
-                                <i class="mdi mdi-account-settings text-success"></i>
+                    <h6 class="p-3 mb-0">Perfil</h6>
+
+                    <?php if ($_SESSION['id_rol_lmr'] == 1) { ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item preview-item" href="<?php echo SERVERURL . "usuarios/" . $login_controlador->encryption($_SESSION['id_lmr']) . "/"; ?>" data-toggle="modal" data-target="#modalEditarUsuario">
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon bg-dark rounded-circle">
+                                    <i class="mdi mdi-account-settings text-success"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <p class="preview-subject mb-1">Ajustes</p>
-                        </div>
-                    </a>
+                            <div class="preview-item-content">
+                                <p class="preview-subject mb-1">Ajustes</p>
+                            </div>
+                        </a>
+                    <?php } ?>
+
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item preview-item logout">
                         <div class="preview-thumbnail">
