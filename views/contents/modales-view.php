@@ -44,45 +44,45 @@
     </div>
 </div>
 
-<!-- modal modalEditarUsuario -->
-<div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog border border-warning rounded d-md-warning" role="document">
-        <div class="modal-content d-mc-warning">
-            <div class="modal-header">
-                <h5 class="modal-title w-100 text-center" id="exampleModalLabel">EDITAR DATOS DE USUARIO</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                    <input type="text" hidden="" class="form-control border-warning text-warning d-inp-warning" name="" id="idUsuario">
-                        <label for="recipient-name" class="col-form-label">NOMBRE USUARIO</label>
-                        <input type="text" class="form-control border-warning text-warning d-inp-warning" name="" id="nombreUsuario">
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">PASSWORD USUARIO</label>
-                        <input type="text" class="form-control border-warning text-warning d-inp-warning" name="" id="passwordUsuario">
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">ROL USUARIO</label>
-                        <select class="custom-select custom-select-sm form-control form-control border-warning text-warning d-inp-warning" name="" id="rolUsuario">
-                            <option selected>Elegir...</option>
-                            <option value="1">Administrador</option>
-                            <option value="2">Oficina</option>
-                            <option value="3">Técnico de Redes</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-inverse-danger" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-inverse-warning submitBtn">Guardar Cambios</button>
+    <!-- modal modalEditarUsuario -->
+    <div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog border border-warning rounded d-md-warning" role="document">
+            <div class="modal-content d-mc-warning">
+                <div class="modal-header">
+                    <h5 class="modal-title w-100 text-center" id="exampleModalLabel">&nbsp; EDITAR DATOS DE USUARIO</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="FormularioAjax" action="' . SERVERURL . 'ajax/usuarioAjax.php" method="POST" data-form="update" autocomplete="off">
+                        <div class="form-group">
+                            <input type="text" hidden="" class="form-control border-warning text-warning d-inp-warning" name="" id="idUs">
+                            <label for="recipient-name" class="col-form-label">&nbsp; NOMBRE USUARIO</label>
+                            <input type="text" class="form-control border-warning text-warning d-inp-warning" name="" id="nombreUs">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">&nbsp; PASSWORD USUARIO</label>
+                            <input type="text" class="form-control border-warning text-warning d-inp-warning" name="" id="passwordUs">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">&nbsp; ROL USUARIO</label>
+                            <select class="custom-select custom-select-sm form-control form-control border-warning text-warning d-inp-warning" name="" id="rolUsuario">
+                                <option selected>Elegir...</option>
+                                <option value="1">Administrador</option>
+                                <option value="2">Oficina</option>
+                                <option value="3">Técnico de Redes</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-inverse-danger" data-dismiss="modal">&nbsp; Cancelar</button>
+                    <button type="button" class="btn btn-inverse-warning submitBtn">&nbsp; Guardar Cambios</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <!-- modal eliminar usuario -->
 <div class="modal fade" id="modalEliminarUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

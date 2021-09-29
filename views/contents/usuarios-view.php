@@ -66,6 +66,8 @@ if ($_SESSION['id_rol_lmr'] != 1) {
 
 
 
+
+
 <!-- script buscador tabla -->
 <script>
     $(document).ready(function() {

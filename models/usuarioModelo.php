@@ -30,16 +30,28 @@ class usuarioModelo extends mainModel
     }
 
     // Modelo datos del usuario
-    protected static function datosUsuarioModelo($tipo, $id){
+    protected static function datosUsuarioModelo($tipo, $id)
+    {
         if($tipo=="Unico"){
-            $sql = mainModel::conectar()->prepare("SELECT *FROM usuario WHERE id_usuario=:ID");
+            $sql = mainModel::conectar()->prepare("SELECT usuario.id_usuario, usuario.nombre_usuario, usuario.password_usuario, usuario.id_rol, rol_usuario.nombre_rol FROM rol_usuario JOIN usuario ON (rol_usuario.id_rol=usuario.id_rol) WHERE usuario.id_usuario=:ID");
             $sql->bindParam(":ID", $id);
         }elseif($tipo=="Conteo"){
-            $sql = mainModel::conectar()->prepare("SELECT id_usuario FROM usuario WHERE id_usuario='1'");
+            $sql = mainModel::conectar()->prepare("SELECT id_usuario FROM rol_usuario JOIN usuario ON (rol_usuario.id_rol=usuario.id_rol) WHERE id_usuario='1'");
         }
 
         $sql->execute();
         return $sql;
+    }
 
+    //modelo para llenar select de rol usuario
+    protected static function datosRol($tipo, $id){
+        if($tipo==0){
+            $sql = mainModel::conectar()->prepare("SELECT usuario.id_rol, rol_usuario.nombre_rol FROM rol_usuario JOIN usuario ON (rol_usuario.id_rol=usuario.id_rol) WHERE id_usuario=:ID");
+            $sql->bindParam(":ID", $id);
+        }elseif($tipo==1){
+            $sql = mainModel::conectar()->prepare("SELECT id_rol, nombre_rol FROM rol_usuario");
+        }
+        $sql->execute();
+        return $sql;
     }
 }

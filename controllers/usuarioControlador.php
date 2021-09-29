@@ -166,9 +166,9 @@ class usuarioControlador extends usuarioModelo
 		$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
 
 		if (isset($busqueda) && $busqueda != "") {
-			$consulta = "SELECT SQL_CALC_FOUND_ROWS * FROM usuario WHERE ((id_usuario!='$id' AND id_usuario!='1' AND id_rol!='1') OR nombre_usuario LIKE '%$busqueda%')  ORDER BY nombre_usuario ASC LIMIT $inicio, $registros";
+			$consulta = "SELECT SQL_CALC_FOUND_ROWS usuario.id_usuario, usuario.nombre_usuario, usuario.password_usuario, usuario.id_rol, rol_usuario.nombre_rol FROM rol_usuario JOIN usuario ON (rol_usuario.id_rol=usuario.id_rol) WHERE ((id_usuario!='$id' AND id_usuario!='1' AND id_rol!='1') OR nombre_usuario LIKE '%$busqueda%')  ORDER BY nombre_usuario ASC LIMIT $inicio, $registros";
 		} else {
-			$consulta = "SELECT SQL_CALC_FOUND_ROWS * FROM usuario WHERE id_usuario!='$id' AND id_usuario!='1' ORDER BY nombre_usuario ASC LIMIT $inicio, $registros";
+			$consulta = "SELECT SQL_CALC_FOUND_ROWS usuario.id_usuario, usuario.nombre_usuario, usuario.password_usuario, usuario.id_rol, rol_usuario.nombre_rol FROM rol_usuario JOIN usuario ON (rol_usuario.id_rol=usuario.id_rol) WHERE id_usuario!='$id' AND id_usuario!='1' ORDER BY nombre_usuario ASC LIMIT $inicio, $registros";
 		}
 
 		$conexion = mainModel::conectar();
@@ -198,16 +198,15 @@ class usuarioControlador extends usuarioModelo
 			$contador = $inicio + 1;
 			$registro_inicial = $inicio + 1;
 			foreach ($datos as $rows) {
-				
 				$tabla .= '
 					<tr class="text-center">
                         <td>' . $rows['id_usuario'] . '</td>
                         <td class="text-secondary">' . $rows['nombre_usuario'] . '</td>
-                        <td class="text-secondary"> Oficina <i class="mdi mdi-office"></i></td>
+                        <td class="text-secondary">' . $rows['nombre_rol'] . '</td>
                         <td>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text" data-toggle="modal" data-target="#modalEditarUsuario">
+                            <a href="' . SERVERURL . 'user-update/' . mainModel::encryption($rows['id_usuario']) . '/" type="button" class="btn btn-inverse-warning btn-icon-text">
                                 <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </button>
+                            </a>
                         </td>
 						<td>
 						<form class="FormularioAjax" action="' . SERVERURL . 'ajax/usuarioAjax.php" method="POST" data-form="delete" autocomplete="off">
@@ -252,7 +251,7 @@ class usuarioControlador extends usuarioModelo
 		//recibiendo id del usuario
 		$id = mainModel::decryption($_POST['id_usuario_delete']);
 		$id = mainModel::limpiar_cadena($id);
-		
+
 
 		//comprobando el usuario principal
 		if ($id == 1) {
@@ -314,11 +313,26 @@ class usuarioControlador extends usuarioModelo
 	} // fin controlador
 
 	// Controlador datos del usuario
-    public function datosUsuarioControlador($tipo, $id){
-		$tipo=mainModel::limpiar_cadena($tipo);
-		$id=mainModel::decryption($id);
+	public function datosUsuarioControlador($tipo, $id)
+	{
+		$tipo = mainModel::limpiar_cadena($tipo);
+		$id = mainModel::decryption($id);
 		$id = mainModel::limpiar_cadena($id);
 
 		return usuarioModelo::datosUsuarioModelo($tipo, $id);
-	}//fin controlador
+	} //fin controlador
+
+	public function llenarSelect($op, $id)
+	{
+		$op = mainModel::limpiar_cadena($op);
+		$id = mainModel::decryption($id);
+		$id = mainModel::limpiar_cadena($id);
+
+		return usuarioModelo::datosRol($op, $id);
+	}
+
+	public function desencriptar($pass){
+		$pass= mainModel::limpiar_cadena($pass);
+		return mainModel::decryption($pass);
+	}
 }

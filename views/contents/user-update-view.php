@@ -1,95 +1,119 @@
-<!-- modal modalEditarUsuario -->
-<div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog border border-warning rounded d-md-warning" role="document">
-        <div class="modal-content d-mc-warning">
-            <div class="modal-header">
-                <h5 class="modal-title w-100 text-center" id="exampleModalLabel">EDITAR DATOS DE USUARIO</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
+<?php
+if ($login_controlador->encryption($_SESSION['id_lmr']) != $pagina[1]) {
+    if ($_SESSION['id_rol_lmr'] != 1) {
+        $login_controlador->forzar_cierre_sesion_controlador();
+        exit();
+    }
+}
+?>
+
+<?php
+require_once "./controllers/usuarioControlador.php";
+$ins_usuario = new usuarioControlador();
+$datos_usuario = $ins_usuario->datosUsuarioControlador("Unico", $pagina[1]);
+$datos_select = $ins_usuario->llenarSelect(1, 0);
+$datos_select_actual = $ins_usuario->llenarSelect(0, $pagina[1]);
 
 
+if ($datos_usuario->rowCount() == 1) {
+    $campos = $datos_usuario->fetch();
+    $pass = $ins_usuario->desencriptar($campos['password_usuario']);
+?>
+    <div class="row justify-content-center ">
+        <div class="col-md-8 grid-margin stretch-card">
+            <div class="card d-mc-light d-frm">
+                <div class="card-body">
+                    <h4 class="card-title text-center">&nbsp; Actualizar Datos del usuario</h4>
+                    <form class="form-sample FormularioAjax" action="<?php echo SERVERURL; ?>ajax/usuarioAjax.php" method="POST" data-form="update" autocomplete="off">
+                        <div class="form-group row">
+                            <input type="hidden" name="usuario_id_update" value="<?php echo $pagina[1]; ?>">
+                            <label class="col-sm-4 col-form-label">&nbsp; Nombre Usuario</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control d-inp-light" id="nombreU" name="" placeholder="Username" value="<?php echo $campos['nombre_usuario']; ?>">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">&nbsp; Rol Usuario</label>
+                            <div class="col-sm-8">
+                                <select class="custom-select custom-select-sm form-control form-control d-inp-light" name="" id="rolU">
+                                    <?php
+                                    print_r($datos_select_actual);
+                                    foreach ($datos_select_actual as $seleccionado) : ?>
+                                        <option selected value="<?php echo $seleccionado['id_rol']; ?>"><?php echo $seleccionado['nombre_rol']; ?></option>
+                                    <?php endforeach ?>
 
-                <form class="FormularioAjax" action="<?php echo SERVERURL; ?>ajax/usuarioAjax.php" method="POST" data-form="update" autocomplete="off">
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">NOMBRE USUARIO</label>
-                        <input type="text" class="form-control border-warning text-warning d-inp-warning" value="Nombre de Usuario">
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">PASSWORD USUARIO</label>
-                        <input type="text" class="form-control border-warning text-warning d-inp-warning" value="AbcPass">
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">ROL USUARIO</label>
-                        <select class="custom-select custom-select-sm form-control form-control border-warning text-warning d-inp-warning">
-                            <option selected>Elegir...</option>
-                            <option value="1">Administrador</option>
-                            <option value="2">Oficina</option>
-                            <option value="3">Técnico de Redes</option>
-                        </select>
-                    </div>
-                </form>
+                                    <?php foreach ($datos_select as $opciones) : ?>
+                                        <option value="<?php echo $opciones['id_rol'] ?>"><?php echo $opciones['nombre_rol']; ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">&nbsp; Nueva Clave</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="txtPassword" type="password" class="form-control d-inp-light" placeholder="Nuevo Password" value="<?php echo $pass; ?>">
+                                    <div class="input-group-append">
+                                        <button id="show_password" class="btn" type="button" onclick="mostrarPassword()"> <span class="mdi mdi-eye-off d-btn-light"></span> </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">&nbsp; Confirmar Clave</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input id="txtRePassword" type="password" class="form-control d-inp-light" placeholder="Confirmar Password" value="<?php echo $pass; ?>">
+                                    <div class="input-group-append">
+                                        <button id="show_Repassword" class="btn" type="button" onclick="mostrarRePassword()"> <span class="mdi mdi-eye-off d-btn-light"></span> </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" row justify-content-center">
+                            <button type="submit" class="btn btn-inverse-primary mr-2">&nbsp; Actualizar Datos</button>
+                            <button class="btn btn-inverse-danger">&nbsp; Cancelar</button>
+                        </div>
+                    </form>
+                </div>
 
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-inverse-danger" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-inverse-warning submitBtn">Guardar Cambios</button>
             </div>
         </div>
     </div>
+<?php } else {
+    echo
+    '
+<div clas="row">
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>ATENCIÓN!</strong> Parece que no tienes los privilegios suficientes para acceder a esta página
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
-
-<div class="full-box page-header">
-	<h3 class="text-left">
-		<i class="fas fa-sync-alt fa-fw"></i> &nbsp; ACTUALIZAR USUARIO
-	</h3>
-	<p class="text-justify">
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit nostrum rerum animi natus beatae ex. Culpa blanditiis tempore amet alias placeat, obcaecati quaerat ullam, sunt est, odio aut veniam ratione.
-	</p>
 </div>
+';
+} ?>
 
-<div class="container-fluid">
-	<ul class="full-box list-unstyled page-nav-tabs">
-		<li>
-			<a href="<?php echo SERVERURL; ?>user-new/"><i class="fas fa-plus fa-fw"></i> &nbsp; NUEVO USUARIO</a>
-		</li>
-		<li>
-			<a href="<?php echo SERVERURL; ?>user-list/"><i class="fas fa-clipboard-list fa-fw"></i> &nbsp; LISTA DE USUARIOS</a>
-		</li>
-		<li>
-			<a href="<?php echo SERVERURL; ?>user-search/"><i class="fas fa-search fa-fw"></i> &nbsp; BUSCAR USUARIO</a>
-		</li>
-	</ul>	
-</div>
+<script type="text/javascript">
+    function mostrarPassword() {
+        var cambio = document.getElementById("txtPassword");
+        if (cambio.type == "password") {
+            cambio.type = "text";
+            $('.icon').removeClass('mdi mdi-eye-off').addClass('mdi mdi-eye');
+        } else {
+            cambio.type = "password";
+            $('.icon').removeClass('mdi mdi-eye').addClass('mdi mdi-eye-off');
+        }
+    }
 
-<div class="container-fluid">
-
-<form class="FormularioAjax" action="<?php echo SERVERURL; ?>ajax/usuarioAjax.php" method="POST" data-form="update" autocomplete="off">
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">NOMBRE USUARIO</label>
-                        <input type="text" class="form-control border-warning text-warning d-inp-warning" value="Nombre de Usuario">
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">PASSWORD USUARIO</label>
-                        <input type="text" class="form-control border-warning text-warning d-inp-warning" value="AbcPass">
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">ROL USUARIO</label>
-                        <select class="custom-select custom-select-sm form-control form-control border-warning text-warning d-inp-warning">
-                            <option selected>Elegir...</option>
-                            <option value="1">Administrador</option>
-                            <option value="2">Oficina</option>
-                            <option value="3">Técnico de Redes</option>
-                        </select>
-                    </div>
-                </form>
-
-	<div class="alert alert-danger text-center" role="alert">
-		<p><i class="fas fa-exclamation-triangle fa-5x"></i></p>
-		<h4 class="alert-heading">¡Ocurrió un error inesperado!</h4>
-		<p class="mb-0">Lo sentimos, no podemos mostrar la información solicitada debido a un error.</p>
-	</div>
-	
-</div>
+    function mostrarRePassword() {
+        var cambio = document.getElementById("txtRePassword");
+        if (cambio.type == "password") {
+            cambio.type = "text";
+            $('.icon').removeClass('mdi mdi-eye-off').addClass('mdi mdi-eye');
+        } else {
+            cambio.type = "password";
+            $('.icon').removeClass('mdi mdi-eye').addClass('mdi mdi-eye-off');
+        }
+    }
+</script>

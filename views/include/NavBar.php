@@ -115,7 +115,7 @@
 
                     <?php if ($_SESSION['id_rol_lmr'] == 1) { ?>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item preview-item" href="<?php echo SERVERURL . "usuarios/" . $login_controlador->encryption($_SESSION['id_lmr']) . "/"; ?>" data-toggle="modal" data-target="#modalEditarUsuario">
+                        <a class="dropdown-item preview-item" href="<?php echo SERVERURL . "user-update/" . $login_controlador->encryption($_SESSION['id_lmr']) . "/"; ?>">
                             <div class="preview-thumbnail">
                                 <div class="preview-icon bg-dark rounded-circle">
                                     <i class="mdi mdi-account-settings text-success"></i>
