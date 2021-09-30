@@ -322,6 +322,7 @@ class usuarioControlador extends usuarioModelo
 		return usuarioModelo::datosUsuarioModelo($tipo, $id);
 	} //fin controlador
 
+	// controlador para llenar select de formulario actualizar usuario
 	public function llenarSelect($op, $id)
 	{
 		$op = mainModel::limpiar_cadena($op);
@@ -329,10 +330,128 @@ class usuarioControlador extends usuarioModelo
 		$id = mainModel::limpiar_cadena($id);
 
 		return usuarioModelo::datosRol($op, $id);
-	}
+	} // fin controlador
 
-	public function desencriptar($pass){
-		$pass= mainModel::limpiar_cadena($pass);
+	// controlador para desencriptar password usuario
+	public function desencriptar($pass)
+	{
+		$pass = mainModel::limpiar_cadena($pass);
 		return mainModel::decryption($pass);
-	}
+	} // fin controlador
+
+	// controlador actualizar usuario
+	public function actualizarUsuarioControlador()
+	{
+		// recibiendo id
+		$idd = mainModel::decryption($_POST['usuario_id_update']);
+
+		//comprobar el usuario en la base de datos
+		$check_usuario = mainModel::ejecutar_consulta_simple("SELECT * FROM usuario WHERE id_usuario='$idd'");
+
+		if ($check_usuario->rowCount() <= 0) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "NO se encotraron datos del usuario en la base de datos del sistema",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		$id= mainModel::decryption($_POST['usuario_id_update']);
+		$id = mainModel::limpiar_cadena($id);
+		$nombre = mainModel::limpiar_cadena($_POST['nombreU']);
+		$rol = mainModel::limpiar_cadena($_POST['rolU']);
+		$pass = mainModel::limpiar_cadena($_POST['txtPassword']);
+		$re_pass = mainModel::limpiar_cadena($_POST['txtRePassword']);
+
+		/*== comprobar campos vacios ==*/
+		if ($id == "" || $nombre == "" || $rol == "" || $pass == "" || $re_pass == "") {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "No has llenado todos los campos que son obligatorios",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		/*== Verificando integridad de los datos ==*/
+		if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,100}", $nombre)) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "El NOMBRE no coincide con el formato solicitado",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		if (mainModel::verificar_datos("[a-zA-Z0-9$@.-]{7,25}", $pass) || mainModel::verificar_datos("[a-zA-Z0-9$@.-]{7,25}", $re_pass)) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "Las CLAVES no coinciden con el formato solicitado",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		/*== Comprobando Nombre Usuario ==*/
+		$check_nombre = mainModel::ejecutar_consulta_simple("SELECT nombre_usuario FROM usuario WHERE nombre_usuario='$nombre' AND id_usuario!='$idd'");
+		if ($check_nombre->rowCount() > 0) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "El NOMBRE de usuario ingresado ya se encuentra registrado en el sistema",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		/*== Comprobando claves ==*/
+		if ($pass != $re_pass) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "Las Nuevas claves ingresadas no coinciden",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		} else {
+			$clave = mainModel::encryption($pass);
+		}
+
+
+		// Preparando datos para enviarlos al modelo
+		$datos_usuario_update = [
+			"NOMBRE" => $nombre,
+			"PASS" => $clave,
+			"ROL" => $rol,
+			"ID" => $id
+		];
+
+		if (usuarioModelo::actualizarUsuarioModelo($datos_usuario_update)) {
+			$alerta = [
+				"Alerta" => "recargar",
+				"Titulo" => "Datos actualizados",
+				"Texto" => "Los datos del usuario han sido actualizados con exito",
+				"Tipo" => "success"
+			];
+		} else {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "No se pudo realizar la actualización, por favor intente de nuevo",
+				"Tipo" => "error"
+			];
+		}
+		echo json_encode($alerta);
+	} //fin cntrolador
 }

@@ -1,10 +1,3 @@
-<?php
-require_once "./routerMIkrotik/Resources.php";
-$clientes = RouterR::RouterClientes();
-
-
-?>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -52,17 +45,6 @@ $clientes = RouterR::RouterClientes();
 
         <div class="row">
             <div class="col-sm-12 col-md-6">
-                <div class="form-group row justify-content-center">
-                    <label class="col-sm-2 col-form-label">Mostrar </label>
-                    <select name="dataTable_length" aria-controls="dataTable" class="custom-select form-control col-sm-2 form-control-sm border-light text-info">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                    <label class="col-sm-8 col-form-label">Elementos </label>
-
-                </div>
             </div>
             <div class="col-sm-12 col-md-6">
 
@@ -78,71 +60,16 @@ $clientes = RouterR::RouterClientes();
             </div>
 
         </div>
-
-        <div class="table-responsive">
-
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th class="text-danger col-sm-1">ID</th>
-                        <th class="text-danger col-sm-2">NOMBRE CLIENTE</th>
-                        <th class="text-danger col-sm-2">PLAN CONTRATADO</th>
-                        <th class="text-danger col-sm-2">PASSWORD</th>
-                        <th class="text-danger col-sm-2">IP ADDRESS</th>
-                        <th class="text-danger col-sm-3">ACCIÓN</th>
-                    </tr>
-                </thead>
-                <tbody id="myTable">
-
-                    <?php
-                    
-                    $v = json_decode($clientes, true);
-                    $count=count($v);
-                    
-                    for ($i=0; $i<$count; $i++ ) {
-
-                    ?>
-
-                        <tr>
-
-                            <td class="text-secondary"><?php echo $v[$i]['.id']; ?></td>
-                            <td class="text-secondary"><?php echo $v[$i]['name']; ?></td>
-                            <td class="text-secondary"><?php echo $v[$i]['profile']; ?></td>
-                            <td class="text-secondary"><?php echo $v[$i]['password']; ?></td>
-                            <td class="text-secondary"><?php echo $v[$i]['remote-address']; ?></td>
-                            <td>
-                                <button type="button" class="btn btn-inverse-primary btn-icon-text btn-sm" data-toggle="modal" data-target="#modalEditarCliente">
-                                    <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                                </button>
-                                <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                    <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                                </button>
-                                <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                    <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                                </button>
-                            </td>
-                        </tr>
-                        
-                    <?php 
-                    } ?>
-
-                </tbody>
-            </table>
-        </div>
         <br>
         <div class="row justify-content-center">
+            <br>
+            <?php
+            require_once "./controllers/clientesControlador.php";
+            $ins_usuario = new clientesControlador();
 
-            <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Mostrando 1 a 10 de 57 Elementos</div>
-        </div>
-        <br>
-        <div class="row justify-content-center">
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-inverse-primary disabled">Anterior</button>
-                <button type="button" class="btn btn-inverse-primary active">1</button>
-                <button type="button" class="btn btn-inverse-primary">2</button>
-                <button type="button" class="btn btn-inverse-primary">3</button>
-                <button type="button" class="btn btn-inverse-primary">Siguiente</button>
-            </div>
+            echo $ins_usuario->PaginadorClientesControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
+
+            ?>
         </div>
     </div>
 
