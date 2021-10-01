@@ -93,6 +93,29 @@ class mainModel
 		return $cadena;
 	}
 
+		/*--------- Funcion limpiar cadenas ---------*/
+		protected static function formatearNombreServicio($cadena)
+		{
+			$cadena = trim($cadena);
+			$cadena = strtolower($cadena);
+			$cadena = str_replace("Á","a", $cadena);
+			$cadena = str_replace("É","e", $cadena);
+			$cadena = str_replace("Í","i", $cadena);
+			$cadena = str_replace("Ó","o", $cadena);
+			$cadena = str_replace("Ú","u", $cadena);
+			$cadena = str_replace("á","a", $cadena);
+			$cadena = str_replace("é","e", $cadena);
+			$cadena = str_replace("í","i", $cadena);
+			$cadena = str_replace("ó","o", $cadena);
+			$cadena = str_replace("ú","u", $cadena);
+			$cadena = str_replace(" ","_", $cadena);
+			$cadena = str_replace(".","", $cadena);
+			$cadena = str_replace(",","", $cadena);
+			$cadena = str_replace(":","", $cadena);
+			$cadena = trim($cadena);
+			return $cadena;
+		}
+
 
 	/*--------- Funcion verificar datos ---------*/
 	protected static function verificar_datos($filtro, $cadena)

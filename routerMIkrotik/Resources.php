@@ -77,23 +77,27 @@ class RouterR
 			$count = count($ARRAY);
 
 			$idarray=$ARRAY;
-
-			
-			// if ($count > 0) {
-			// 	for ($i = 0; $i < $count; $i++) {
-
-			// 		$data->id[] = $ARRAY[$i]['.id'];
-			// 		$data->name[] = $ARRAY[$i]['name'];
-			// 		$data->profile[] = $ARRAY[$i]['profile'];
-			// 		$data->password[] = $ARRAY[$i]['password'];
-			// 		$data->remote_address[] = $ARRAY[$i]['remote-address'];
-
-			// 	}
-			// }
 		}
 		return json_encode($idarray);
 		
 	}
+
+	public static function pppSecretProfile()
+	{
+		$API = new RouterosAPI();
+		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+			$API->write('/ppp/profile/print');
+
+			$READ = $API->read(false);
+			$ARRAY = $API->parseResponse($READ);
+			$API->disconnect();
+
+			$profilearray=$ARRAY;
+		}
+		return json_encode($profilearray);
+		
+	}
+
 
 	public static function grap()
 	{
@@ -158,4 +162,6 @@ class RouterR
 		}
 		$API->disconnect();
 	}
+
+	
 }

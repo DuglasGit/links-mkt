@@ -93,6 +93,7 @@
     color: rgba(255, 153, 0, 0.616) !important;
 }
 
+
 .d-inp-light:focus, .d-inp-light:active{
     color: rgb(255, 153, 0) !important;
     border-bottom: 1px solid rgb(255, 153, 0) !important;
@@ -103,7 +104,7 @@
 }
 
 input::placeholder{
-    color: rgba(231, 208, 0, 0.26) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .d-frm{
@@ -166,4 +167,67 @@ option {
 }
 .d-btn-light:lostfocus,.d-btn-light:inactive{
     color: rgba(255, 153, 0, 0.685) !important;
+}
+
+hr{
+    height: 1px !important;
+        background-color: #ccc !important;
+        border: none;
+        box-shadow: 0 0 10px rgb(255, 255, 255);
+        margin-top: 60px;
+        margin-bottom: 30px;
+}
+
+/*form cliente*/
+
+/* boton eye*/
+.d-btn-cli{
+    border: none !important;
+    outline: none !important;
+    background-color: transparent !important;
+    background-repeat: no-repeat !important;
+    color: rgba(255, 255, 255, 0.616) !important;
+    cursor: pointer !important;
+    overflow: hidden !important;
+    outline: none !important;
+    border-radius: 200px;
+}
+
+.d-btn-cli:focus, .d-btn-cli:active{
+    color: rgb(255, 255, 255) !important;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.616);
+}
+.d-btn-cli:lostfocus,.d-btn-cli:inactive{
+    color: rgba(255, 255, 255, 0.685) !important;
+}
+
+hr{
+    height: 1px !important;
+        background-color: #ccc !important;
+        border: none;
+        box-shadow: 0 0 10px rgb(255, 255, 255);
+        margin-top: 60px;
+        margin-bottom: 30px;
+}
+
+.d-inp-cli{
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.397) !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: #FC424A !important;
+}
+
+
+.d-inp-cli:focus, .d-inp-cli:active{
+    color: rgba(255, 0, 0, 0.863) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.616) !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.616);
+}
+.d-inp-cli:lostfocus,.d-inp-cli:inactive{
+    color: rgba(255, 255, 255, 0.685) !important;
+}
+
+.d-frmc{
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.616);
 }

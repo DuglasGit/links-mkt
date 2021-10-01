@@ -1,3 +1,4 @@
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -20,9 +21,9 @@
             </div>
             <div class="col-sm-12 col-md-4">
                 <div class="form-group row justify-content-center">
-                    <button type="button" class="btn btn-inverse-success btn-icon-text btn-fw" data-toggle="modal" data-target="#modalNuevoCliente">
+                    <a href="<?php echo SERVERURL; ?>nuevo-cliente/" type="button" class="btn btn-inverse-success btn-icon-text btn-fw">
                         <i class="mdi mdi-plus-circle-multiple-outline btn-icon-prepend"></i> NUEVO CLIENTE
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="col-sm-12 col-md-4">
@@ -64,10 +65,10 @@
         <div class="row justify-content-center">
             <br>
             <?php
-            require_once "./controllers/clientesControlador.php";
-            $ins_usuario = new clientesControlador();
+            require_once "./controllers/clienteControlador.php";
+            $ins_cliente = new clienteControlador();
 
-            echo $ins_usuario->PaginadorClientesControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
+            echo $ins_cliente->PaginadorClientesControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
 
             ?>
         </div>

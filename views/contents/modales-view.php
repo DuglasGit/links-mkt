@@ -151,47 +151,49 @@
 
 <!-- modal de nuevo Cliente -->
 <div class="modal fade" id="modalNuevoCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog border border-success rounded d-md-success" role="document">
-        <div class="modal-content d-mc-success">
+    <div class="modal-dialog border border-primary rounded d-md-primary" role="document">
+        <div class="modal-content d-mc-primary">
             <div class="modal-header">
-                <h5 class="modal-title text-center w-100 text-center" id="exampleModalLabel">NUEVO CLIENTE</h5>
+                <h5 class="modal-title w-100 text-center" id="exampleModalLabel">VINCULAR NUEVO SERVICIO PPPOE A CLIENTE</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form>
+            <form class="FormularioAjax" action="<?php echo SERVERURL; ?>ajax/usuarioAjax.php" method="POST" data-form="save" autocomplete="off">
+                <div class="modal-body">
+
                     <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Nombre Cliente</label>
-                        <input type="text" class="form-control border-success d-t-black d-inp-light">
+                        <label for="recipient-name" class="col-form-label">NOMBRE CLIENTE</label>
+                        <input type="text" class="form-control border-primary text-light d-inp-primary" name="nombre_ppp_cli" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,100}" maxlength="100" required="">
                     </div>
                     <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Municipio</label>
-                        <select class="custom-select custom-select-sm form-control form-control border-success d-t-black d-inp-light">
-                            <option selected>Elegir...</option>
-                            <option value="1">Municipio 1</option>
-                            <option value="2">Municipio 2</option>
-                            <option value="3">Municipio 3</option>
+                        <label for="recipient-name" class="col-form-label">PASSWORD CLIENTE</label>
+                        <input type="text" class="form-control border-primary text-light d-inp-primary" name="password_ppp_cli" pattern="[a-zA-Z0-9$@.-]{7,25}" maxlength="25" required="">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">SERVICIO</label>
+                        <input type="text" class="form-control border-primary text-light d-inp-primary" name="re_password_ppp_cli" pattern="[a-zA-Z0-9$@.-]{8,25}" maxlength="25" required="">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">PLAN</label>
+                        <select class="custom-select custom-select-sm form-control border-primary text-light d-inp-primary" name="rol_ppp_cli">
+                            <option value="" selected="">Elegir...</option>
+                            <option value="1">Administrador</option>
+                            <option value="2">Oficina</option>
+                            <option value="3">Técnico de Redes</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Domicilio</label>
-                        <input type="text" class="form-control border-success d-t-black d-inp-light">
+                        <label for="recipient-name" class="col-form-label">IP ADDRESS</label>
+                        <input type="text" class="form-control border-primary text-light d-inp-primary" name="re_password_ppp_cli" pattern="[a-zA-Z0-9$@.-]{8,25}" maxlength="25" required="">
                     </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Tipo Cliente</label>
-                        <select class="custom-select custom-select-sm form-control form-control border-success d-t-black d-inp-light">
-                            <option selected>Elegir...</option>
-                            <option value="1">Residencial</option>
-                            <option value="2">Corporativo</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-inverse-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-inverse-success">Registrar</button>
-            </div>
+
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-inverse-warning" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-inverse-primary">Registrar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
