@@ -1,6 +1,6 @@
 <?php
 require('routeros_api.class.php');
-require_once "./config/SERVER.php";
+
 
 
 class RouterR
@@ -76,10 +76,9 @@ class RouterR
 
 			$count = count($ARRAY);
 
-			$idarray=$ARRAY;
+			$idarray = $ARRAY;
 		}
 		return json_encode($idarray);
-		
 	}
 
 	public static function pppSecretProfile()
@@ -92,10 +91,28 @@ class RouterR
 			$ARRAY = $API->parseResponse($READ);
 			$API->disconnect();
 
-			$profilearray=$ARRAY;
+			$profilearray = $ARRAY;
 		}
 		return json_encode($profilearray);
-		
+	}
+
+	public static function pppAgregarClientePPP($datos)
+	{
+		$exito = 0;
+		$API = new RouterosAPI();
+		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+
+			$API->comm("/ppp/secret/add", array(
+				"name"     => $datos['NAME'],
+				"password" => $datos['PASSWORD'],
+				"service"  => $datos['SERVICE'],
+				"profile"  => $datos['PROFILE'],
+				"remote-address"  => $datos['REMOTE_ADDRESS']
+			));
+			$API->disconnect();
+			$exito = 1;
+		}
+		return $exito;
 	}
 
 
@@ -162,6 +179,4 @@ class RouterR
 		}
 		$API->disconnect();
 	}
-
-	
 }

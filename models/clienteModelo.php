@@ -34,7 +34,12 @@ class clienteModelo extends mainModel
                     return $sql;
                     break;
                 }
-            case 'router': {
+            case 'idCliente': {
+                    $sql = mainModel::conectar()->prepare("SELECT id_cliente FROM cliente WHERE nombre_cliente=:NOMBRE");
+
+                    $sql->bindParam(":NOMBRE", $datos);
+                    $sql->execute();
+                    return $sql;
                     break;
                 }
             default: {

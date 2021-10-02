@@ -5,8 +5,8 @@ require_once "../config/APP.php";
 if (isset($_POST['nombreCliente']) || isset($_POST['id_cliente_delete']) || isset($_POST['id_cliente_update'])) {
 
     /*--------- Instancia al controlador ---------*/
-    require_once "../controllers/clientesControlador.php";
-    $ins_cliente = new clientesControlador();
+    require_once "../controllers/clienteControlador.php";
+    $ins_cliente = new clienteControlador();
 
 
     /*--------- Agregar un usuario ---------*/

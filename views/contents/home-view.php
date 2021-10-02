@@ -1,6 +1,7 @@
 <?php
 require_once "./routerMIkrotik/Resources.php";
 $data = RouterR::RouterConnect();
+
 ?>
 
 <?php

@@ -29,33 +29,6 @@ class loginControlador extends loginModelo
             exit();
         }
 
-        /*== Verificando integridad de los datos ==*/
-        // if (mainModel::verificar_datos("^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$", $ip)) {
-        //     echo '
-        //     <script>
-        //         Swal.fire({
-        //             title: "Ocurrió un error inesperado",
-        //             text: "La Dirección IP V4 no tiene un formato válido",
-        //             icon: "error",
-        //             confirmButtonText: "Aceptar"
-        //         });
-        //     </script>
-        //     ';
-        // }
-
-        // if (mainModel::verificar_datos("(^[0-9]{4})$", $puerto)) {
-        //     echo '
-        //     <script>
-        //         Swal.fire({
-        //             title: "Ocurrió un error inesperado",
-        //             text: "El puero de conexión ingresado no tiene un formato válido",
-        //             icon: "error",
-        //             confirmButtonText: "Aceptar"
-        //         });
-        //     </script>
-        //     ';
-        // }
-
         if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,100}", $usuario)) {
             echo '
                 <script>

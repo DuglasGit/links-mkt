@@ -122,8 +122,9 @@ class clienteControlador extends clienteModelo
 		$direccionCliente = mainModel::limpiar_cadena($_POST['direccionCliente']);
 		$gpsCliente = mainModel::limpiar_cadena($_POST['gpsCliente']);
 		$tipoCliente = mainModel::limpiar_cadena($_POST['tipoCliente']);
-		$fechaContratoCliente = mainModel::limpiar_cadena($_POST['fechaContratoCliente']);
+		$fechaContratoCliente = $_POST['fechaContratoCliente'];
 		$planCliente = mainModel::limpiar_cadena($_POST['planCliente']);
+		$ipClientec = mainModel::limpiar_cadena($_POST['ipClientec']);
 		$estadoContratoCliente = mainModel::limpiar_cadena($_POST['estadoContratoCliente']);
 		$nombreServicio = mainModel::limpiar_cadena($_POST['nombreServicio']);
 		$passServicio = mainModel::limpiar_cadena($_POST['passServicio']);
@@ -132,105 +133,119 @@ class clienteControlador extends clienteModelo
 		$ipCliente = mainModel::limpiar_cadena($_POST['ipCliente']);
 
 
-		// /*== comprobar campos vacios ==*/
-		// if ($nombre == "" || $pass == "" || $re_pass == "" || $rol == "") {
-		// 	$alerta = [
-		// 		"Alerta" => "simple",
-		// 		"Titulo" => "Ocurrió un error inesperado",
-		// 		"Texto" => "No has llenado todos los campos que son obligatorios",
-		// 		"Tipo" => "error"
-		// 	];
-		// 	echo json_encode($alerta);
-		// 	exit();
-		// }
 
+		/*== Comprobando Nmbre Usuario ==*/
+		$check_usuario = mainModel::ejecutar_consulta_simple("SELECT nombre_cliente FROM cliente WHERE nombre_cliente='$nombreCliente'");
 
-		// /*== Verificando integridad de los datos ==*/
-		// if (mainModel::verificar_datos("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,100}", $nombre)) {
-		// 	$alerta = [
-		// 		"Alerta" => "simple",
-		// 		"Titulo" => "Ocurrió un error inesperado",
-		// 		"Texto" => "El NOMBRE no coincide con el formato solicitado",
-		// 		"Tipo" => "error"
-		// 	];
-		// 	echo json_encode($alerta);
-		// 	exit();
-		// }
+		if ($check_usuario->rowCount() > 0) {
 
-		// if (mainModel::verificar_datos("[a-zA-Z0-9$@.-]{7,25}", $pass) || mainModel::verificar_datos("[a-zA-Z0-9$@.-]{7,25}", $re_pass)) {
-		// 	$alerta = [
-		// 		"Alerta" => "simple",
-		// 		"Titulo" => "Ocurrió un error inesperado",
-		// 		"Texto" => "Las CLAVES no coinciden con el formato solicitado",
-		// 		"Tipo" => "error"
-		// 	];
-		// 	echo json_encode($alerta);
-		// 	exit();
-		// }
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "El CLIENTE ingresado ya se encuentra registrado en el sistema",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
 
-		// /*== Comprobando Nmbre Usuario ==*/
-		// $check_usuario = mainModel::ejecutar_consulta_simple("SELECT nombre_usuario FROM usuario WHERE nombre_usuario='$nombre'");
-		// if ($check_usuario->rowCount() > 0) {
-		// 	$alerta = [
-		// 		"Alerta" => "simple",
-		// 		"Titulo" => "Ocurrió un error inesperado",
-		// 		"Texto" => "El NOMBRE de usuario ingresado ya se encuentra registrado en el sistema",
-		// 		"Tipo" => "error"
-		// 	];
-		// 	echo json_encode($alerta);
-		// 	exit();
-		// }
+		$datos_cliente_reg = [
+			"NOMBRE" => $nombreCliente,
+			"TELEFONO" => $telefonoCliente,
+			"IDMUNICIPIO" => $municipioCliente,
+			"DOMICILIO" => $direccionCliente,
+			"GPS" => $gpsCliente,
+			"TIPOCLIENTE" => $tipoCliente
+		];
 
-		// /*== Comprobando claves ==*/
-		// if ($pass != $re_pass) {
-		// 	$alerta = [
-		// 		"Alerta" => "simple",
-		// 		"Titulo" => "Ocurrió un error inesperado",
-		// 		"Texto" => "Las claves que acaba de ingresar no coinciden",
-		// 		"Tipo" => "error"
-		// 	];
-		// 	echo json_encode($alerta);
-		// 	exit();
-		// } else {
-		// 	$clave = mainModel::encryption($pass);
-		// }
+		$agregar_cliente = clienteModelo::agregar_cliente_modelo($datos_cliente_reg, "cliente");
+		$exito = 0;
+		if ($agregar_cliente->rowCount() == 1) {
+			$exito = 1;
+			$obtener_id_cliente = clienteModelo::agregar_cliente_modelo($nombreCliente, "idCliente");
+			$id = "";
+			foreach ($obtener_id_cliente as $rows) {
+				$id = $rows['id_cliente'];
+			}
 
-		// /*== Comprobando privilegio ==*/
-		// if ($rol < 1 || $rol > 3) {
-		// 	$alerta = [
-		// 		"Alerta" => "simple",
-		// 		"Titulo" => "Ocurrió un error inesperado",
-		// 		"Texto" => "El ROLL seleccionado no es valido",
-		// 		"Tipo" => "error"
-		// 	];
-		// 	echo json_encode($alerta);
-		// 	exit();
-		// }
+			$datos_contrato_reg = [
+				"IDCLIENTE" => $id,
+				"FECHACONTRATO" => $fechaContratoCliente,
+				"IDPLAN" => $planCliente,
+				"ESTADOCONTRATO" => $estadoContratoCliente,
+				"IP" => $ipClientec
+			];
 
-		// $datos_usuario_reg = [
-		// 	"Nombre" => $nombre,
-		// 	"Pass" => $clave,
-		// 	"Rol" => $rol
-		// ];
+			$agregar_contrato = clienteModelo::agregar_cliente_modelo($datos_contrato_reg, "contrato");
 
-		// $agregar_usuario = usuarioModelo::agregar_usuario_modelo($datos_usuario_reg);
+			if ($agregar_contrato->rowCount() == 1 && $exito == 1) {
+				$exito = 2;
+				$datos_cliente_ppp_router_reg = [
+					"NAME" => $nombreServicio,
+					"PASSWORD" => $passServicio,
+					"SERVICE" => $tipoServicio,
+					"PROFILE" => $perfil,
+					"REMOTE_ADDRESS" => $ipCliente
+				];
 
-		// if ($agregar_usuario->rowCount() == 1) {
-		// 	$alerta = [
-		// 		"Alerta" => "recargar",
-		// 		"Titulo" => "usuario registrado",
-		// 		"Texto" => "Los datos del usuario han sido registrados con exito",
-		// 		"Tipo" => "success"
-		// 	];
-		// } else {
-		// 	$alerta = [
-		// 		"Alerta" => "simple",
-		// 		"Titulo" => "Ocurrió un error inesperado",
-		// 		"Texto" => "No hemos podido registrar el usuario",
-		// 		"Tipo" => "error"
-		// 	];
-		// }
-		// echo json_encode($alerta);
+				$agregar_cliente_router = RouterR::pppAgregarClientePPP($datos_cliente_ppp_router_reg);
+
+				if ($agregar_cliente_router == 1 && $exito == 2) {
+					$exito = 3;
+				}
+			}
+		}
+
+		switch ($exito) {
+			case 0: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "Ocurrió un error inesperado",
+						"Texto" => "No hemos podido registrar al cliente, porfavor verifique los datos e intenete nuevamente",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 1: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "Ocurrió un error inesperado",
+						"Texto" => "NO se pudo registrar los datos del contrato",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 2: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "Ocurrió un error inesperado",
+						"Texto" => "NO se pudo completar la petición del registro del cliente al Router Mikrotik",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 3: {
+					$alerta = [
+						"Alerta" => "exitoredireccion",
+						"Titulo" => "Usuario Eliminado",
+						"Texto" => "El Cliente ha sido registrado correctamente",
+						"Tipo" => "success",
+						"URL" => SERVERURL . "clientes-activos/"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			default: {
+					break;
+				}
+		}
 	} /* Fin controlador */
 
 	public function eliminarClienteControlador()
@@ -256,6 +271,6 @@ class clienteControlador extends clienteModelo
 	public function formatearServicio($cadena)
 	{
 		return mainModel::formatearNombreServicio($cadena);
-
 	} // fin controlador
+
 }
