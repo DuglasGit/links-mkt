@@ -23,11 +23,11 @@ class clienteModelo extends mainModel
                     break;
                 }
             case 'contrato': {
-                    $sql = mainModel::conectar()->prepare("INSERT INTO contrato_servicio(id_cliente,fecha_contrato,id_plan,estado_contrato,ip_asignada) VALUES(:IDCLIENTE,:FECHACONTRATO,:IDPLAN,:ESTADOCONTRATO,:IP)");
+                    $sql = mainModel::conectar()->prepare("INSERT INTO contrato_servicio(id_cliente,fecha_contrato,plan_contrato,estado_contrato,ip_asignada) VALUES(:IDCLIENTE,:FECHACONTRATO,:PLAN,:ESTADOCONTRATO,:IP)");
 
                     $sql->bindParam(":IDCLIENTE", $datos['IDCLIENTE']);
                     $sql->bindParam(":FECHACONTRATO", $datos['FECHACONTRATO']);
-                    $sql->bindParam(":IDPLAN", $datos['IDPLAN']);
+                    $sql->bindParam(":PLAN", $datos['PLAN']);
                     $sql->bindParam(":ESTADOCONTRATO", $datos['ESTADOCONTRATO']);
                     $sql->bindParam(":IP", $datos['IP']);
                     $sql->execute();
@@ -61,20 +61,15 @@ class clienteModelo extends mainModel
     }
 
     // Modelo datos del cliente
-    protected static function datosUsuarioModelo($tipo, $id)
+    protected static function datosClienteModelo($ip)
     {
-        if ($tipo == "Unico") {
-            $sql = mainModel::conectar()->prepare("SELECT usuario.id_usuario, usuario.nombre_usuario, usuario.password_usuario, usuario.id_rol, rol_usuario.nombre_rol FROM rol_usuario JOIN usuario ON (rol_usuario.id_rol=usuario.id_rol) WHERE usuario.id_usuario=:ID");
-            $sql->bindParam(":ID", $id);
-        } elseif ($tipo == "Conteo") {
-            $sql = mainModel::conectar()->prepare("SELECT id_usuario FROM rol_usuario JOIN usuario ON (rol_usuario.id_rol=usuario.id_rol) WHERE id_usuario='1'");
-        }
-
+        $sql = mainModel::conectar()->prepare("SELECT cliente.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, cliente.domicilio, cliente.ubicacion_gps, cliente.id_tipo_cliente, contrato_servicio.id_contrato_servicio, contrato_servicio.fecha_contrato, contrato_servicio.estado_contrato, contrato_servicio.ip_asignada FROM cliente JOIN contrato_servicio ON(cliente.id_cliente=contrato_servicio.id_cliente) WHERE contrato_servicio.ip_asignada=:IP");
+        $sql->bindParam(":IP", $ip);
         $sql->execute();
         return $sql;
     }
 
-    //modelo para llenar select de rol cliente
+    //modelo para llenar selects de formulario actualizar-cliente
     protected static function datosSelect($tipo, $id, $tabla)
     {
         switch ($tabla) {
@@ -117,15 +112,33 @@ class clienteModelo extends mainModel
     }
 
     // Modelo para actualizar cliente
-    protected static function actualizarUsuarioModelo($datos)
+    protected static function actualizarClienteModelo($datos)
     {
-        $sql = mainModel::conectar()->prepare("UPDATE usuario SET nombre_usuario=:NOMBRE, password_usuario=:PASS, id_rol=:ROL WHERE id_usuario=:ID");
-        $sql->bindParam(":NOMBRE", $datos['NOMBRE']);
-        $sql->bindParam(":PASS", $datos['PASS']);
-        $sql->bindParam(":ROL", $datos['ROL']);
-        $sql->bindParam(":ID", $datos['ID']);
-        $sql->execute();
+        $sql = mainModel::conectar()->prepare("UPDATE cliente SET nombre_cliente=:NOMBRE, telefono_cliente=:TELEFONO, id_municipio=:MUNICIPIO, domicilio=:DOMICILIO, ubicacion_gps=:UBICACION_GPS, id_tipo_cliente=:ID_TIPO_CLIENTE WHERE id_cliente=:ID_CLIENTE");
 
+        $sql->bindParam(":NOMBRE", $datos['NOMBRE']);
+        $sql->bindParam(":TELEFONO", $datos['TELEFONO']);
+        $sql->bindParam(":MUNICIPIO", $datos['MUNICIPIO']);
+        $sql->bindParam(":DOMICILIO", $datos['DOMICILIO']);
+        $sql->bindParam(":UBICACION_GPS", $datos['UBICACION_GPS']);
+        $sql->bindParam(":ID_TIPO_CLIENTE", $datos['ID_TIPO_CLIENTE']);
+        $sql->bindParam(":ID_CLIENTE", $datos['ID_CLIENTE']);
+
+        $sql->execute();
         return $sql;
     }
+
+     // Modelo para actualizar contrato cliente
+     protected static function actualizarContratoClienteModelo($datos)
+     {
+         $sql = mainModel::conectar()->prepare("UPDATE contrato_servicio SET fecha_contrato=:FECHA_CONTRATO, plan_contrato=:PLAN, estado_contrato=:ESTADO_CONTRATO, ip_asignada=:IP_ASIGNADA WHERE id_cliente=:ID_CLIENTEC");
+         $sql->bindParam(":FECHA_CONTRATO", $datos['FECHA_CONTRATO']);
+         $sql->bindParam(":PLAN", $datos['PLAN']);
+         $sql->bindParam(":ESTADO_CONTRATO", $datos['ESTADO_CONTRATO']);
+         $sql->bindParam(":IP_ASIGNADA", $datos['IP_ASIGNADA']);
+         $sql->bindParam(":ID_CLIENTEC", $datos['ID_CLIENTEC']);
+
+         $sql->execute();
+         return $sql;
+     }
 }

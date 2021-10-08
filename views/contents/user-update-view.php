@@ -19,7 +19,7 @@ $ins_usuario = new usuarioControlador();
 $datos_usuario = $ins_usuario->datosUsuarioControlador("Unico", $pagina[1]);
 $datos_select = $ins_usuario->llenarSelect(1, 0);
 $datos_select_actual = $ins_usuario->llenarSelect(0, $pagina[1]);
-
+print_r ($datos_usuario);
 
 if ($datos_usuario->rowCount() == 1) {
     $campos = $datos_usuario->fetch();

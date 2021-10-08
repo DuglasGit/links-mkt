@@ -2,25 +2,25 @@
 $peticionAjax = true;
 require_once "../config/APP.php";
 
-if (isset($_POST['nombreCliente']) || isset($_POST['id_cliente_delete']) || isset($_POST['id_cliente_update'])) {
+if (isset($_POST['nombreCliente']) || isset($_POST['id_cliente_delete']) || isset($_POST['cliente_ip_update'])) {
 
     /*--------- Instancia al controlador ---------*/
     require_once "../controllers/clienteControlador.php";
     $ins_cliente = new clienteControlador();
 
 
-    /*--------- Agregar un usuario ---------*/
+    /*--------- Agregar un cliente ---------*/
     if (isset($_POST['nombreCliente']) && isset($_POST['nombreServicio'])) {
         echo $ins_cliente->agregarClienteControlador();
     }
 
-    /*--------- Eliminar un usuario ---------*/
+    /*--------- Eliminar un cliente ---------*/
     if (isset($_POST['id_cliente_delete'])) {
         echo $ins_cliente->eliminarClienteControlador();
     }
 
-    // actualizar usuario
-    if(isset($_POST['id_cliente_update'])){
+    // actualizar cliente
+    if(isset($_POST['cliente_ip_update'])){
         echo $ins_cliente->actualizarClienteControlador();
     }
 

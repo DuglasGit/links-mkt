@@ -59,10 +59,7 @@ session_start(['name' => 'LMR']);
                     <div class="content-wrapper d-cwr">
                         <?php include $vistas; ?>
                     </div>
-                    <!-- content-wrapper ends -->
-                    <!-- partial:../../partials/_footer.html -->
-                    <?php include "./views/include/Footer.php"; ?>
-                    <!-- partial -->
+                    
                 </div>
                 <!-- main-panel ends -->
             </div>

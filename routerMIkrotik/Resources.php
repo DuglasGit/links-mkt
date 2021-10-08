@@ -116,6 +116,157 @@ class RouterR
 	}
 
 
+
+	public static function pppModificarClientePPP($datos)
+	{
+		$exito = 0;
+
+		$operacion = RouterR::pppModificarCliente($datos['ID'], $datos['NAME'], $datos['NAME'], 1);
+		if ($operacion == 1) {
+
+			$operacion = RouterR::pppModificarCliente($datos['ID'], $datos['NAME'], $datos['PASSWORD'], 2);
+			if ($operacion == 2) {
+
+				$operacion = RouterR::pppModificarCliente($datos['ID'], $datos['NAME'], $datos['SERVICE'], 3);
+				if ($operacion == 3) {
+
+					$operacion = RouterR::pppModificarCliente($datos['ID'], $datos['NAME'], $datos['PROFILE'], 4);
+					if ($operacion == 4) {
+
+						$operacion = RouterR::pppModificarCliente($datos['ID'], $datos['NAME'], $datos['REMOTE_ADDRESS'], 5);
+						if ($operacion == 5) {
+							$exito = 1;
+						}
+					}
+				}
+			}
+		}
+
+		return $exito;
+	}
+
+	public static function pppModificarCliente($id, $name, $set, $opcion)
+	{
+		$API = new RouterosAPI();
+		$respuesta = 0;
+		switch ($opcion) {
+			case 1: {
+					if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+						// get all the secrets
+						$API->write('/ppp/secret/getall', false);
+
+						//this is optional and will only return the .id's and names; you can add/remove properties
+						$API->write('=.proplist=.id,name', false);   // remove the 'false' if the next write is not used.
+
+						// this is optional and will filter by field
+						$API->write('?name=' . $name);
+
+						$ARRAY = $API->read();
+						//   the following updates one comment
+						$API->write('/ppp/secret/set', false);
+						$API->write('=.id=' . $id, false);
+						$API->write('=name=' . $set);
+						$ARRAY = $API->read();
+						$API->disconnect();
+						$respuesta = 1;
+					}
+
+					break;
+				}
+			case 2: {
+					if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+						// get all the secrets
+						$API->write('/ppp/secret/getall', false);
+
+						//this is optional and will only return the .id's and names; you can add/remove properties
+						$API->write('=.proplist=.id,name', false);   // remove the 'false' if the next write is not used.
+
+						// this is optional and will filter by field
+						$API->write('?name=' . $name);
+
+						$ARRAY = $API->read();
+						//   the following updates one comment
+						$API->write('/ppp/secret/set', false);
+						$API->write('=.id=' . $id, false);
+						$API->write('=password=' . $set);
+						$ARRAY = $API->read();
+						$API->disconnect();
+						$respuesta = 2;
+					}
+					break;
+				}
+			case 3: {
+					if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+						// get all the secrets
+						$API->write('/ppp/secret/getall', false);
+
+						//this is optional and will only return the .id's and names; you can add/remove properties
+						$API->write('=.proplist=.id,name', false);   // remove the 'false' if the next write is not used.
+
+						// this is optional and will filter by field
+						$API->write('?name=' . $name);
+
+						$ARRAY = $API->read();
+						//   the following updates one comment
+						$API->write('/ppp/secret/set', false);
+						$API->write('=.id=' . $id, false);
+						$API->write('=service=' . $set);
+						$ARRAY = $API->read();
+						$API->disconnect();
+						$respuesta = 3;
+					}
+					break;
+				}
+			case 4: {
+					if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+						// get all the secrets
+						$API->write('/ppp/secret/getall', false);
+
+						//this is optional and will only return the .id's and names; you can add/remove properties
+						$API->write('=.proplist=.id,name', false);   // remove the 'false' if the next write is not used.
+
+						// this is optional and will filter by field
+						$API->write('?name=' . $name);
+
+						$ARRAY = $API->read();
+						//   the following updates one comment
+						$API->write('/ppp/secret/set', false);
+						$API->write('=.id=' . $id, false);
+						$API->write('=profile=' . $set);
+						$ARRAY = $API->read();
+						$API->disconnect();
+						$respuesta = 4;
+					}
+					break;
+				}
+				case 5: {
+					if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+						// get all the secrets
+						$API->write('/ppp/secret/getall', false);
+
+						//this is optional and will only return the .id's and names; you can add/remove properties
+						$API->write('=.proplist=.id,name', false);   // remove the 'false' if the next write is not used.
+
+						// this is optional and will filter by field
+						$API->write('?name=' . $name);
+
+						$ARRAY = $API->read();
+						//   the following updates one comment
+						$API->write('/ppp/secret/set', false);
+						$API->write('=.id=' . $id, false);
+						$API->write('=remote-address=' . $set);
+						$ARRAY = $API->read();
+						$API->disconnect();
+						$respuesta = 5;
+					}
+					break;
+				}
+		}
+		return $respuesta;
+	}
+
+
+
 	public static function grap()
 	{
 		$Port = 8084;

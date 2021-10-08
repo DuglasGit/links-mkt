@@ -359,7 +359,7 @@ class usuarioControlador extends usuarioModelo
 			exit();
 		}
 
-		$id= mainModel::decryption($_POST['usuario_id_update']);
+		$id = mainModel::decryption($_POST['usuario_id_update']);
 		$id = mainModel::limpiar_cadena($id);
 		$nombre = mainModel::limpiar_cadena($_POST['nombreU']);
 		$rol = mainModel::limpiar_cadena($_POST['rolU']);

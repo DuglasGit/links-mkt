@@ -76,7 +76,7 @@ $data = json_decode($data, true);
                     <h6 class="card-title text-primary">&nbsp; Datos Del Contrato</h6>
                     <div class="form-group row">
                         <div class="col-md-3">
-                            <input type="text" class="form-control d-inp-cli" id="fechaContratoCliente" name="fechaContratoCliente" placeholder="Fecha Contrato" pattern="^((0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/[1-2]([0-9]{3}))$" maxlength="100" required="" data-toggle="datepicker">
+                            <input type="text" class="form-control d-inp-cli" id="fechaContratoCliente" name="fechaContratoCliente" placeholder="Fecha Contrato" maxlength="100" required="" data-toggle="datepicker">
                         </div>
                         <div class="col-md-3">
                             <select class="custom-select custom-select-sm form-control form-control d-inp-cli" name="planCliente" id="planCliente" onchange="dibujarPlan(this.options[this.selectedIndex].innerHTML)">
@@ -149,7 +149,7 @@ $data = json_decode($data, true);
         $('[data-toggle="datepicker"]').datepicker({
             autoHide: true,
             zIndex: 2048,
-            format: "dd/mm/yyyy",
+            format: "yyyy-mm-dd",
             language: "es"
 
         });

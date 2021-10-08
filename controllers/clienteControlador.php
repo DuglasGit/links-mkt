@@ -45,14 +45,13 @@ class clienteControlador extends clienteModelo
 		<table class="table table-hover">
 			<thead>
 				<tr class="text-center">
-					<th class="text-DANGER col-md-auto">ID</th>
-					<th class="text-DANGER col-md-auto">NOMBRE DEL CLIENTE</th>
-					<th class="text-DANGER col-md-auto">PLAN</th>
-					<th class="text-DANGER col-md-auto">PASSWORD</th>
-					<th class="text-DANGER col-md-auto">IP ASIGNADA</th>
-                    <th class="text-DANGER col-md-auto">EDITAR</th>
-                    <th class="text-DANGER col-md-auto">SUSPENDER</th>
-                    <th class="text-DANGER col-md-auto">DESACTIVAR</th>
+					<th class="text-danger col-md-auto">ID</th>
+					<th class="text-danger col-md-auto">NOMBRE DEL CLIENTE</th>
+					<th class="text-danger col-md-auto">PLAN</th>
+					<th class="text-danger col-md-auto">PASSWORD</th>
+					<th class="text-danger col-md-auto">IP ASIGNADA</th>
+					<th class="text-danger col-md-auto">ESTADO</th>
+                    <th class="text-danger col-md-auto">ACCIONES</th>
 				</tr>
 			</thead>
 			<tbody id="myTable">
@@ -61,8 +60,17 @@ class clienteControlador extends clienteModelo
 		if ($total >= 1 && $pagina <= $Npaginas) {
 			$contador = $inicio + 1;
 			$registro_inicial = $inicio + 1;
-			foreach ($consulta as $data) {
 
+			$ids  = array_column($consulta, 'name');
+
+			array_multisort($ids, SORT_ASC, $consulta);
+
+			foreach ($consulta as $data) {
+				if ($data['disabled'] == "false") {
+					$data['disabled'] = "Activo";
+				} else {
+					$data['disabled'] = "Desactivado";
+				}
 				$tabla .= '
 					<tr class="text-center">
                         <td>' . $data['.id'] . '</td>
@@ -70,21 +78,25 @@ class clienteControlador extends clienteModelo
                         <td class="text-secondary">' . $data['profile'] . '</td>
                         <td class="text-secondary">' . $data['password'] . '</td>
                         <td class="text-secondary">' . $data['remote-address'] . '</td>
+						<td class="text-secondary">' . $data['disabled'] . '</td>
                         <td>
-                            <a href="' . SERVERURL . 'actualizar-cliente/' . mainModel::encryption($data['.id']) . '/" type="button" class="btn btn-inverse-primary btn-icon-text btn-sm">
-                                <i class="mdi mdi-lead-pencil btn-icon-prepend"></i> Editar
-                            </a>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-inverse-warning btn-icon-text btn-sm" data-toggle="modal" data-target="#modalSuspenderCliente">
-                                <i class="mdi mdi-lan-disconnect btn-icon-prepend"></i> Suspender
-                            </button>
-                        </td>
-						<td>
-                            <button type="button" class="btn btn-inverse-danger btn-icon-text btn-sm" data-toggle="modal" data-target="#modalDesactivarCliente">
-                                <i class="mdi mdi-account-minus btn-icon-prepend"></i> Desactivar
-                            </button>
-						</td>
+						<div class="row">
+							<div class="col-md-4">
+								<a href="' . SERVERURL . 'actualizar-cliente/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-primary btn-sm" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i></a>
+							</div>
+							<div class="col-md-4">
+								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="delete" autocomplete="off">
+									<input type="hidden" name="id_usuario_delete" value="' . mainModel::encryption($data['.id']) . '">
+									<button type="submit" class="btn btn-inverse-warning btn-sm" data-toggle="modal" data-title="SUSPENDER"><i class="mdi mdi-lan-disconnect"></i></button>
+								</form>
+							</div>
+							<div class="col-md-4">
+								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="delete" autocomplete="off">
+									<input type="hidden" name="id_usuario_delete" value="' . mainModel::encryption($data['.id']) . '">
+									<button type="submit" class="btn btn-inverse-danger btn-sm" data-toggle="modal" data-title="ELIMINAR"><i class="mdi mdi-delete-sweep btn-icon-prepend"></i></button>
+								</form>
+							</div>
+					</div>
                     </tr>';
 				$contador++;
 			}
@@ -171,7 +183,7 @@ class clienteControlador extends clienteModelo
 			$datos_contrato_reg = [
 				"IDCLIENTE" => $id,
 				"FECHACONTRATO" => $fechaContratoCliente,
-				"IDPLAN" => $planCliente,
+				"PLAN" => $planCliente,
 				"ESTADOCONTRATO" => $estadoContratoCliente,
 				"IP" => $ipClientec
 			];
@@ -233,7 +245,7 @@ class clienteControlador extends clienteModelo
 			case 3: {
 					$alerta = [
 						"Alerta" => "exitoredireccion",
-						"Titulo" => "Usuario Eliminado",
+						"Titulo" => "CLIENTE REGISTRADO",
 						"Texto" => "El Cliente ha sido registrado correctamente",
 						"Tipo" => "success",
 						"URL" => SERVERURL . "clientes-activos/"
@@ -252,11 +264,163 @@ class clienteControlador extends clienteModelo
 	{
 	}
 
+
+
+	// Controlador datos del cliente
+	public function datosClienteControlador($ip)
+	{
+		$ip = mainModel::decryption($ip);
+		$ip = mainModel::limpiar_cadena($ip);
+		return ClienteModelo::datosClienteModelo($ip);
+	} //fin controlador
+
+	//Controlador para actualizar el cliente
 	public function actualizarClienteControlador()
 	{
-	}
+		// recibiendo ip
+		$ip = mainModel::decryption($_POST['cliente_ip_update']);
 
-	// controlador para llenar select de municipio
+		//comprobar el Cliente en la base de datos
+		$check_cliente = mainModel::ejecutar_consulta_simple("SELECT * FROM contrato_servicio WHERE ip_asignada='$ip'");
+
+		if ($check_cliente->rowCount() <= 0) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "NO se encotraron datos del usuario en la base de datos del sistema",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		$ip = mainModel::decryption($_POST['cliente_ip_update']);
+		$ip = mainModel::limpiar_cadena($ip);
+		$id_clienteRU = $_POST['id_clienteR_Up'];
+		$id_clienteU = mainModel::limpiar_cadena($_POST['id_cliente_Up']);
+		$nombreClienteU = mainModel::limpiar_cadena($_POST['nombreCliente_Up']);
+		$telefonoClienteU = mainModel::limpiar_cadena($_POST['telefonoCliente_Up']);
+		$municipioClienteU = mainModel::limpiar_cadena($_POST['municipioCliente_Up']);
+		$direccionClienteU = mainModel::limpiar_cadena($_POST['direccionCliente_Up']);
+		$gpsClienteU = mainModel::limpiar_cadena($_POST['gpsCliente_Up']);
+		$tipoClienteU = mainModel::limpiar_cadena($_POST['tipoCliente_Up']);
+		$fechaContratoClienteU = $_POST['fechaContratoCliente_Up'];
+		$planClienteU = mainModel::limpiar_cadena($_POST['planCliente_Up']);
+		$ipClientecU = mainModel::limpiar_cadena($_POST['ipClientec_Up']);
+		$estadoContratoClienteU = mainModel::limpiar_cadena($_POST['estadoContratoCliente_Up']);
+		$nombreServicioU = mainModel::limpiar_cadena($_POST['nombreServicio_Up']);
+		$passServicioU = mainModel::limpiar_cadena($_POST['passServicio_Up']);
+		$tipoServicioU = mainModel::limpiar_cadena($_POST['tipoServicio_Up']);
+		$perfilU = mainModel::limpiar_cadena($_POST['perfil_Up']);
+		$ipClienteU = mainModel::limpiar_cadena($_POST['ipCliente_Up']);
+
+		/*== comprobar campos vacios ==*/
+		if ($nombreClienteU == "" || $municipioClienteU == "" || $direccionClienteU == "" || $tipoClienteU == "" || $planClienteU == "" || $ipClientecU == "" || $nombreServicioU == "" || $passServicioU == "" || $tipoServicioU == "" || $perfilU == "" || $ipClienteU == "") {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "No has llenado todos los campos que son obligatorios",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		// Preparando datos cliente para enviarlos al modelo
+		$datos_cliente_update = [
+			"ID_CLIENTE" => $id_clienteU,
+			"NOMBRE" => $nombreClienteU,
+			"TELEFONO" => $telefonoClienteU,
+			"MUNICIPIO" => $municipioClienteU,
+			"DOMICILIO" => $direccionClienteU,
+			"UBICACION_GPS" => $gpsClienteU,
+			"ID_TIPO_CLIENTE" => $tipoClienteU
+		];
+		$exito = 0;
+		if (clienteModelo::actualizarClienteModelo($datos_cliente_update)) {
+			$exito = 1;
+			// Preparando datos cliente para enviarlos al modelo
+			$datos_contrato_cliente_update = [
+				"ID_CLIENTEC" => $id_clienteU,
+				"FECHA_CONTRATO" => $fechaContratoClienteU,
+				"PLAN" => $planClienteU,
+				"ESTADO_CONTRATO" => $estadoContratoClienteU,
+				"IP_ASIGNADA" => $ipClientecU
+			];
+
+			if (clienteModelo::actualizarContratoClienteModelo($datos_contrato_cliente_update)) {
+				$exito = 2;
+				$datos_cliente_ppp_router_up = [
+					"ID" => $id_clienteRU,
+					"NAME" => $nombreServicioU,
+					"PASSWORD" => $passServicioU,
+					"SERVICE" => $tipoServicioU,
+					"PROFILE" => $perfilU,
+					"REMOTE_ADDRESS" => $ipClienteU
+				];
+
+
+				$actualizar_cliente_router = RouterR::pppModificarClientePPP($datos_cliente_ppp_router_up);
+
+				if ($actualizar_cliente_router == 1 && $exito == 2) {
+					$exito = 3;
+				}
+			}
+		}
+
+		switch ($exito) {
+			case 0: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "Ocurrió un error inesperado",
+						"Texto" => "No se pudo realizar la actualización, error en los datos del cliente",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 1: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "Ocurrió un error inesperado",
+						"Texto" => "NO se pudo actualizar los datos del contrato",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 2: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "Ocurrió un error inesperado",
+						"Texto" => "NO se pudo completar la petición de actualización del registro del cliente al Router Mikrotik",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 3: {
+					$alerta = [
+						"Alerta" => "exitoredireccion",
+						"Titulo" => "CLIENTE ACTUALIZADO",
+						"Texto" => "El Cliente ha sido Actualizado correctamente",
+						"Tipo" => "success",
+						"URL" => SERVERURL . "clientes-activos/"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			default: {
+					break;
+				}
+		}
+	} //fin controlador
+
+	// controlador para llenar selects
 	public function llenarSelect($op, $id, $tabla)
 	{
 		$op = mainModel::limpiar_cadena($op);
@@ -267,10 +431,20 @@ class clienteControlador extends clienteModelo
 		return clienteModelo::datosSelect($op, $id, $tabla);
 	} // fin controlador
 
+	// controlador para desencriptar password Cliente
+	public function desencriptar($pass)
+	{
+		$pass = mainModel::limpiar_cadena($pass);
+		return mainModel::decryption($pass);
+	} // fin controlador
+
 	// controlador para formatear nombre servicio
 	public function formatearServicio($cadena)
 	{
 		return mainModel::formatearNombreServicio($cadena);
 	} // fin controlador
+
+
+
 
 }
