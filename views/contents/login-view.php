@@ -50,12 +50,23 @@
         <!-- row ends -->
     </div>
     <!-- page-body-wrapper ends -->
+    <script src="<?php echo SERVERURL; ?>views/assets/js/noRecarga.js"></script>
 </div>
 
 <?php
-    if(isset($_POST['usuario_log']) && isset($_POST['passwd_log'])){
-        require_once "./controllers/loginControlador.php";
-        $ins_login= new loginControlador();
+if (isset($_POST['usuario_log']) && isset($_POST['passwd_log'])) {
+    require_once "./controllers/loginControlador.php";
+    require_once "./routerMIkrotik/Resources.php";
+    $data = RouterR::RouterConnect();
+    $ping = $data->estado;
+    if ($ping == 0) {
+        $ins_login = new loginControlador();
+        $ins_login->pingRouter();
+    } else {
+        $ins_login = new loginControlador();
         $ins_login->iniciar_sesion_controlador();
     }
+}
+
 ?>
+

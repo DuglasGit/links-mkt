@@ -8,6 +8,20 @@ if ($peticionAjax) {
 
 class loginControlador extends loginModelo
 {
+    public function pingRouter()
+    {
+        echo '
+                <script>
+                    Swal.fire({
+                        title: "ROUTER MIKROTIK INACCESIBLE",
+                        text: "Revise el equipo y los cables de Conexión",
+                        icon: "error",
+                        confirmButtonText: "Aceptar"
+                    });
+                </script>
+                ';
+        exit();
+    }
     /* -- COntrolador Iniciar Sesion -- */
     public function iniciar_sesion_controlador()
     {
@@ -142,5 +156,3 @@ class loginControlador extends loginModelo
         echo json_encode($alerta);
     } //fin del controlador
 }
-
-?>

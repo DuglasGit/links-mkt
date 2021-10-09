@@ -22,8 +22,8 @@ class clienteControlador extends clienteModelo
 		$busqueda = mainModel::limpiar_cadena($busqueda);
 		$clientes = RouterR::RouterClientes();
 		$url = SERVERURL . $url . "/";
-
 		$tabla = "";
+
 
 		$pagina = (isset($pagina) && $pagina > 0) ? (int)$pagina : 1;
 		$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
@@ -142,8 +142,9 @@ class clienteControlador extends clienteModelo
 				</p>
 			</div>';
 
-			$tabla .= mainModel::paginador_tablas($pagina, $Npaginas, $url, 10);
+			$tabla .= mainModel::paginador_tablas($pagina, $Npaginas, $url, 5);
 		}
+
 		return $tabla;
 	} // fin controlador
 
@@ -206,13 +207,13 @@ class clienteControlador extends clienteModelo
 		<table class="table table-hover">
 			<thead>
 				<tr class="text-center">
-					<th class="text-danger col-md-auto">ID</th>
-					<th class="text-danger col-md-auto">NOMBRE DEL CLIENTE</th>
-					<th class="text-danger col-md-auto">PLAN</th>
-					<th class="text-danger col-md-auto">PASSWORD</th>
-					<th class="text-danger col-md-auto">IP ASIGNADA</th>
-					<th class="text-danger col-md-auto">ESTADO</th>
-                    <th class="text-danger col-md-auto">ACCIONES</th>
+					<th class="text-warning col-md-auto">ID</th>
+					<th class="text-warning col-md-auto">NOMBRE DEL CLIENTE</th>
+					<th class="text-warning col-md-auto">PLAN</th>
+					<th class="text-warning col-md-auto">PASSWORD</th>
+					<th class="text-warning col-md-auto">IP ASIGNADA</th>
+					<th class="text-warning col-md-auto">ESTADO</th>
+                    <th class="text-warning col-md-auto">ACCIONES</th>
 				</tr>
 			</thead>
 			<tbody id="myTable">
@@ -276,7 +277,7 @@ class clienteControlador extends clienteModelo
 				</p>
 			</div>';
 
-			$tabla .= mainModel::paginador_tablas($pagina, $Npaginas, $url, 10);
+			$tabla .= mainModel::paginador_tablas($pagina, $Npaginas, $url, 5);
 		}
 		return $tabla;
 	} // fin controlador

@@ -50,9 +50,9 @@
             <li class="nav-item menu-items">
                 <a class="nav-link" href="<?php echo SERVERURL; ?>usuarios/">
                     <span class="menu-icon">
-                        <i class="mdi mdi-shopping text-primary"></i>
+                        <i class="mdi mdi-shopping text-warning"></i>
                     </span>
-                    <span class="menu-title text-primary">Usuarios</span>
+                    <span class="menu-title text-warning">Usuarios</span>
 
                 </a>
             </li>
@@ -69,8 +69,6 @@
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>clientes-activos/">Clientes Activos</a></li>
                     <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>clientes-suspendidos/">Clientes Suspendidos</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>clientes-inactivos/">Clientes Inactivos</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>contratos/">Contratos Clientes</a></li>
                 </ul>
             </div>
         </li>
@@ -78,9 +76,9 @@
         <li class="nav-item menu-items">
             <a class="nav-link" href="<?php echo SERVERURL; ?>facturacion/">
                 <span class="menu-icon">
-                    <i class="mdi mdi-shopping text-primary"></i>
+                    <i class="mdi mdi-shopping text-light"></i>
                 </span>
-                <span class="menu-title text-primary">Facturación</span>
+                <span class="menu-title text-light">Facturación</span>
 
             </a>
         </li>
@@ -100,15 +98,6 @@
                         <i class="mdi mdi-certificate"></i>
                     </span>
                     <span class="menu-title text-info">Empresa y Router</span>
-                </a>
-            </li>
-
-            <li class="nav-item menu-items">
-                <a class="nav-link" href="<?php echo SERVERURL; ?>grapics/">
-                    <span class="menu-icon">
-                        <i class="mdi mdi-certificate"></i>
-                    </span>
-                    <span class="menu-title text-info">Monitorizacion</span>
                 </a>
             </li>
         <?php } ?>

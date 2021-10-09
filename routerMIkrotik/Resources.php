@@ -77,8 +77,10 @@ class RouterR
 			$count = count($ARRAY);
 
 			$idarray = $ARRAY;
+			return json_encode($idarray);
+		} else {
+			return "Desconectado";
 		}
-		return json_encode($idarray);
 	}
 
 	public static function pppSecretProfile()
@@ -237,7 +239,7 @@ class RouterR
 					}
 					break;
 				}
-				case 5: {
+			case 5: {
 					if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
 						// get all the secrets
 						$API->write('/ppp/secret/getall', false);
@@ -272,7 +274,7 @@ class RouterR
 		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
 			$API->comm("/ppp/secret/disable", array(
 				"numbers" => $id
-			 ));
+			));
 			$API->disconnect();
 			$exito = 1;
 		}
@@ -287,7 +289,7 @@ class RouterR
 		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
 			$API->comm("/ppp/secret/enable", array(
 				"numbers" => $id
-			 ));
+			));
 			$API->disconnect();
 			$exito = 1;
 		}

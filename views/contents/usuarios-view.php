@@ -15,8 +15,8 @@ if ($_SESSION['id_rol_lmr'] != 1) {
 
 <!-- card tabla usuarios -->
 <div class="card d-pri">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-warning">Lista de Usuarios</h6>
+    <div class="card-header py-3 text-center">
+        <h6 class="m-0 font-weight-bold text-warning">LISTA DE USUARIOS REGISTRADOS EN EL SISTEMA</h6>
     </div>
     <div class="card-body">
         <div class="row">

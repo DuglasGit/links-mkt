@@ -263,6 +263,6 @@ hr{
     font-size:11px !important; 
 }
 
-.swal-text {
-    text-align: center;
+.d-lbl {
+    font-size:13px !important;
 }

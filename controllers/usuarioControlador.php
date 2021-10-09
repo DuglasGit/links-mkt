@@ -240,7 +240,7 @@ class usuarioControlador extends usuarioModelo
 				</p>
 			</div>';
 
-			$tabla .= mainModel::paginador_tablas($pagina, $Npaginas, $url, 10);
+			$tabla .= mainModel::paginador_tablas($pagina, $Npaginas, $url, 5);
 		}
 		return $tabla;
 	} // fin controlador
