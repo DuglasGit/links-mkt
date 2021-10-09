@@ -28,12 +28,10 @@ $dataProfile = json_decode($dataPro, true);
 $datos_cliente = $ins_cliente->datosclienteControlador($pagina[1]);
 
 if ($datos_cliente->rowCount() == 1) {
-    $campos = $datos_cliente->fetch();
 
+    $campos = $datos_cliente->fetch();
     $cliente_seleccionado = [];
-    $prefijo="192.168.27.";
-    $ipTerm=1;
-    $ar=[];
+
     foreach ($data as $val) {
         if ($val['remote-address'] == $campos['ip_asignada']) {
             $cliente_seleccionado = [
@@ -45,28 +43,14 @@ if ($datos_cliente->rowCount() == 1) {
                 "remote-address" => $val['remote-address']
             ];
         }
-        $a=$prefijo.strval($ipTerm);
-        if($val['remote-address']==$a){
-            $ar[]="si";
-        }else{
-            $ar[]=$prefijo.strval($ipTerm);
-        }
-        $ipTerm=$ipTerm+1;
     }
 
-    
-   print_r($ar);
-    
-
 ?>
-
-
-
     <div class="row justify-content-center ">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card d-mc-light d-frmc">
                 <div class="card-body">
-                    <h4 class="card-title text-center text-danger">&nbsp; Actualizar Datos del Cliente</h4>
+                    <h4 class="card-title text-center text-warning">&nbsp; Actualizar Datos del Cliente</h4>
                     <form class="form-sample d-formc FormularioAjax" action="<?php echo SERVERURL; ?>ajax/clienteAjax.php" method="POST" data-form="update" autocomplete="off">
                         <h6 class="card-title text-primary">&nbsp; Datos Personales del Cliente</h6>
                         <div class="form-group row">
@@ -131,21 +115,7 @@ if ($datos_cliente->rowCount() == 1) {
                                 <input type="text" class="form-control d-inp-cli" id="ipClientec_Up" name="ipClientec_Up" placeholder="Asignar Dirección IP" pattern="^(([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}))$" maxlength="100" required="" onchange="dibujarIP(this.value)" value="<?php echo $campos['ip_asignada']; ?>">
                             </div>
                             <div class="col-md-3">
-                                <select class="custom-select custom-select-sm form-control form-control d-inp-cli" name="estadoContratoCliente_Up" id="estadoContratoCliente_Up">
-                                    <?php foreach ($select_tCliente_actual as $opciones) : ?>
-                                        <option selected value="<?php echo $opciones['estado_contrato']; ?>">
-                                            <?php
-                                            $estado = "";
-                                            if ($opciones['estado_contrato'] == 1) {
-                                                $estado = "Activo";
-                                            } else {
-                                                $estado = "Inactivo";
-                                            }
-                                            echo $estado; ?></option>
-                                    <?php endforeach ?>
-                                    <option value="1">Activo</option>
-                                    <option value="0">Inactivo</option>
-                                </select>
+                                <input type="text" class="form-control d-inp-cli" name="estadoContratoCliente_Up" id="estadoContratoCliente_Up" value="<?php echo $campos['estado_contrato']; ?>" readonly>
                             </div>
                         </div>
                         <hr />
@@ -181,7 +151,7 @@ if ($datos_cliente->rowCount() == 1) {
                         <hr />
 
                         <div class=" row justify-content-center">
-                            <button type="submit" class="btn btn-inverse-primary mr-2">&nbsp; Registrar Cliente</button>
+                            <button type="submit" class="btn btn-inverse-warning mr-2">&nbsp; Actualizar Cliente</button>
                             <a href="<?php echo SERVERURL; ?>clientes-activos/" class="btn btn-inverse-danger">&nbsp; Cancelar</a>
                         </div>
                     </form>

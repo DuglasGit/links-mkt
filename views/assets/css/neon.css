@@ -258,3 +258,11 @@ hr{
 [data-title] {
     position: relative;
 }
+
+.d-btn{
+    font-size:11px !important; 
+}
+
+.swal-text {
+    text-align: center;
+}

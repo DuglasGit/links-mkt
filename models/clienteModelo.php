@@ -141,4 +141,15 @@ class clienteModelo extends mainModel
          $sql->execute();
          return $sql;
      }
+
+     // Modelo para actualizar estado del contrato del cliente
+     protected static function actualizarEstadoContratoClienteModelo($datos)
+     {
+         $sql = mainModel::conectar()->prepare("UPDATE contrato_servicio SET estado_contrato=:ESTADO_CONTRATO WHERE ip_asignada=:IP_ASIGNADA");
+         $sql->bindParam(":ESTADO_CONTRATO", $datos['ESTADO_CONTRATO']);
+         $sql->bindParam(":IP_ASIGNADA", $datos['IP_ASIGNADA']);
+
+         $sql->execute();
+         return $sql;
+     }
 }

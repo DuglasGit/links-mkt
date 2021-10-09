@@ -11,8 +11,8 @@ if ($peticionAjax) {
 class clienteControlador extends clienteModelo
 {
 
-	// COntrolador Paginar usuario
-	public function PaginadorClientesControlador($pagina, $registros, $rol, $id, $url, $busqueda)
+	// COntrolador Paginar cliente
+	public function PaginadorClientesActivosControlador($pagina, $registros, $rol, $id, $url, $busqueda)
 	{
 		$pagina = mainModel::limpiar_cadena($pagina);
 		$registros = mainModel::limpiar_cadena($registros);
@@ -28,15 +28,39 @@ class clienteControlador extends clienteModelo
 		$pagina = (isset($pagina) && $pagina > 0) ? (int)$pagina : 1;
 		$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
 		$datosCliente = json_decode($clientes, true);
-		$consulta = $datosCliente;
+
+		$clientesActivos = [];
+		$c = 0;
+		foreach ($datosCliente as $val) {
+
+			if ($val['disabled'] == "false") {
+
+				$clientesActivos[$c]['.id'] = $val['.id'];
+				$clientesActivos[$c]['name'] = $val['name'];
+				$clientesActivos[$c]['service'] = $val['service'];
+				$clientesActivos[$c]['caller-id'] = $val['caller-id'];
+				$clientesActivos[$c]['password'] = $val['password'];
+				$clientesActivos[$c]['profile'] = $val['profile'];
+				$clientesActivos[$c]['remote-address'] = $val['remote-address'];
+				$clientesActivos[$c]['routes'] = $val['routes'];
+				$clientesActivos[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
+				$clientesActivos[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
+				$clientesActivos[$c]['last-logged-out'] = $val['last-logged-out'];
+				$clientesActivos[$c]['disabled'] = $val['disabled'];
+				$c++;
+			}
+		}
+
+		$consulta = $clientesActivos;
 
 		if (isset($busqueda) && $busqueda != "") {
 			$consulta = array_slice($consulta, $inicio, $registros);
 		} else {
-			$consulta = array_slice($datosCliente, $inicio, $registros);
+			$consulta = array_slice($clientesActivos, $inicio, $registros);
 		}
 
-		$total = count($datosCliente);
+		$total = count($clientesActivos);
+
 		$Npaginas = ceil($total / $registros);
 
 		$tabla .= '
@@ -61,7 +85,7 @@ class clienteControlador extends clienteModelo
 			$contador = $inicio + 1;
 			$registro_inicial = $inicio + 1;
 
-			$ids  = array_column($consulta, 'name');
+			$ids  = array_column($consulta, '.id');
 
 			array_multisort($ids, SORT_ASC, $consulta);
 
@@ -69,8 +93,9 @@ class clienteControlador extends clienteModelo
 				if ($data['disabled'] == "false") {
 					$data['disabled'] = "Activo";
 				} else {
-					$data['disabled'] = "Desactivado";
+					$data['disabled'] = "Suspendido";
 				}
+
 				$tabla .= '
 					<tr class="text-center">
                         <td>' . $data['.id'] . '</td>
@@ -82,18 +107,14 @@ class clienteControlador extends clienteModelo
                         <td>
 						<div class="row">
 							<div class="col-md-4">
-								<a href="' . SERVERURL . 'actualizar-cliente/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-primary btn-sm" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i></a>
+								<a href="' . SERVERURL . 'actualizar-cliente/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-primary btn-sm d-btn" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i>Editar</a>
 							</div>
 							<div class="col-md-4">
-								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="delete" autocomplete="off">
-									<input type="hidden" name="id_usuario_delete" value="' . mainModel::encryption($data['.id']) . '">
-									<button type="submit" class="btn btn-inverse-warning btn-sm" data-toggle="modal" data-title="SUSPENDER"><i class="mdi mdi-lan-disconnect"></i></button>
-								</form>
-							</div>
-							<div class="col-md-4">
-								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="delete" autocomplete="off">
-									<input type="hidden" name="id_usuario_delete" value="' . mainModel::encryption($data['.id']) . '">
-									<button type="submit" class="btn btn-inverse-danger btn-sm" data-toggle="modal" data-title="ELIMINAR"><i class="mdi mdi-delete-sweep btn-icon-prepend"></i></button>
+								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="disabled" autocomplete="off">
+									<input type="hidden" name="cliente_id_disabled" value="' . mainModel::encryption($data['.id']) . '">
+									<input type="hidden" name="cliente_name_disabled" value="' . mainModel::encryption($data['name']) . '">
+									<input type="hidden" name="cliente_ip_disabled" value="' . mainModel::encryption($data['remote-address']) . '">
+									<button type="submit" class="btn btn-inverse-warning btn-sm d-btn" data-toggle="modal" data-title="SUSPENDER"><i class="mdi mdi-lan-disconnect"></i>Suspender</button>
 								</form>
 							</div>
 					</div>
@@ -125,6 +146,141 @@ class clienteControlador extends clienteModelo
 		}
 		return $tabla;
 	} // fin controlador
+
+
+	// COntrolador Paginar cliente
+	public function PaginadorClientesSuspendidosControlador($pagina, $registros, $rol, $id, $url, $busqueda)
+	{
+		$pagina = mainModel::limpiar_cadena($pagina);
+		$registros = mainModel::limpiar_cadena($registros);
+		$rol = mainModel::limpiar_cadena($rol);
+		$id = mainModel::limpiar_cadena($id);
+		$url = mainModel::limpiar_cadena($url);
+		$busqueda = mainModel::limpiar_cadena($busqueda);
+		$clientes = RouterR::RouterClientes();
+		$url = SERVERURL . $url . "/";
+
+		$tabla = "";
+
+		$pagina = (isset($pagina) && $pagina > 0) ? (int)$pagina : 1;
+		$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
+		$datosCliente = json_decode($clientes, true);
+
+		$clientesActivos = [];
+		$c = 0;
+		foreach ($datosCliente as $val) {
+
+			if ($val['disabled'] == "true") {
+
+				$clientesActivos[$c]['.id'] = $val['.id'];
+				$clientesActivos[$c]['name'] = $val['name'];
+				$clientesActivos[$c]['service'] = $val['service'];
+				$clientesActivos[$c]['caller-id'] = $val['caller-id'];
+				$clientesActivos[$c]['password'] = $val['password'];
+				$clientesActivos[$c]['profile'] = $val['profile'];
+				$clientesActivos[$c]['remote-address'] = $val['remote-address'];
+				$clientesActivos[$c]['routes'] = $val['routes'];
+				$clientesActivos[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
+				$clientesActivos[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
+				$clientesActivos[$c]['last-logged-out'] = $val['last-logged-out'];
+				$clientesActivos[$c]['disabled'] = $val['disabled'];
+				$c++;
+			}
+		}
+
+		$consulta = $clientesActivos;
+
+		if (isset($busqueda) && $busqueda != "") {
+			$consulta = array_slice($consulta, $inicio, $registros);
+		} else {
+			$consulta = array_slice($clientesActivos, $inicio, $registros);
+		}
+
+		$total = count($clientesActivos);
+
+		$Npaginas = ceil($total / $registros);
+
+		$tabla .= '
+		<div class="table-responsive">
+
+		<table class="table table-hover">
+			<thead>
+				<tr class="text-center">
+					<th class="text-danger col-md-auto">ID</th>
+					<th class="text-danger col-md-auto">NOMBRE DEL CLIENTE</th>
+					<th class="text-danger col-md-auto">PLAN</th>
+					<th class="text-danger col-md-auto">PASSWORD</th>
+					<th class="text-danger col-md-auto">IP ASIGNADA</th>
+					<th class="text-danger col-md-auto">ESTADO</th>
+                    <th class="text-danger col-md-auto">ACCIONES</th>
+				</tr>
+			</thead>
+			<tbody id="myTable">
+		';
+
+		if ($total >= 1 && $pagina <= $Npaginas) {
+			$contador = $inicio + 1;
+			$registro_inicial = $inicio + 1;
+
+			$ids  = array_column($consulta, '.id');
+
+			array_multisort($ids, SORT_ASC, $consulta);
+
+			foreach ($consulta as $data) {
+				if ($data['disabled'] == "false") {
+					$data['disabled'] = "Activo";
+				} else {
+					$data['disabled'] = "Suspendido";
+				}
+
+				$tabla .= '
+					<tr class="text-center">
+                        <td>' . $data['.id'] . '</td>
+                        <td class="text-secondary">' . $data['name'] . '</td>
+                        <td class="text-secondary">' . $data['profile'] . '</td>
+                        <td class="text-secondary">' . $data['password'] . '</td>
+                        <td class="text-secondary">' . $data['remote-address'] . '</td>
+						<td class="text-secondary">' . $data['disabled'] . '</td>
+                        <td>
+						<div class="row">
+							<div class="col-md-4">
+								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="enabled" autocomplete="off">
+									<input type="hidden" name="cliente_id_enabled" value="' . mainModel::encryption($data['.id']) . '">
+									<input type="hidden" name="cliente_name_enabled" value="' . mainModel::encryption($data['name']) . '">
+									<input type="hidden" name="cliente_ip_enabled" value="' . mainModel::encryption($data['remote-address']) . '">
+									<button type="submit" class="btn btn-inverse-success btn-sm d-btn" data-toggle="modal" data-title="REACTIVAR"><i class="mdi mdi-lan-disconnect"></i>Reactivar</button>
+								</form>
+							</div>
+					</div>
+                    </tr>';
+				$contador++;
+			}
+			$registro_final = $contador - 1;
+		} else {
+			if ($total >= 1) {
+				$tabla .= '<tr><td colspan="9">
+				<a href="' . $url . '" class="btn btn-inverse-warning btn-icon-text">Haga clic aqui para recargar el listado</a>
+				</td></tr>';
+			} else {
+				$tabla .= '<tr><td colspan="9">No hay registros en el sistema</td></tr>';
+			}
+		}
+
+		$tabla .= '</tbody></table></div>';
+
+		if ($total >= 1 && $pagina <= $Npaginas) {
+			$tabla .= '
+			<div class="row col-md-12 justify-content-center">
+				<p class="text-center">
+				Mostrando usuario ' . $registro_inicial . ' al ' . $registro_final . ' de un total de ' . $total . '
+				</p>
+			</div>';
+
+			$tabla .= mainModel::paginador_tablas($pagina, $Npaginas, $url, 10);
+		}
+		return $tabla;
+	} // fin controlador
+
 
 	public function agregarClienteControlador()
 	{
@@ -260,19 +416,6 @@ class clienteControlador extends clienteModelo
 		}
 	} /* Fin controlador */
 
-	public function eliminarClienteControlador()
-	{
-	}
-
-
-
-	// Controlador datos del cliente
-	public function datosClienteControlador($ip)
-	{
-		$ip = mainModel::decryption($ip);
-		$ip = mainModel::limpiar_cadena($ip);
-		return ClienteModelo::datosClienteModelo($ip);
-	} //fin controlador
 
 	//Controlador para actualizar el cliente
 	public function actualizarClienteControlador()
@@ -286,8 +429,8 @@ class clienteControlador extends clienteModelo
 		if ($check_cliente->rowCount() <= 0) {
 			$alerta = [
 				"Alerta" => "simple",
-				"Titulo" => "Ocurrió un error inesperado",
-				"Texto" => "NO se encotraron datos del usuario en la base de datos del sistema",
+				"Titulo" => "ACCION ABORTADA",
+				"Texto" => "NO hay registros del usuario en la base de datos del sistema",
 				"Tipo" => "error"
 			];
 			echo json_encode($alerta);
@@ -372,8 +515,8 @@ class clienteControlador extends clienteModelo
 			case 0: {
 					$alerta = [
 						"Alerta" => "simple",
-						"Titulo" => "Ocurrió un error inesperado",
-						"Texto" => "No se pudo realizar la actualización, error en los datos del cliente",
+						"Titulo" => "ACCIÓN ABORTADA",
+						"Texto" => "Error en los datos del cliente",
 						"Tipo" => "error"
 					];
 					echo json_encode($alerta);
@@ -383,7 +526,7 @@ class clienteControlador extends clienteModelo
 			case 1: {
 					$alerta = [
 						"Alerta" => "simple",
-						"Titulo" => "Ocurrió un error inesperado",
+						"Titulo" => "ACCIÓN ABORTADA",
 						"Texto" => "NO se pudo actualizar los datos del contrato",
 						"Tipo" => "error"
 					];
@@ -394,8 +537,8 @@ class clienteControlador extends clienteModelo
 			case 2: {
 					$alerta = [
 						"Alerta" => "simple",
-						"Titulo" => "Ocurrió un error inesperado",
-						"Texto" => "NO se pudo completar la petición de actualización del registro del cliente al Router Mikrotik",
+						"Titulo" => "ACCIÓN ABORTADA",
+						"Texto" => "El Router Mikrotik rechazó la petición",
 						"Tipo" => "error"
 					];
 					echo json_encode($alerta);
@@ -405,8 +548,8 @@ class clienteControlador extends clienteModelo
 			case 3: {
 					$alerta = [
 						"Alerta" => "exitoredireccion",
-						"Titulo" => "CLIENTE ACTUALIZADO",
-						"Texto" => "El Cliente ha sido Actualizado correctamente",
+						"Titulo" => "ACTUALIZACIÓN EXITOSA",
+						"Texto" => "Cliente actualizado en Router Mikrotik y Base de Datos",
 						"Tipo" => "success",
 						"URL" => SERVERURL . "clientes-activos/"
 					];
@@ -419,6 +562,220 @@ class clienteControlador extends clienteModelo
 				}
 		}
 	} //fin controlador
+
+
+	//suspender cliente
+	public function suspenderClienteControlador()
+	{
+		//recibiendo id del usuario
+		$id = mainModel::decryption($_POST['cliente_id_disabled']);
+		$name = mainModel::decryption($_POST['cliente_name_disabled']);
+		$ip = mainModel::decryption($_POST['cliente_ip_disabled']);
+		$status = "Suspendido";
+		$id = mainModel::limpiar_cadena($id);
+		$name = mainModel::limpiar_cadena($name);
+		$ip = mainModel::limpiar_cadena($ip);
+
+		//comprobando el usuario principal
+		if ($id == "*1" || $id == "*2" || $id == "*9E") {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "ACCIÓN DENEGADA",
+				"Texto" => "Cuenta protegida",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		// comprobando el usuario en BD
+		$check_cliente = mainModel::ejecutar_consulta_simple("SELECT ip_asignada FROM contrato_servicio WHERE ip_asignada='$ip'");
+
+		if ($check_cliente->rowCount() <= 0) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "ACCIÓN DENEGADA",
+				"Texto" => "No hay vinculos en la Base de Datos",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		// comprobar privilegios
+		session_start(['name' => 'LMR']);
+		if ($_SESSION['id_rol_lmr'] != 1) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "ACCIÓN DENEGADA",
+				"Texto" => "Sesion Actual con Privilegios Insuficientes",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		$suspender_cliente = RouterR::suspenderClientePPP($id);
+		$exito = 0;
+		if ($suspender_cliente == 1) {
+			$exito = 1;
+
+			$datos_contrato = [
+				"ESTADO_CONTRATO" => $status,
+				"IP_ASIGNADA" => $ip
+			];
+
+			if (clienteModelo::actualizarEstadoContratoClienteModelo($datos_contrato)) {
+				$exito = 2;
+			}
+		}
+
+		switch ($exito) {
+			case 0: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "CLIENTE NO SUSPENDIDO",
+						"Texto" => "El Router Mikrotik rechazó la petición",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 1: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "ERROR SQL",
+						"Texto" => "Cambios no realizados en Base de Datos",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 2: {
+					$alerta = [
+						"Alerta" => "recargar",
+						"Titulo" => "CLIENTE SUSPENDIDO EXITOSAMENTE",
+						"Texto" => "Cambios realizados en Router Mikrotik y Base de Datos",
+						"Tipo" => "success"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			default: {
+					break;
+				}
+		}
+	} // fin controlador
+
+
+	//suspender cliente
+	public function reactivarClienteControlador()
+	{
+		//recibiendo id del usuario
+		$id = mainModel::decryption($_POST['cliente_id_enabled']);
+		$name = mainModel::decryption($_POST['cliente_name_enabled']);
+		$ip = mainModel::decryption($_POST['cliente_ip_enabled']);
+		$id = mainModel::limpiar_cadena($id);
+		$name = mainModel::limpiar_cadena($name);
+		$ip = mainModel::limpiar_cadena($ip);
+		$status = "Activo";
+
+
+		// comprobando el usuario en BD
+		$check_cliente = mainModel::ejecutar_consulta_simple("SELECT ip_asignada FROM contrato_servicio WHERE ip_asignada='$ip'");
+
+		if ($check_cliente->rowCount() <= 0) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "ACCIÓN DENEGADA",
+				"Texto" => "No existe un vinculo del Router Mikrotik a la Base de Datos",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		// comprobar privilegios
+		session_start(['name' => 'LMR']);
+		if ($_SESSION['id_rol_lmr'] != 1) {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "ACCIÓN DENEGADA",
+				"Texto" => "Privilegios Insuficientes",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
+		$reactivar_cliente = RouterR::reactivarClientePPP($id);
+
+		$exito = 0;
+		if ($reactivar_cliente == 1) {
+			$exito = 1;
+
+			$datos_contrato = [
+				"ESTADO_CONTRATO" => $status,
+				"IP_ASIGNADA" => $ip
+			];
+
+			if (clienteModelo::actualizarEstadoContratoClienteModelo($datos_contrato)) {
+				$exito = 2;
+			}
+		}
+
+		switch ($exito) {
+			case 0: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "CLIENTE NO REACTIVADO",
+						"Texto" => "El Router Mikrotik rechazó la petición",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 1: {
+					$alerta = [
+						"Alerta" => "simple",
+						"Titulo" => "ERROR SQL",
+						"Texto" => "Cambios no realizados en Base de Datos",
+						"Tipo" => "error"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			case 2: {
+					$alerta = [
+						"Alerta" => "recargar",
+						"Titulo" => "CLIENTE REACTIVADO EXITOSAMENTE",
+						"Texto" => "Cambios realizados en Router Mikrotik y Base de Datos",
+						"Tipo" => "success"
+					];
+					echo json_encode($alerta);
+					exit();
+					break;
+				}
+			default: {
+					break;
+				}
+		}
+	} // fin controlador
+
+
+	// Controlador datos del cliente
+	public function datosClienteControlador($ip)
+	{
+		$ip = mainModel::decryption($ip);
+		$ip = mainModel::limpiar_cadena($ip);
+		return ClienteModelo::datosClienteModelo($ip);
+	} //fin controlador
+
 
 	// controlador para llenar selects
 	public function llenarSelect($op, $id, $tabla)
@@ -443,8 +800,5 @@ class clienteControlador extends clienteModelo
 	{
 		return mainModel::formatearNombreServicio($cadena);
 	} // fin controlador
-
-
-
 
 }

@@ -91,11 +91,7 @@ $data = json_decode($data, true);
                             <input type="text" class="form-control d-inp-cli" id="ipClientec" name="ipClientec" placeholder="Asignar Dirección IP" pattern="^(([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}))$" maxlength="100" required="" onchange="dibujarIP(this.value)">
                         </div>
                         <div class="col-md-3">
-                            <select class="custom-select custom-select-sm form-control form-control d-inp-cli" name="estadoContratoCliente" id="estadoContratoCliente">
-                                <option selected value="">Elegir Estado Contrato</option>
-                                <option value="1">Activo</option>
-                                <option value="0">Inactivo</option>
-                            </select>
+                            <input type="text" class="form-control d-inp-cli" name="estadoContratoCliente" id="estadoContratoCliente" value="Activo" readonly>
                         </div>
                     </div>
                     <hr />

@@ -24,6 +24,10 @@ function enviar_formulario_ajax(e) {
 		texto_alerta = "Los datos quedaran guardados en el sistema";
 	} else if (tipo === "delete") {
 		texto_alerta = "Los datos serán eliminados completamente del sistema";
+	} else if (tipo === "disabled") {
+		texto_alerta = "El servicio de Red del Cliente quedará suspendido";
+	} else if (tipo === "enabled") {
+		texto_alerta = "El servicio de Red del Cliente Será Reactivado";
 	} else if (tipo === "update") {
 		texto_alerta = "Los datos del sistema serán actualizados";
 	} else if (tipo === "search") {
@@ -35,7 +39,7 @@ function enviar_formulario_ajax(e) {
 	}
 
 	Swal.fire({
-		title: '¿Estás seguro?',
+		title: '¿Desea Confirmar la Acción Solicitada?',
 		text: texto_alerta,
 		icon: 'question',
 		showCancelButton: true,

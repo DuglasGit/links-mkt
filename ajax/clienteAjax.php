@@ -2,7 +2,7 @@
 $peticionAjax = true;
 require_once "../config/APP.php";
 
-if (isset($_POST['nombreCliente']) || isset($_POST['id_cliente_delete']) || isset($_POST['cliente_ip_update'])) {
+if (isset($_POST['nombreCliente']) || isset($_POST['cliente_ip_update'])|| isset($_POST['cliente_id_disabled']) || isset($_POST['cliente_id_enabled'])) {
 
     /*--------- Instancia al controlador ---------*/
     require_once "../controllers/clienteControlador.php";
@@ -14,16 +14,20 @@ if (isset($_POST['nombreCliente']) || isset($_POST['id_cliente_delete']) || isse
         echo $ins_cliente->agregarClienteControlador();
     }
 
-    /*--------- Eliminar un cliente ---------*/
-    if (isset($_POST['id_cliente_delete'])) {
-        echo $ins_cliente->eliminarClienteControlador();
-    }
-
     // actualizar cliente
     if(isset($_POST['cliente_ip_update'])){
         echo $ins_cliente->actualizarClienteControlador();
     }
 
+    // suspender cliente
+    if(isset($_POST['cliente_id_disabled'])){
+        echo $ins_cliente->suspenderClienteControlador();
+    }
+
+    /*--------- Reactivar servicios de un cliente ---------*/
+    if (isset($_POST['cliente_id_enabled'])) {
+        echo $ins_cliente->reactivarClienteControlador();
+    }
 
 } else {
     session_start(['name' => 'LMR']);

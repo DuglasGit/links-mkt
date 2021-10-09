@@ -115,8 +115,6 @@ class RouterR
 		return $exito;
 	}
 
-
-
 	public static function pppModificarClientePPP($datos)
 	{
 		$exito = 0;
@@ -266,6 +264,35 @@ class RouterR
 	}
 
 
+	public static function suspenderClientePPP($id)
+	{
+		$API = new RouterosAPI();
+		$exito = 0;
+
+		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+			$API->comm("/ppp/secret/disable", array(
+				"numbers" => $id
+			 ));
+			$API->disconnect();
+			$exito = 1;
+		}
+		return $exito;
+	}
+
+	public static function reactivarClientePPP($id)
+	{
+		$API = new RouterosAPI();
+		$exito = 0;
+
+		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+			$API->comm("/ppp/secret/enable", array(
+				"numbers" => $id
+			 ));
+			$API->disconnect();
+			$exito = 1;
+		}
+		return $exito;
+	}
 
 	public static function grap()
 	{

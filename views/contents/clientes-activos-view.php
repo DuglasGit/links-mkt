@@ -67,7 +67,7 @@
             require_once "./controllers/clienteControlador.php";
             $ins_cliente = new clienteControlador();
 
-            echo $ins_cliente->PaginadorClientesControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
+            echo $ins_cliente->PaginadorClientesActivosControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
 
             ?>
         </div>
