@@ -28,6 +28,8 @@ function enviar_formulario_ajax(e) {
 		texto_alerta = "El servicio de Red del Cliente quedará suspendido";
 	} else if (tipo === "enabled") {
 		texto_alerta = "El servicio de Red del Cliente Será Reactivado";
+	} else if (tipo === "finish") {
+		texto_alerta = "La orden de Trabajo será Finalizada";
 	} else if (tipo === "update") {
 		texto_alerta = "Los datos del sistema serán actualizados";
 	} else if (tipo === "search") {
@@ -39,7 +41,7 @@ function enviar_formulario_ajax(e) {
 	}
 
 	Swal.fire({
-		title: '¿Desea Confirmar la Acción Solicitada?',
+		title: '¿Estás Seguro?',
 		text: texto_alerta,
 		icon: 'question',
 		showCancelButton: true,

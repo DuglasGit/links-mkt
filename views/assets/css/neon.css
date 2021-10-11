@@ -19,7 +19,7 @@
 }
 
 .d-mc-success{
-    background-color: #00d25b12;
+    background-color: #00d25b33;
 
 }
 
@@ -109,6 +109,9 @@ input::placeholder{
 
 .d-frm{
     box-shadow: 0 0 8px rgb(255, 153, 0);
+}
+.d-frmt{
+    box-shadow: 0 0 8px rgb(21, 255, 0);
 }
 
 
@@ -265,4 +268,56 @@ hr{
 
 .d-lbl {
     font-size:13px !important;
+}
+
+.d-txtar{
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.397) !important;
+    border-top: 1px solid rgba(253, 253, 253, 0.397) !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: rgb(255, 255, 255) !important;
+    display: inline-block;
+    height: 100px !important;
+}
+
+/*form trabajo edit*/
+.d-inp-green{
+    border: none !important;
+    border-bottom: 1px solid rgba(0, 255, 64, 0.397) !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: rgba(72, 255, 0, 0.616) !important;
+}
+
+
+.d-inp-green:focus, .d-inp-green:active{
+    color: rgb(51, 255, 0) !important;
+    border-bottom: 1px solid rgb(51, 255, 0) !important;
+    box-shadow: 0 0 15px rgb(51, 255, 0);
+}
+.d-inp-green:lostfocus,.d-inp-green:inactive{
+    color: rgba(51, 255, 0, 0.685) !important;
+}
+
+.d-txtar-green{
+    border: none !important;
+    border-bottom: 1px solid rgba(0, 243, 0, 0.397) !important;
+    border-top: 1px solid rgba(0, 243, 0, 0.397) !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: rgb(255, 255, 255) !important;
+    display: inline-block;
+    height: 100px !important;
+}
+
+.d-txtar-green-d{
+    border: none !important;
+    border-bottom: 1px solid rgba(0, 243, 0, 0.397) !important;
+    border-top: 1px solid rgba(0, 243, 0, 0.397) !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: rgb(30, 255, 0) !important;
+    display: inline-block;
+    height: 75px !important;
 }

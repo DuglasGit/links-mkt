@@ -83,13 +83,19 @@
             </a>
         </li>
         <li class="nav-item menu-items">
-            <a class="nav-link" href="<?php echo SERVERURL; ?>equipos/">
+            <a class="nav-link collapsed" data-toggle="collapse" href="#ui-clientes" aria-expanded="false" aria-controls="ui-clientes">
                 <span class="menu-icon">
-                    <i class="mdi mdi-laptop text-success"></i>
+                    <i class="mdi mdi-account-multiple-outline text-success"></i>
                 </span>
-                <span class="menu-title text-success">Equipos de Red</span>
-
+                <span class="menu-title text-success">Gestionar Trabajos</span>
+                <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="ui-clientes">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>trabajos/">Asignar Trabajos </a></li>
+                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>trabajos-terminados/">Trabajos Terminados</a></li>
+                </ul>
+            </div>
         </li>
         <?php if ($_SESSION['id_rol_lmr'] == 1) { ?>
             <li class="nav-item menu-items">
