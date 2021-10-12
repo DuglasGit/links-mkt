@@ -104,7 +104,7 @@
 }
 
 input::placeholder{
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: rgba(112, 112, 112, 0.5) !important;
 }
 
 .d-frm{
@@ -112,6 +112,10 @@ input::placeholder{
 }
 .d-frmt{
     box-shadow: 0 0 8px rgb(21, 255, 0);
+}
+
+.d-frmi{
+    box-shadow: 0 0 8px rgb(140, 0, 255);
 }
 
 
@@ -172,6 +176,28 @@ option {
     color: rgba(255, 153, 0, 0.685) !important;
 }
 
+/* boton eye empresa*/
+.d-btn-info{
+    border: none !important;
+    outline: none !important;
+    background-color: transparent !important;
+    background-repeat: no-repeat !important;
+    color: rgba(153, 0, 255, 0.993) !important;
+    cursor: pointer !important;
+    overflow: hidden !important;
+    outline: none !important;
+    border-radius: 200px;
+}
+
+.d-btn-info:focus, .d-btn-info:active{
+    color: rgb(153, 0, 255) !important;
+    box-shadow: 0 0 30px rgb(193, 139, 255);
+}
+.d-btn-info:lostfocus,.d-btn-info:inactive{
+    color: rgb(140, 0, 255) !important;
+}
+
+
 hr{
     height: 1px !important;
         background-color: #ccc !important;
@@ -213,6 +239,26 @@ hr{
         margin-bottom: 30px;
 }
 
+
+.d-inp-emp{
+    border: none !important;
+    border-bottom: 1px solid rgb(153, 0, 255) !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+.d-inp-emp:focus, .d-inp-emp:active{
+    color: rgb(159, 0, 252) !important;
+    border-bottom: 1px solid rgba(154, 34, 252, 0.616) !important;
+    box-shadow: 0 0 15px rgb(153, 0, 255);
+}
+.d-inp-emp:lostfocus,.d-inp-emp:inactive{
+    color: rgb(0, 255, 221) !important;
+    border-bottom: 1px solid rgba(179, 68, 253, 0.733) !important;
+}
+
+
 .d-inp-cli{
     border: none !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.397) !important;
@@ -220,7 +266,6 @@ hr{
     background-color: transparent !important;
     color: #FC424A !important;
 }
-
 
 .d-inp-cli:focus, .d-inp-cli:active{
     color: rgba(255, 0, 0, 0.863) !important;
@@ -321,3 +366,4 @@ hr{
     display: inline-block;
     height: 75px !important;
 }
+

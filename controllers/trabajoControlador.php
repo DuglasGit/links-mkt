@@ -107,10 +107,11 @@ class trabajoControlador extends trabajoModelo
         session_start(['name' => 'LMR']);
         if ($_SESSION['id_rol_lmr'] != 1) {
             $alerta = [
-                "Alerta" => "simple",
+                "Alerta" => "exitoredireccion",
                 "Titulo" => "PETICIÓN DENEGADA",
                 "Texto" => "No tienes los permisos necesarios para realizar esta operación",
-                "Tipo" => "error"
+                "Tipo" => "error",
+                "URL" => SERVERURL . "trabajos/"
             ];
             echo json_encode($alerta);
             exit();
@@ -378,10 +379,11 @@ class trabajoControlador extends trabajoModelo
         session_start(['name' => 'LMR']);
         if ($_SESSION['id_rol_lmr'] != 1) {
             $alerta = [
-                "Alerta" => "simple",
+                "Alerta" => "exitoredireccion",
                 "Titulo" => "PETICIÓN DENEGADA",
                 "Texto" => "No tienes los permisos necesarios para realizar esta operación",
-                "Tipo" => "error"
+                "Tipo" => "error",
+                "URL" => SERVERURL . "trabajos/"
             ];
             echo json_encode($alerta);
             exit();
