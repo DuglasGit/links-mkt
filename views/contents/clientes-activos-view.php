@@ -42,14 +42,21 @@ if ($data == "Desconectado") {
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-5">
+                <div class="col-sm-12 col-md-3">
                     <div class="form-group row justify-content-center">
                         <a href="<?php echo SERVERURL; ?>clientes-suspendidos/" type="button" class="btn btn-inverse-warning btn-icon-text btn-fw">
                             <i class="mdi mdi-plus-circle-multiple-outline btn-icon-prepend"></i> VER CLIENTES SUSPENDIDOS
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-md-3">
+                    <div class="form-group row justify-content-center">
+                        <a href="<?php echo SERVERURL; ?>clientes-suspendidos/" type="button" class="btn btn-inverse-warning btn-icon-text btn-fw">
+                            <i class="mdi mdi-plus-circle-multiple-outline btn-icon-prepend"></i> BUSCAR CLIENTE ESPECÍFICO
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-3">
                     <div class="form-group row justify-content-center">
                         <div class="input-group border border-light rounded">
                             <input type="search" id="myInput" class="form-control form-control-sm text-light" placeholder="Buscar..." aria-controls="dataTable">

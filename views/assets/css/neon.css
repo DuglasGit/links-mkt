@@ -345,6 +345,26 @@ hr{
     color: rgba(51, 255, 0, 0.685) !important;
 }
 
+/*form generar facturas*/
+.d-inp-white{
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.397) !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: rgb(0, 223, 253) !important;
+}
+
+
+.d-inp-white:focus, .d-inp-white:active{
+    color: rgb(255, 255, 255) !important;
+    border-bottom: 1px solid rgb(255, 255, 255) !important;
+    box-shadow: 0 0 15px rgb(255, 255, 255);
+}
+.d-inp-white:lostfocus,.d-inp-white:inactive{
+    color: rgba(255, 255, 255, 0.685) !important;
+}
+
+/*text area*/
 .d-txtar-green{
     border: none !important;
     border-bottom: 1px solid rgba(0, 243, 0, 0.397) !important;

@@ -1,8 +1,7 @@
-
 <nav class="sidebar sidebar-offcanvas d-pri" id="sidebar">
     <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top d-pri">
-        <a class="sidebar-brand brand-logo" href="../../index.html"><img src="<?php echo SERVERURL; ?>views/assets/images/logo-links-l.svg" alt="logo" /></a>
-        <a class="sidebar-brand brand-logo-mini" href="../../index.html"><img src="<?php echo SERVERURL; ?>views/assets/images/logo-links-s.svg" alt="logo" /></a>
+        <a class="sidebar-brand brand-logo"><img src="<?php echo SERVERURL; ?>views/assets/images/logo-links-l.svg" alt="logo" /></a>
+        <a class="sidebar-brand brand-logo-mini"><img src="<?php echo SERVERURL; ?>views/assets/images/logo-links-s.svg" alt="logo" /></a>
     </div>
     <ul class="nav">
         <li class="nav-item profile">
@@ -59,7 +58,7 @@
             </li>
         <?php } ?>
         <li class="nav-item menu-items">
-            <a class="nav-link collapsed" data-toggle="collapse" href="#ui-clientes" aria-expanded="false" aria-controls="ui-clientes">
+            <a class="nav-link" data-toggle="collapse" href="#ui-clientes" aria-expanded="false" aria-controls="ui-clientes">
                 <span class="menu-icon">
                     <i class="mdi mdi-account-multiple-outline text-danger"></i>
                 </span>
@@ -74,24 +73,31 @@
             </div>
         </li>
 
+
         <li class="nav-item menu-items">
-            <a class="nav-link" href="<?php echo SERVERURL; ?>facturacion/">
+            <a class="nav-link" data-toggle="collapse" href="#ui-facturas" aria-expanded="false" aria-controls="ui-facturas">
                 <span class="menu-icon">
                     <i class="mdi mdi-shopping text-light"></i>
                 </span>
                 <span class="menu-title text-light">Facturación</span>
-
+                <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="ui-facturas">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>facturacion/">Facturas Pendientes</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>facturas-canceladas/">Facturas Canceladas</a></li>
+                </ul>
+            </div>
         </li>
         <li class="nav-item menu-items">
-            <a class="nav-link collapsed" data-toggle="collapse" href="#ui-clientes" aria-expanded="false" aria-controls="ui-clientes">
+            <a class="nav-link" data-toggle="collapse" href="#ui-trabajos" aria-expanded="false" aria-controls="ui-trabajos">
                 <span class="menu-icon">
                     <i class="mdi mdi-account-multiple-outline text-success"></i>
                 </span>
                 <span class="menu-title text-success">Gestionar Trabajos</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="ui-clientes">
+            <div class="collapse" id="ui-trabajos">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>trabajos/">Asignar Trabajos </a></li>
                     <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>trabajos-terminados/">Trabajos Terminados</a></li>
@@ -108,7 +114,6 @@
                 </a>
             </li>
         <?php } ?>
-
 
     </ul>
 </nav>

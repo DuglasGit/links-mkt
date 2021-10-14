@@ -68,7 +68,7 @@
             require_once "./controllers/facturaControlador.php";
             $ins_trabajo = new facturaControlador();
 
-            echo $ins_trabajo->PaginadorFacturasPendientesControlador($pagina[1], 15, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
+            echo $ins_trabajo->PaginadorFacturasCanceladasControlador($pagina[1], 15, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
 
             ?>
         </div>
