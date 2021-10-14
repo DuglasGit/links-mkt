@@ -156,7 +156,7 @@ class facturaControlador extends facturaModelo
         $inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
 
         if (isset($busqueda) && $busqueda != "") {
-            $consulta = "SELECT SQL_CALC_FOUND_ROWS factura.idfactura, factura.id_cliente, cliente.nombre_cliente, factura.fecha, factura.id_estado_pago, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE (factura.id_estado_pago=2 OR cliente.nombre_cliente LIKE '%$busqueda%') ORDER BY factura.fecha DESC LIMIT $inicio, $registros";
+            $consulta = "SELECT SQL_CALC_FOUND_ROWS factura.idfactura, factura.id_cliente, cliente.nombre_cliente, factura.fecha, factura.id_estado_pago, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE (factura.id_estado_pago=2 AND cliente.nombre_cliente LIKE '%$busqueda%') ORDER BY factura.fecha DESC LIMIT $inicio, $registros";
         } else {
             $consulta = "SELECT SQL_CALC_FOUND_ROWS factura.idfactura, factura.id_cliente, cliente.nombre_cliente, factura.fecha, factura.id_estado_pago, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=2 ORDER BY factura.fecha DESC LIMIT $inicio, $registros";
         }
@@ -173,16 +173,16 @@ class facturaControlador extends facturaModelo
 		<table class="table table-hover">
 			<thead>
 				<tr class="text-center">
-					<th class="text-light col-sm-auto">No.</th>
-					<th class="text-light col-sm-auto">CLIENTE</th>
-					<th class="text-light col-sm-auto">FECHA</th>
-					<th class="text-light col-sm-auto">MES</th>
-					<th class="text-light col-sm-auto">TOTAL</th>
-                    <th class="text-light col-sm-auto">ESTADO</th>
-                    <th class="text-light col-sm-auto">EDITAR</th>
-                    <th class="text-light col-sm-auto">PAGAR</th>
-                    <th class="text-light col-sm-auto">IMPRIMIR</th>
-                    <th class="text-light col-sm-auto">ELIMINAR</th>
+					<th class="d-th text-light col-sm-auto">#</th>
+					<th class="d-th text-light col-sm-auto">CLIENTE</th>
+					<th class="d-th text-light col-sm-auto">FECHA</th>
+					<th class="d-th text-light col-sm-auto">MES</th>
+					<th class="d-th text-light col-sm-auto">TOTAL</th>
+                    <th class="d-th text-light col-sm-auto">ESTADO</th>
+                    <th class="d-th text-light col-sm-auto">EDITAR</th>
+                    <th class="d-th text-light col-sm-auto">PAGAR</th>
+                    <th class="d-th text-light col-sm-auto">IMPRIMIR</th>
+                    <th class="d-th text-light col-sm-auto">ELIMINAR</th>
 				</tr>
 			</thead>
 			<tbody id="myTable">
@@ -200,13 +200,13 @@ class facturaControlador extends facturaModelo
                 $tabla .= '
 					<tr class="text-center">
                         <td>' . $contador . '</td>
-                        <td class="text-secondary">' . $rows['nombre_cliente'] . '</td>
-                        <td class="text-secondary">' . $rows['fecha'] . '</td>
-                        <td class="text-secondary">' . $rows['mes_pagado'] . '</td>
-                        <td class="text-secondary">Q.' . $rows['precio'] . '</td>
-                        <td class="text-secondary">' . $rows['id_estado_pago'] . '</td>
+                        <td class="d-td text-secondary">' . $rows['nombre_cliente'] . '</td>
+                        <td class="d-td text-secondary">' . $rows['fecha'] . '</td>
+                        <td class="d-td text-secondary">' . $rows['mes_pagado'] . '</td>
+                        <td class="d-td text-secondary">Q.' . $rows['precio'] . '</td>
+                        <td class="d-td text-secondary">' . $rows['id_estado_pago'] . '</td>
                         <td>
-                            <a href="' . SERVERURL . 'editar-trabajo/' . mainModel::encryption($rows['idfactura']) . '/" type="button" class="btn btn-outline-light btn-icon-text">
+                            <a href="' . SERVERURL . 'editar-factura/' . mainModel::encryption($rows['idfactura']) . '/" type="button" class="btn btn-outline-light btn-icon-text">
                                 <i class="mdi mdi-pen"></i>
                             </a>
                         </td>
@@ -383,13 +383,13 @@ class facturaControlador extends facturaModelo
 
 
     // Controlador datos del trabajo
-    public function datosTrabajoControlador($tipo, $id)
+    public function datosFacturaControlador($tipo, $id)
     {
         $tipo = mainModel::limpiar_cadena($tipo);
         $id = mainModel::decryption($id);
         $id = mainModel::limpiar_cadena($id);
 
-        return trabajoModelo::datosTrabajoioModelo($tipo, $id);
+        return facturaModelo::datosFacturaModelo($tipo, $id);
     } //fin controlador
 
     // controlador para llenar select de formulario actualizar trabajo

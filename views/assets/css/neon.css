@@ -387,3 +387,14 @@ hr{
     height: 75px !important;
 }
 
+.d-table{
+    font-size: 10px !important; 
+    }
+    
+.d-td{
+    font-size: 10px !important; 
+    }
+    
+.d-th{
+    font-size: 10px !important; 
+    }

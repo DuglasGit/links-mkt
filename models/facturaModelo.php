@@ -90,10 +90,10 @@ class facturaModelo extends mainModel
     }
 
     // Modelo datos del orden trabaja
-    protected static function datosTrabajoioModelo($tipo, $id)
+    protected static function datosFacturaModelo($tipo, $id)
     {
         if ($tipo == "Unico") {
-            $sql = mainModel::conectar()->prepare("SELECT fecha_creacion, descripcion_trabajo FROM orden_trabajo WHERE id_orden_trabajo=:ID");
+            $sql = mainModel::conectar()->prepare("SELECT factura.idfactura, factura.fecha, factura.id_cliente, factura.id_estado_pago, detalle_factura.id_detalle_factura, detalle_factura.id_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN detalle_factura WHERE factura.idfactura=:ID");
             $sql->bindParam(":ID", $id);
         }
 

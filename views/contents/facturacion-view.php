@@ -6,35 +6,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<div class="row">
-    <div class="col-sm-4 grid-margin">
-        <div class="card-body">
-            <button type="button" class="btn btn-outline-light btn-icon-text" data-toggle="modal" data-target="#modalGenerarFacturas">
-                <i class="mdi mdi-tooltip-edit btn-icon-prepend mdi-36px"></i>
-                <span class="d-inline-block text-left">
-                    <small class="font-weight-light d-block">GENERAR</small>FACTURAS DEL MES</span>
-            </button>
-        </div>
-    </div>
-    <div class="col-sm-4 grid-margin">
-        <div class="card-body">
-            <button type="button" class="btn btn-outline-light btn-icon-text" data-toggle="modal" data-target="#modalNuevoTrabajo">
-                <i class="mdi mdi-calendar-clock btn-icon-prepend mdi-36px"></i>
-                <span class="d-inline-block text-left">
-                    <small class="font-weight-light d-block">REALIZAR</small>NUEVO PAGO</span>
-            </button>
-        </div>
-    </div>
-    <div class="col-sm-4 grid-margin">
-        <div class="card-body">
-            <a type="button" href="<?php echo SERVERURL; ?>trabajos-terminados/" class="input-group btn btn-outline-light btn-icon-text">
-                <i class="mdi mdi-briefcase-check btn-icon-prepend mdi-36px"></i>
-                <span class="d-inline-block text-left">
-                    <small class="font-weight-light d-block">LISTAR</small>FACTURAS PAGADAS</span>
-            </a>
-        </div>
-    </div>
 
+<div class="row">
+    <div class="card-body text-center">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#modalGenerarFacturas">
+                <i class="mdi mdi-file-multiple d-block mb-1"></i> Generar Facturas del Mes </button>
+            <button type="button" class="btn btn-outline-secondary">
+                <i class="mdi mdi-file d-block mb-1"></i> Generar Facturas Individuales </button>
+            <a type="button" class="btn btn-outline-secondary" href="<?php echo SERVERURL; ?>factura-search/">
+                <i class="mdi mdi-cash-multiple d-block mb-1"></i> Realizar Nuevo Pago </a>
+            <a type="button" href="<?php echo SERVERURL; ?>facturas-canceladas/" class="btn btn-outline-secondary">
+                <i class="mdi mdi-file-check d-block mb-1"></i> Listar Facturas Pagadas </a>
+        </div>
+    </div>
 </div>
 
 <!-- card tabla usuarios -->
@@ -76,65 +61,6 @@
     </div>
 
 </div>
-
-
-
-
-<!-- Modal Nueva Orden de Trabajo-->
-<div class="modal fade" id="modalNuevoTrabajo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog border border-success rounded d-md-success " role="document" style="width:375px;">
-        <div class="modal-content d-mc-light">
-            <div class="modal-header">
-                <h5 class="modal-title text-center w-100 text-center" id="exampleModalLabel">CREAR NUEVA ORDEN DE TRABAJO</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <?php
-            require_once "./controllers/trabajoControlador.php";
-            $ins_trabajo = new trabajoControlador();
-            $datos_select_usuario = $ins_trabajo->llenarSelect(1, 0);
-            $datos_select_trabajo = $ins_trabajo->llenarSelect(3, 0);
-            ?>
-            <form class="FormularioAjax" action="<?php echo SERVERURL; ?>ajax/trabajoAjax.php" method="POST" data-form="save" autocomplete="off">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Responsable del Trabajo a Realizar</label>
-                        <select class="custom-select custom-select-sm form-control form-control d-inp-green" name="responsable" id="responsable">
-                            <option selected value="">Seleccionar Responsable</option>
-                            <?php foreach ($datos_select_usuario as $opciones) : ?>
-                                <option value="<?php echo $opciones['id_usuario'] ?>"><?php echo $opciones['nombre_usuario']; ?></option>
-                            <?php endforeach ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Fecha Asignada</label>
-                        <input type="text" class="form-control d-inp-green" id="fechaAsignada" name="fechaAsignada" placeholder="Fecha Asignada" maxlength="100" required="" data-toggle="datepicker" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Tipo de Trabajo a Realizar</label>
-                        <select class="custom-select custom-select-sm form-control form-control d-inp-green" name="trabajo" id="trabajo">
-                                <option selected value="">Seleccionar Tipo Trabajo</option>
-                            <?php foreach ($datos_select_trabajo as $opciones) : ?>
-                                <option value="<?php echo $opciones['id_tipo_trabajo'] ?>"><?php echo $opciones['nombre_tipo_trabajo']; ?></option>
-                            <?php endforeach ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Descripción del trabajo a Realizar</label>
-                        <textarea class="form-control d-inp-green d-txtar-green-d" name="descripcionTrabajo" id="descripcionTrabajo" placeholder="Descripcion del Trabajo a Realizar" maxlength="255" required=""></textarea>
-                    </div>         
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-inverse-primary" data-dismiss="modal">Cancelar</button>
-                    <button type="sumbit" class="btn btn-inverse-success">Registrar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- Fin Modal Nueva Orden de Trabajo-->
-
 
 
 

@@ -33,11 +33,11 @@ function enviar_formulario_ajax(e) {
 	} else if (tipo === "update") {
 		texto_alerta = "Los datos del sistema serán actualizados";
 	} else if (tipo === "search") {
-		texto_alerta = "Se eliminará el término de búsqueda y tendrás que escribir uno nuevo";
+		texto_alerta = "Se eliminará la búsqueda";
 	} else if (tipo === "loans") {
 		texto_alerta = "Desea remover los datos seleccionados para préstamos o reservaciones";
 	} else {
-		texto_alerta = "Quieres realizar la operación solicitada";
+		texto_alerta = "Confirmar Busqueda";
 	}
 
 	Swal.fire({
