@@ -213,15 +213,11 @@ class facturaControlador extends facturaModelo
                         <td>
                         <a data-toggle="modal" data-id="' . $rows['nombre_producto_servicio'] . '" class="open-mostrarDescripcion btn btn-outline-success btn-icon-text" href="#mostrarDescripcion"><i class="mdi mdi-cash-multiple"></i></a>
                         </td>
-                        
                         <td>
-						    <form class="FormularioAjax" action="' . SERVERURL . 'ajax/trabajoAjax.php" method="POST" data-form="finish" autocomplete="off">
-								<input type="hidden" name="orden_trabajo_finish" value="' . mainModel::encryption($rows['idfactura']) . '">
-								<button type="submit" class="btn btn-outline-primary btn-icon-text" data-toggle="modal" >
-									<i class="mdi mdi-printer"></i>
-								</button>
-							</form>
-						</td>
+                            <a href="' . SERVERURL . 'facturas/invoice.php?id=' . mainModel::encryption($rows['id_cliente']) . '" type="button" class="btn btn-outline-light btn-icon-text" target="_blank">
+                                <i class="mdi mdi-printer"></i>
+                            </a>
+                        </td>
 						<td>
 						    <form class="FormularioAjax" action="' . SERVERURL . 'ajax/trabajoAjax.php" method="POST" data-form="delete" autocomplete="off">
 								<input type="hidden" name="orden_trabajo_id_delete" value="' . mainModel::encryption($rows['idfactura']) . '">

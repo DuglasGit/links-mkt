@@ -93,7 +93,7 @@ class facturaModelo extends mainModel
     protected static function datosFacturaModelo($tipo, $id)
     {
         if ($tipo == "Unico") {
-            $sql = mainModel::conectar()->prepare("SELECT factura.idfactura, factura.fecha, factura.id_cliente, factura.id_estado_pago, detalle_factura.id_detalle_factura, detalle_factura.id_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN detalle_factura WHERE factura.idfactura=:ID");
+            $sql = mainModel::conectar()->prepare("SELECT factura.idfactura, factura.id_cliente, cliente.nombre_cliente, factura.fecha, factura.id_estado_pago, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=2 AND factura.id_cliente=:ID");
             $sql->bindParam(":ID", $id);
         }
 

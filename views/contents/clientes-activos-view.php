@@ -35,28 +35,21 @@ if ($data == "Desconectado") {
         <div class="card-body">
 
             <div class="row">
-                <div class="col-sm-12 col-md-3">
+                <div class="col-sm-12 col-md-4">
                     <div class="form-group row justify-content-center">
                         <a href="<?php echo SERVERURL; ?>nuevo-cliente/" type="button" class="btn btn-inverse-primary btn-icon-text btn-fw">
                             <i class="mdi mdi-plus-circle-multiple-outline btn-icon-prepend"></i> NUEVO CLIENTE
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-3">
+                <div class="col-sm-12 col-md-4">
                     <div class="form-group row justify-content-center">
                         <a href="<?php echo SERVERURL; ?>clientes-suspendidos/" type="button" class="btn btn-inverse-warning btn-icon-text btn-fw">
                             <i class="mdi mdi-plus-circle-multiple-outline btn-icon-prepend"></i> VER CLIENTES SUSPENDIDOS
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-3">
-                    <div class="form-group row justify-content-center">
-                        <a href="<?php echo SERVERURL; ?>clientes-suspendidos/" type="button" class="btn btn-inverse-warning btn-icon-text btn-fw">
-                            <i class="mdi mdi-plus-circle-multiple-outline btn-icon-prepend"></i> BUSCAR CLIENTE ESPECÍFICO
-                        </a>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-3">
+                <div class="col-sm-12 col-md-4">
                     <div class="form-group row justify-content-center">
                         <div class="input-group border border-light rounded">
                             <input type="search" id="myInput" class="form-control form-control-sm text-light" placeholder="Buscar..." aria-controls="dataTable">
