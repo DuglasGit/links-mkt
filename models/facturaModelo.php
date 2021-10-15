@@ -93,9 +93,29 @@ class facturaModelo extends mainModel
     protected static function datosFacturaModelo($tipo, $id)
     {
         if ($tipo == "Unico") {
-            $sql = mainModel::conectar()->prepare("SELECT factura.idfactura, factura.id_cliente, cliente.nombre_cliente, factura.fecha, factura.id_estado_pago, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=2 AND factura.id_cliente=:ID");
+            $sql = mainModel::conectar()->prepare("SELECT factura.idfactura, factura.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, factura.fecha, factura.id_estado_pago, producto_servicio.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.cantidad, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN municipio ON (cliente.id_municipio=municipio.id_municipio) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=2 AND factura.id_cliente=:ID");
             $sql->bindParam(":ID", $id);
         }
+
+        $sql->execute();
+        return $sql;
+    }
+
+    // Modelo datos del usuario que atiende
+    protected static function datosUsuarioFacturaModelo($idfactura)
+    {
+        $sql = mainModel::conectar()->prepare("SELECT usuario.id_usuario, usuario.nombre_usuario, rol_usuario.id_rol, rol_usuario.nombre_rol FROM usuario JOIN rol_usuario ON (usuario.id_rol=rol_usuario.id_rol) JOIN factura ON (factura.id_usuario=usuario.id_usuario) WHERE factura.idfactura=:ID");
+        $sql->bindParam(":ID", $idfactura);
+
+        $sql->execute();
+        return $sql;
+    }
+
+    // Modelo datos del deltalle de la factura
+    protected static function datosDetalleFacturaModelo($idfactura)
+    {
+        $sql = mainModel::conectar()->prepare("SELECT detalle_factura.cantidad, detalle_factura.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM detalle_factura JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE detalle_factura.id_factura=:ID");
+        $sql->bindParam(":ID", $idfactura);
 
         $sql->execute();
         return $sql;

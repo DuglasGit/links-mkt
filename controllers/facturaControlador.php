@@ -378,7 +378,7 @@ class facturaControlador extends facturaModelo
 
 
 
-    // Controlador datos del trabajo
+    // Controlador datos de la factura
     public function datosFacturaControlador($tipo, $id)
     {
         $tipo = mainModel::limpiar_cadena($tipo);
@@ -386,6 +386,24 @@ class facturaControlador extends facturaModelo
         $id = mainModel::limpiar_cadena($id);
 
         return facturaModelo::datosFacturaModelo($tipo, $id);
+    } //fin controlador
+
+    // Controlador datos del usuario que imprime la factura
+    public function datosUsuarioFacturaControlador($id)
+    {
+        $id = mainModel::decryption($id);
+        $id = mainModel::limpiar_cadena($id);
+
+        return facturaModelo::datosUsuarioFacturaModelo($id);
+    } //fin controlador
+
+    // Controlador datos del detalle de la Factura
+    public function datosDetalleFacturaControlador($id)
+    {
+        $id = mainModel::decryption($id);
+        $id = mainModel::limpiar_cadena($id);
+
+        return facturaModelo::datosDetalleFacturaModelo($id);
     } //fin controlador
 
     // controlador para llenar select de formulario actualizar trabajo

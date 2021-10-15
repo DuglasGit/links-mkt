@@ -69,6 +69,15 @@ class clienteModelo extends mainModel
         return $sql;
     }
 
+    // Modelo datos del cliente para la factura
+    protected static function datosClienteFacturaModelo($idfactura)
+    {
+        $sql = mainModel::conectar()->prepare("SELECT cliente.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, tipo_cliente.nombre_tipo_cliente FROM cliente JOIN municipio ON(cliente.id_municipio=municipio.id_municipio) JOIN tipo_cliente ON (cliente.id_tipo_cliente=tipo_cliente.id_tipo_cliente) JOIN factura ON (factura.id_cliente=cliente.id_cliente) WHERE factura.idfactura=:IDFACTURA");
+        $sql->bindParam(":IDFACTURA", $idfactura);
+        $sql->execute();
+        return $sql;
+    }
+
     //modelo para llenar selects de formulario actualizar-cliente
     protected static function datosSelect($tipo, $id, $tabla)
     {

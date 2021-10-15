@@ -777,6 +777,14 @@ class clienteControlador extends clienteModelo
 		return ClienteModelo::datosClienteModelo($ip);
 	} //fin controlador
 
+	// Controlador datos del cliente
+	public function datosClienteFacturaControlador($idfactura)
+	{
+		$idfactura = mainModel::decryption($idfactura);
+		$idfactura = mainModel::limpiar_cadena($idfactura);
+		return ClienteModelo::datosClienteFacturaModelo($idfactura);
+	} //fin controlador
+
 
 	// controlador para llenar selects
 	public function llenarSelect($op, $id, $tabla)
