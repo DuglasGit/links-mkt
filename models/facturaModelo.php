@@ -93,7 +93,7 @@ class facturaModelo extends mainModel
     protected static function datosFacturaModelo($tipo, $id)
     {
         if ($tipo == "Unico") {
-            $sql = mainModel::conectar()->prepare("SELECT factura.idfactura, factura.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, factura.fecha, factura.id_estado_pago, producto_servicio.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.cantidad, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN municipio ON (cliente.id_municipio=municipio.id_municipio) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=2 AND factura.id_cliente=:ID");
+            $sql = mainModel::conectar()->prepare("SELECT factura.idfactura, factura.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, factura.fecha, factura.id_estado_pago, producto_servicio.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.cantidad, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN municipio ON (cliente.id_municipio=municipio.id_municipio) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=2 AND factura.idfactura=:ID");
             $sql->bindParam(":ID", $id);
         }
 
@@ -112,10 +112,10 @@ class facturaModelo extends mainModel
     }
 
     // Modelo datos del deltalle de la factura
-    protected static function datosDetalleFacturaModelo($idfactura)
+    protected static function datosDetalleFacturaModelo($idcliente)
     {
-        $sql = mainModel::conectar()->prepare("SELECT detalle_factura.cantidad, detalle_factura.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM detalle_factura JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE detalle_factura.id_factura=:ID");
-        $sql->bindParam(":ID", $idfactura);
+        $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, detalle_factura.cantidad, detalle_factura.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM detalle_factura JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) JOIN factura ON(detalle_factura.id_factura=factura.idfactura) WHERE factura.id_estado_pago=2 AND factura.id_cliente=:ID");
+        $sql->bindParam(":ID", $idcliente);
 
         $sql->execute();
         return $sql;

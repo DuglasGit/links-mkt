@@ -199,7 +199,7 @@ class facturaControlador extends facturaModelo
                 }
                 $tabla .= '
 					<tr class="text-center">
-                        <td>' . $contador . '</td>
+                        <td>' . $rows['id_cliente'] . '</td>
                         <td class="d-td text-secondary">' . $rows['nombre_cliente'] . '</td>
                         <td class="d-td text-secondary">' . $rows['fecha'] . '</td>
                         <td class="d-td text-secondary">' . $rows['mes_pagado'] . '</td>
@@ -214,7 +214,7 @@ class facturaControlador extends facturaModelo
                         <a data-toggle="modal" data-id="' . $rows['nombre_producto_servicio'] . '" class="open-mostrarDescripcion btn btn-outline-success btn-icon-text" href="#mostrarDescripcion"><i class="mdi mdi-cash-multiple"></i></a>
                         </td>
                         <td>
-                            <a href="' . SERVERURL . 'facturas/invoice.php?id=' . mainModel::encryption($rows['id_cliente']) . '" type="button" class="btn btn-outline-light btn-icon-text" target="_blank">
+                            <a href="' . SERVERURL . 'facturas/invoice.php?id=' . mainModel::encryption($rows['id_cliente']) .'&idf='.mainModel::encryption($rows['idfactura']). '" type="button" class="btn btn-outline-light btn-icon-text" target="_blank">
                                 <i class="mdi mdi-printer"></i>
                             </a>
                         </td>
@@ -402,7 +402,9 @@ class facturaControlador extends facturaModelo
     {
         $id = mainModel::decryption($id);
         $id = mainModel::limpiar_cadena($id);
-
+        $ids = mainModel::decryption("U0EwcURpK0Z3ajU0K0JmV2VhRnJFUT09");
+        
+        
         return facturaModelo::datosDetalleFacturaModelo($id);
     } //fin controlador
 
