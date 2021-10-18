@@ -34,8 +34,8 @@ function enviar_formulario_ajax(e) {
 		texto_alerta = "Los datos del sistema serán actualizados";
 	} else if (tipo === "search") {
 		texto_alerta = "Se eliminará la búsqueda";
-	} else if (tipo === "loans") {
-		texto_alerta = "Desea remover los datos seleccionados para préstamos o reservaciones";
+	} else if (tipo === "saveserie") {
+		texto_alerta = "Este proceso tardará un momento en completarse";
 	} else {
 		texto_alerta = "Confirmar Busqueda";
 	}

@@ -123,7 +123,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="FormularioAjax" action="<?php echo SERVERURL; ?>ajax/facturaAjax.php" method="POST" data-form="save" autocomplete="off">
+            <form class="FormularioAjax" action="<?php echo SERVERURL; ?>ajax/facturaAjax.php" method="POST" data-form="saveserie" autocomplete="off">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Fecha Generada</label>
@@ -131,30 +131,26 @@
                     </div>
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">Mes a Pagar</label>
-                        <select class="custom-select custom-select-sm form-control form-control d-inp-white" name="responsable" id="responsable">
+                        <select class="custom-select custom-select-sm form-control form-control d-inp-white" name="mes" id="mes">
                             <option selected value="">Seleccionar Mes</option>
-                            <option value="1">Enero</option>
-                            <option value="2">Febrero</option>
-                            <option value="3">Marzo</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Mayo</option>
-                            <option value="6">Junio</option>
-                            <option value="7">Julio</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Dicimebre</option>
+                            <option value="Enero">Enero</option>
+                            <option value="Febrero">Febrero</option>
+                            <option value="Marzo">Marzo</option>
+                            <option value="Abril">Abril</option>
+                            <option value="Mayo">Mayo</option>
+                            <option value="Junio">Junio</option>
+                            <option value="Julio">Julio</option>
+                            <option value="Agosto">Agosto</option>
+                            <option value="Septiembre">Septiembre</option>
+                            <option value="Octubre">Octubre</option>
+                            <option value="Noviembre">Noviembre</option>
+                            <option value="Dicimebre">Dicimebre</option>
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">Fecha Sugerida de Pago</label>
-                        <input type="text" class="form-control d-inp-white" id="fechaAsignada" name="fechaAsignada" placeholder="Seleccionar Fecha" maxlength="100" required="" data-toggle="datepicker" value="">
                     </div>
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-inverse-danger" data-dismiss="modal">Cancelar</button>
-                    <button type="sumbit" class="btn btn-inverse-primary">Generar</button>
+                    <button type="sumbit" class="btn btn-inverse-primary">Generar facturas</button>
                 </div>
             </form>
         </div>

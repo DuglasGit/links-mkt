@@ -42,7 +42,6 @@ if ($datos_usuario->rowCount() == 1) {
                             <div class="col-sm-8">
                                 <select class="custom-select custom-select-sm form-control form-control d-inp-light" name="rolU" id="rolU">
                                     <?php
-                                    print_r($datos_select_actual);
                                     foreach ($datos_select_actual as $seleccionado) : ?>
                                         <option selected value="<?php echo $seleccionado['id_rol']; ?>"><?php echo $seleccionado['nombre_rol']; ?></option>
                                     <?php endforeach ?>

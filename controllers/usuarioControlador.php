@@ -439,10 +439,11 @@ class usuarioControlador extends usuarioModelo
 
 		if (usuarioModelo::actualizarUsuarioModelo($datos_usuario_update)) {
 			$alerta = [
-				"Alerta" => "recargar",
+				"Alerta" => "exitoredireccion",
 				"Titulo" => "Datos actualizados",
 				"Texto" => "Los datos del usuario han sido actualizados con exito",
-				"Tipo" => "success"
+				"Tipo" => "success",
+				"URL" => SERVERURL . "usuarios/"
 			];
 		} else {
 			$alerta = [

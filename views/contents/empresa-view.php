@@ -113,7 +113,7 @@ if ($datos_empresa->rowCount() == 0 && $datos_router->rowCount() == 0) {
                         <hr />
                         <div class=" row justify-content-center">
                             <button type="submit" class="btn btn-inverse-warning mr-2">&nbsp;Registrar</button>
-                            <a href="<?php echo SERVERURL; ?>clientes-activos/" class="btn btn-inverse-danger">&nbsp; Cancelar</a>
+                            <a href="<?php echo SERVERURL; ?>home/" class="btn btn-inverse-danger">&nbsp; Cancelar</a>
                         </div>
                     </form>
                 </div>
@@ -220,7 +220,7 @@ if ($datos_empresa->rowCount() == 0 && $datos_router->rowCount() == 0) {
                         <hr />
                         <div class=" row justify-content-center">
                             <button type="submit" class="btn btn-inverse-warning mr-2">&nbsp;Actualizar</button>
-                            <a href="<?php echo SERVERURL; ?>clientes-activos/" class="btn btn-inverse-danger">&nbsp; Cancelar</a>
+                            <a href="<?php echo SERVERURL; ?>home/" class="btn btn-inverse-danger">&nbsp; Cancelar</a>
                         </div>
                     </form>
                 </div>

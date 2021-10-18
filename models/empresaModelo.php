@@ -87,7 +87,7 @@ class empresaModelo extends MainModel
     /* Modelo datos empresa */
     protected static function datosEmpresaModelo()
     {
-        $sql = mainModel::conectar()->prepare("SELECT nombre_empresa, representante_legal, nit_empresa, telefono_empresa, correo_empresa, domicilio,nombre_municipio, nombre_departamento, ubicacion_gps FROM empresa JOIN municipio ON (empresa.id_municipio=municipio.id_municipio) JOIN departamento ON (municipio.id_departamento=departamento.id_departamento)");
+        $sql = mainModel::conectar()->prepare("SELECT id_empresa, nombre_empresa, representante_legal, nit_empresa, telefono_empresa, correo_empresa, domicilio,nombre_municipio, nombre_departamento, ubicacion_gps FROM empresa JOIN municipio ON (empresa.id_municipio=municipio.id_municipio) JOIN departamento ON (municipio.id_departamento=departamento.id_departamento)");
         $sql->execute();
         return $sql;
     }

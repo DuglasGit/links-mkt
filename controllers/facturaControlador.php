@@ -9,22 +9,18 @@ if ($peticionAjax) {
 class facturaControlador extends facturaModelo
 {
 
-    /*--------- Controlador agregar factura ---------*/
-    public function agregar_factura_controlador()
+    /*--------- Controlador generar facturas en serie ---------*/
+    public function generarFacturasEnSerieCOntrolador()
     {
-        $idUsuario = mainModel::limpiar_cadena($_POST['responsable']);
-        $fechaCreacion = mainModel::limpiar_cadena($_POST['fechaAsignada']);
-        $tipoTrabajo = mainModel::limpiar_cadena($_POST['trabajo']);
-        $descripcion = mainModel::limpiar_cadena($_POST['descripcionTrabajo']);
-        $estadoOrden = "Pendiente";
-
+        $fechaAsignada = mainModel::limpiar_cadena($_POST['fechaAsignada']);
+        $mes = mainModel::limpiar_cadena($_POST['mes']);
 
         /*== comprobar campos vacios ==*/
-        if ($idUsuario == "" || $fechaCreacion == "" || $tipoTrabajo == "" || $descripcion == "" || $estadoOrden == "") {
+        if ($fechaAsignada == "" || $mes == "") {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "Datos Incompletos",
-                "Texto" => "No puedes agregar datos vacíos a la Orden de Trabajo",
+                "Texto" => "No se puede generar facturas con datos vaacíos",
                 "Tipo" => "error"
             ];
             echo json_encode($alerta);
@@ -33,7 +29,7 @@ class facturaControlador extends facturaModelo
 
         // comprobar privilegios
         session_start(['name' => 'LMR']);
-        if ($_SESSION['id_rol_lmr'] != 1) {
+        if ($_SESSION['id_rol_lmr'] > 2) {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "PETICIÓN DENEGADA",
@@ -44,21 +40,22 @@ class facturaControlador extends facturaModelo
             exit();
         }
 
-        $datos_trabajo_reg = [
-            "ID_USUARIO" => $idUsuario,
-            "FECHA_CREACION" => $fechaCreacion,
-            "ID_TIPO_TRABAJO" => $tipoTrabajo,
-            "DESCRIPCION_TRABAJO" => $descripcion,
-            "ESTADO_ORDEN" => $estadoOrden
+        $datos_factura_serie = [
+            "FECHA" => $fechaAsignada,
+            "MES" => $mes,
+            "ID_USUARIO" => $_SESSION['id_lmr'],
+            "ID_ESTADO_PAGO" => 2,
+            "CANTIDAD" => 1,
+            "ID_PRODUCTO_SERVICIO" => 10
         ];
 
-        $agregar_trabajo = trabajoModelo::agregarTrabajoModelo($datos_trabajo_reg);
+        $generar_facturas = facturaModelo::generarFacturaEnSerieModelo($datos_factura_serie);
 
-        if ($agregar_trabajo->rowCount() == 1) {
+        if ($generar_facturas->rowCount() >= 1) {
             $alerta = [
                 "Alerta" => "recargar",
-                "Titulo" => "Trabajo Registrado y Asignado",
-                "Texto" => "La Orden de Trabajo se guardó Correctamente",
+                "Titulo" => "Facturas Generadas Exitosamente",
+                "Texto" => "Todas las Facturas han sido asignadas",
                 "Tipo" => "success"
             ];
         } else {
@@ -71,6 +68,113 @@ class facturaControlador extends facturaModelo
         }
         echo json_encode($alerta);
     } /* Fin controlador */
+
+    // controlador actualizar factura y detalle factura
+    public function generarFacturaIndividualControlador()
+    {
+        // recibiendo campos
+        $fecha = mainModel::limpiar_cadena($_POST['fecha_reg']);
+        $cliente = mainModel::limpiar_cadena($_POST['id_cliente_reg']);
+        $usuario = mainModel::limpiar_cadena($_POST['id_usuario_reg']);
+        $pago = mainModel::limpiar_cadena($_POST['estado_pago_reg']);
+        $producto = mainModel::limpiar_cadena($_POST['producto_servicio_reg']);
+        $precio = mainModel::limpiar_cadena($_POST['precio_reg']);
+        $mes = mainModel::limpiar_cadena($_POST['mes_pagado_reg']);
+
+        // comprobar privilegios
+        session_start(['name' => 'LMR']);
+        if ($_SESSION['id_rol_lmr'] > 2) {
+            $alerta = [
+                "Alerta" => "exitoredireccion",
+                "Titulo" => "PETICIÓN DENEGADA",
+                "Texto" => "No tienes los permisos necesarios para realizar esta operación",
+                "Tipo" => "error",
+                "URL" => SERVERURL . "facturacion/"
+            ];
+            echo json_encode($alerta);
+            exit();
+        }
+
+
+        /*== comprobar campos vacios ==*/
+        if ($fecha == "" || $cliente == "" || $usuario == "" || $pago == "" || $producto == "" || $precio == "" || $mes == "") {
+            $alerta = [
+                "Alerta" => "simple",
+                "Titulo" => "INFORMACIÓN INCOMPLETA",
+                "Texto" => "No has llenado todos los campos Requeridos",
+                "Tipo" => "error"
+            ];
+            echo json_encode($alerta);
+            exit();
+        }
+
+        // Preparando datos para enviarlos al modelo
+        $datos_factura_reg = [
+            "FECHA" => $fecha,
+            "ID_CLIENTE" => $cliente,
+            "ID_USUARIO" => $usuario,
+            "ID_ESTADO_PAGO" => $pago,
+        ];
+
+        $exito = 0;
+        $insert_factura = facturaModelo::agregarfacturaindividualModelo($datos_factura_reg, "factura");
+        if ($insert_factura->rowCount() == 1) {
+            $exito = 1;
+
+            // Preparando datos para enviarlos al modelo
+            $datos_detalle_factura_reg = [
+                "FECHA" => $fecha,
+                "ID_CLIENTE" => $cliente,
+                "CANTIDAD" => 1,
+                "ID_PRODUCTO_SERVICIO" => $producto,
+                "PRECIO" => $precio,
+                "MES_PAGADO" => $mes
+            ];
+
+            $insert_detalle_factura = facturaModelo::agregarfacturaindividualModelo($datos_detalle_factura_reg, "detalle");
+            if ($insert_detalle_factura->rowCount() == 1) {
+                $exito = 2;
+            }
+        }
+
+
+        switch ($exito) {
+            case 0: {
+                    $alerta = [
+                        "Alerta" => "simple",
+                        "Titulo" => "Operación Abortada",
+                        "Texto" => "No se pudo Agregar los datos de la factura",
+                        "Tipo" => "error"
+                    ];
+                    echo json_encode($alerta);
+                    exit();
+                    break;
+                }
+            case 1: {
+                    $alerta = [
+                        "Alerta" => "simple",
+                        "Titulo" => "Operación Abortada",
+                        "Texto" => "No se pudo Agregar los detalles de la factura",
+                        "Tipo" => "error"
+                    ];
+                    echo json_encode($alerta);
+                    exit();
+                    break;
+                }
+            case 2: {
+                    $alerta = [
+                        "Alerta" => "exitoredireccion",
+                        "Titulo" => "COMPLETADO",
+                        "Texto" => "Factura y detalles Agregados exitosamente",
+                        "Tipo" => "success",
+                        "URL" => SERVERURL . "facturacion/"
+                    ];
+                    echo json_encode($alerta);
+                    exit();
+                    break;
+                }
+        }
+    } //fin cntrolador
 
     /*--------- Controlador agregar trabajo ---------*/
     public function agregar_tipo_trabajo_controlador()
@@ -199,7 +303,7 @@ class facturaControlador extends facturaModelo
                 }
                 $tabla .= '
 					<tr class="text-center">
-                        <td>' . $rows['id_cliente'] . '</td>
+                        <td>' . $rows['idfactura'] . '</td>
                         <td class="d-td text-secondary">' . $rows['nombre_cliente'] . '</td>
                         <td class="d-td text-secondary">' . $rows['fecha'] . '</td>
                         <td class="d-td text-secondary">' . $rows['mes_pagado'] . '</td>
@@ -214,7 +318,7 @@ class facturaControlador extends facturaModelo
                         <a data-toggle="modal" data-id="' . $rows['nombre_producto_servicio'] . '" class="open-mostrarDescripcion btn btn-outline-success btn-icon-text" href="#mostrarDescripcion"><i class="mdi mdi-cash-multiple"></i></a>
                         </td>
                         <td>
-                            <a href="' . SERVERURL . 'facturas/invoice.php?id=' . mainModel::encryption($rows['id_cliente']) .'&idf='.mainModel::encryption($rows['idfactura']). '" type="button" class="btn btn-outline-light btn-icon-text" target="_blank">
+                            <a href="' . SERVERURL . 'facturas/invoice.php?id=' . mainModel::encryption($rows['id_cliente']) . '&idf=' . mainModel::encryption($rows['idfactura']) . '" type="button" class="btn btn-outline-light btn-icon-text" target="_blank">
                                 <i class="mdi mdi-printer"></i>
                             </a>
                         </td>
@@ -377,14 +481,12 @@ class facturaControlador extends facturaModelo
     } // fin controlador
 
 
-
     // Controlador datos de la factura
     public function datosFacturaControlador($tipo, $id)
     {
         $tipo = mainModel::limpiar_cadena($tipo);
         $id = mainModel::decryption($id);
         $id = mainModel::limpiar_cadena($id);
-
         return facturaModelo::datosFacturaModelo($tipo, $id);
     } //fin controlador
 
@@ -403,64 +505,73 @@ class facturaControlador extends facturaModelo
         $id = mainModel::decryption($id);
         $id = mainModel::limpiar_cadena($id);
         $ids = mainModel::decryption("U0EwcURpK0Z3ajU0K0JmV2VhRnJFUT09");
-        
-        
+
+
         return facturaModelo::datosDetalleFacturaModelo($id);
     } //fin controlador
 
-    // controlador para llenar select de formulario actualizar trabajo
-    public function llenarSelect($op, $id)
+
+    // controlador actualizar factura y detalle factura
+    public function actualizarFacturaControlador()
     {
-        $op = mainModel::limpiar_cadena($op);
-        $id = mainModel::decryption($id);
-        $id = mainModel::limpiar_cadena($id);
-
-        return trabajoModelo::datosResponsable($op, $id);
-    } // fin controlador
-
-
-    // controlador actualizar trabajo
-    public function actualizarTrabajoControlador()
-    {
-        // recibiendo id de orden trabajo
-        $id_orden = mainModel::decryption($_POST['orden_trabajo_id_update']);
-        $id_orden = mainModel::limpiar_cadena($id_orden);
+        // recibiendo id de factura y detallefactura
+        $idfactura = mainModel::decryption($_POST['factura_id_update']);
+        $iddetallefactura = ($_POST['id_detalle_update']);
+        $idfactura = mainModel::limpiar_cadena($idfactura);
+        $iddetallefactura = mainModel::limpiar_cadena($iddetallefactura);
 
         // comprobar privilegios
         session_start(['name' => 'LMR']);
-        if ($_SESSION['id_rol_lmr'] != 1) {
+        if ($_SESSION['id_rol_lmr'] > 2) {
             $alerta = [
                 "Alerta" => "exitoredireccion",
                 "Titulo" => "PETICIÓN DENEGADA",
                 "Texto" => "No tienes los permisos necesarios para realizar esta operación",
                 "Tipo" => "error",
-                "URL" => SERVERURL . "trabajos/"
+                "URL" => SERVERURL . "facturacion/"
             ];
             echo json_encode($alerta);
             exit();
         }
 
         //comprobar el usuario en la base de datos
-        $check_trabajo = mainModel::ejecutar_consulta_simple("SELECT * FROM orden_trabajo WHERE id_orden_trabajo='$id_orden'");
+        $check_factura = mainModel::ejecutar_consulta_simple("SELECT idfactura FROM factura WHERE idfactura='$idfactura'");
 
-        if ($check_trabajo->rowCount() <= 0) {
+        if ($check_factura->rowCount() <= 0) {
             $alerta = [
                 "Alerta" => "simple",
-                "Titulo" => "DATOS INACCESIBLES",
-                "Texto" => "NO se encontraron registros del trabajo en la base de datos",
+                "Titulo" => "DATOS INVALIDOS",
+                "Texto" => "NO se encontraron registros de la factura en la base de datos",
                 "Tipo" => "error"
             ];
             echo json_encode($alerta);
             exit();
         }
 
-        $id_usuario = mainModel::limpiar_cadena($_POST['responsable_Up']);
-        $fechaAsignada = mainModel::limpiar_cadena($_POST['fechaAsignada_Up']);
-        $tipoTrabajo = mainModel::limpiar_cadena($_POST['trabajo_Up']);
-        $descripcion = mainModel::limpiar_cadena($_POST['descripcionTrabajo_Up']);
+        $check_detalle_factura = mainModel::ejecutar_consulta_simple("SELECT id_detalle_factura FROM detalle_factura WHERE id_detalle_factura = '$iddetallefactura'");
+
+        if ($check_detalle_factura->rowCount() <= 0) {
+            $alerta = [
+                "Alerta" => "simple",
+                "Titulo" => "DATOS INVALIDOS",
+                "Texto" => "NO hay registros del detalle de la factura en la base de datos",
+                "Tipo" => "error"
+            ];
+            echo json_encode($alerta);
+            exit();
+        }
+
+        $fecha = mainModel::limpiar_cadena($_POST['fecha_up']);
+        $cliente = mainModel::limpiar_cadena($_POST['id_cliente_up']);
+        $usuario = mainModel::limpiar_cadena($_POST['id_usuario_up']);
+        $pago = mainModel::limpiar_cadena($_POST['estado_pago_up']);
+        $producto = mainModel::limpiar_cadena($_POST['producto_servicio_up']);
+        $precio = mainModel::limpiar_cadena($_POST['precio_up']);
+        $mes = mainModel::limpiar_cadena($_POST['mes_pagado_up']);
+
 
         /*== comprobar campos vacios ==*/
-        if ($id_usuario == "" || $fechaAsignada == "" || $tipoTrabajo == "" || $descripcion == "") {
+        if ($fecha == "" || $cliente == "" || $usuario == "" || $pago == "" || $producto == "" || $precio == "" || $mes == "") {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "INFORMACIÓN INCOMPLETA",
@@ -472,32 +583,69 @@ class facturaControlador extends facturaModelo
         }
 
         // Preparando datos para enviarlos al modelo
-        $datos_trabajo_update = [
-            "ID_ORDEN_TRABAJO" => $id_orden,
-            "ID_USUARIO" => $id_usuario,
-            "FECHA_CREACION" => $fechaAsignada,
-            "ID_TIPO_TRABAJO" => $tipoTrabajo,
-            "DESCRIPCION_TRABAJO" => $descripcion
+        $datos_factura_update = [
+            "IDFACTURA" => $idfactura,
+            "FECHA" => $fecha,
+            "ID_CLIENTE" => $cliente,
+            "ID_USUARIO" => $usuario,
+            "ID_ESTADO_PAGO" => $pago,
         ];
 
-        if (trabajoModelo::actualizarTrabajoModelo($datos_trabajo_update)) {
-            $alerta = [
-                "Alerta" => "exitoredireccion",
-                "Titulo" => "Completado",
-                "Texto" => "Orden de trabajo actualizada exitosamente",
-                "Tipo" => "success",
-                "URL" => SERVERURL . "trabajos/"
+        $exito = 0;
+        if (facturaModelo::actualizarFacturaModelo($datos_factura_update)) {
+            $exito = 1;
+
+            // Preparando datos para enviarlos al modelo
+            $datos_detalle_factura_update = [
+                "ID_DETALLE_FACTURA" => $iddetallefactura,
+                "IDFACTURA" => $idfactura,
+                "ID_PRODUCTO_SERVICIO" => $producto,
+                "PRECIO" => $precio,
+                "MES_PAGADO" => $mes
             ];
-        } else {
-            $alerta = [
-                "Alerta" => "simple",
-                "Titulo" => "Operación Abortada",
-                "Texto" => "La Base de Datos rechazó la petición de actualización",
-                "Tipo" => "error"
-            ];
+
+            if (facturaModelo::actualizarDetalleFacturaModelo($datos_detalle_factura_update)) {
+                $exito = 2;
+            }
         }
-        echo json_encode($alerta);
-        exit();
+
+
+        switch ($exito) {
+            case 0: {
+                    $alerta = [
+                        "Alerta" => "simple",
+                        "Titulo" => "Operación Abortada",
+                        "Texto" => "No se pudo Actualizar los datos de la factura",
+                        "Tipo" => "error"
+                    ];
+                    echo json_encode($alerta);
+                    exit();
+                    break;
+                }
+            case 1: {
+                    $alerta = [
+                        "Alerta" => "simple",
+                        "Titulo" => "Operación Abortada",
+                        "Texto" => "No se pudo Actualizar los detalles de la factura",
+                        "Tipo" => "error"
+                    ];
+                    echo json_encode($alerta);
+                    exit();
+                    break;
+                }
+            case 2: {
+                    $alerta = [
+                        "Alerta" => "exitoredireccion",
+                        "Titulo" => "COMPLETADO",
+                        "Texto" => "Factura y detalles actualizados exitosamente",
+                        "Tipo" => "success",
+                        "URL" => SERVERURL . "facturacion/"
+                    ];
+                    echo json_encode($alerta);
+                    exit();
+                    break;
+                }
+        }
     } //fin cntrolador
 
 
@@ -703,4 +851,15 @@ class facturaControlador extends facturaModelo
                 }
         }
     } //fin controlador
+
+    // controlador para llenar selects
+    public function llenarSelect($op, $id, $tabla)
+    {
+        $op = mainModel::limpiar_cadena($op);
+        $id = mainModel::decryption($id);
+        $id = mainModel::limpiar_cadena($id);
+        $tabla = mainModel::limpiar_cadena($tabla);
+
+        return facturaModelo::datosSelect($op, $id, $tabla);
+    } // fin controlador
 }

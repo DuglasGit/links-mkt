@@ -17,8 +17,11 @@ if ($login_controlador->encryption($_SESSION['id_lmr']) != $pagina[1]) {
 require_once "./controllers/facturaControlador.php";
 $ins_factura = new facturaControlador();
 $datos_factura = $ins_factura->datosFacturaControlador("Unico", $pagina[1]);
-$datos_select = $ins_factura->llenarSelect(1, 0);
-$datos_select_actual = $ins_factura->llenarSelect(0, $pagina[1]);
+$select_cliente = $ins_factura->llenarSelect("todo", 0, "cliente");
+$select_estado = $ins_factura->llenarSelect("todo", 0, "estado");
+$select_estado_actual = $ins_factura->llenarSelect("actual", $pagina[1], "estado");
+$select_producto = $ins_factura->llenarSelect("todo", 0, "producto");
+$select_precio = $ins_factura->llenarSelect("todo", 0, "precio");
 
 if ($datos_factura->rowCount() == 1) {
     $campos = $datos_factura->fetch();
@@ -27,56 +30,88 @@ if ($datos_factura->rowCount() == 1) {
         <div class="col-md-8 grid-margin stretch-card">
             <div class="card d-mc-light d-frm">
                 <div class="card-body">
-                    <h4 class="card-title text-center">&nbsp; Actualizar Datos del usuario</h4>
-                    <form class="form-sample FormularioAjax" action="<?php echo SERVERURL; ?>ajax/usuarioAjax.php" method="POST" data-form="update" autocomplete="off">
+                    <h4 class="card-title text-center">&nbsp; ACTUALIZAR DATOS DE FACTURACIÓN</h4>
+                    <form class="form-sample FormularioAjax" action="<?php echo SERVERURL; ?>ajax/facturaAjax.php" method="POST" data-form="update" autocomplete="off">
                         <div class="form-group row">
-                            <input type="hidden" id="usuario_id_update" name="usuario_id_update" value="<?php echo $pagina[1]; ?>">
-                            <label class="col-sm-4 col-form-label">&nbsp; Nombre Usuario</label>
+                            <input type="hidden" id="factura_id_update" name="factura_id_update" value="<?php echo $pagina[1]; ?>">
+                            <label class="col-sm-4 col-form-label">&nbsp; Fecha de Creación</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control d-inp-light" id="nombreU" name="nombreU" placeholder="Username" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,100}" maxlength="100" required="" value="<?php echo $campos['nombre_usuario']; ?>">
+                                <input type="text" class="form-control d-inp-light" id="fecha_up" name="fecha_up" maxlength="10" required="" data-toggle="datepicker" value="<?php echo $campos['fecha']; ?>">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">&nbsp; Rol Usuario</label>
+                            <label class="col-sm-4 col-form-label">&nbsp; Nombre del Cliente</label>
                             <div class="col-sm-8">
-                                <select class="custom-select custom-select-sm form-control form-control d-inp-light" name="rolU" id="rolU">
-                                    <?php
-                                    print_r($datos_select_actual);
-                                    foreach ($datos_select_actual as $seleccionado) : ?>
-                                        <option selected value="<?php echo $seleccionado['id_rol']; ?>"><?php echo $seleccionado['nombre_rol']; ?></option>
+                                <select class="custom-select custom-select-sm form-control form-control d-inp-light" name="id_cliente_up" id="id_cliente_up">
+                                    <option selected value="<?php echo $campos['id_cliente']; ?>"><?php echo $campos['nombre_cliente']; ?></option>
+                                    <?php foreach ($select_cliente as $opciones) : ?>
+                                        <option value="<?php echo $opciones['id_cliente'] ?>"><?php echo $opciones['nombre_cliente']; ?></option>
                                     <?php endforeach ?>
-
-                                    <?php foreach ($datos_select as $opciones) : ?>
-                                        <option value="<?php echo $opciones['id_rol'] ?>"><?php echo $opciones['nombre_rol']; ?></option>
+                                </select>
+                            </div>
+                            <input type="hidden" id="id_usuario_up" name="id_usuario_up" value="<?php echo $_SESSION['id_rol_lmr']; ?>">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">&nbsp; Estado del Pago</label>
+                            <div class="col-sm-8">
+                                <select class="custom-select custom-select-sm form-control form-control d-inp-light" name="estado_pago_up" id="estado_pago_up">
+                                    <?php
+                                    foreach ($select_estado_actual as $seleccionado) : ?>
+                                        <option selected value="<?php echo $seleccionado['id_estado_pago']; ?>"><?php echo $seleccionado['nombre_estado']; ?></option>
+                                    <?php endforeach ?>
+                                    <?php foreach ($select_estado as $opciones) : ?>
+                                        <option value="<?php echo $opciones['id_estado_pago'] ?>"><?php echo $opciones['nombre_estado']; ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="form-group row">
+                            <input type="hidden" id="id_detalle_update" name="id_detalle_update" value="<?php echo $campos['id_detalle_factura']; ?>">
+                            <label class="col-sm-4 col-form-label">&nbsp; Item a Facturar</label>
+                            <div class="col-sm-8">
+                                <select class="custom-select custom-select-sm form-control form-control d-inp-light" name="producto_servicio_up" id="producto_servicio_up">
+                                    <option selected value="<?php echo $campos['id_producto_servicio']; ?>"><?php echo $campos['nombre_producto_servicio']; ?></option>
+                                    <?php foreach ($select_producto as $opciones) : ?>
+                                        <option value="<?php echo $opciones['id_producto_servicio'] ?>"><?php echo $opciones['nombre_producto_servicio']; ?></option>
                                     <?php endforeach ?>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">&nbsp; Nueva Clave</label>
+                            <label class="col-sm-4 col-form-label">&nbsp; Subtotal</label>
                             <div class="col-sm-8">
-                                <div class="input-group">
-                                    <input id="txtPassword" name="txtPassword" type="password" class="form-control d-inp-light" placeholder="Nuevo Password" pattern="[a-zA-Z0-9$@.-]{7,25}" maxlength="25" required="" value="<?php echo $pass; ?>">
-                                    <div class="input-group-append">
-                                        <button id="show_password" class="btn" type="button" onclick="mostrarPassword()"> <span class="mdi mdi-eye-off d-btn-light"></span> </button>
-                                    </div>
-                                </div>
+                                <select class="custom-select custom-select-sm form-control form-control d-inp-light" name="precio_up" id="precio_up">
+                                    <option selected value="<?php echo $campos['precio']; ?>"><?php echo $campos['precio']; ?></option>
+                                    <?php foreach ($select_precio as $opciones) : ?>
+                                        <option value="<?php echo $opciones['precio'] ?>"><?php echo $opciones['precio']; ?></option>
+                                    <?php endforeach ?>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-4 col-form-label">&nbsp; Confirmar Clave</label>
+                            <label class="col-sm-4 col-form-label">&nbsp; Mes a Pagar</label>
                             <div class="col-sm-8">
-                                <div class="input-group">
-                                    <input id="txtRePassword" name="txtRePassword" type="password" class="form-control d-inp-light" placeholder="Confirmar Password" pattern="[a-zA-Z0-9$@.-]{7,25}" maxlength="25" required="" value="<?php echo $pass; ?>">
-                                    <div class="input-group-append">
-                                        <button id="show_Repassword" class="btn" type="button" onclick="mostrarRePassword()"> <span class="mdi mdi-eye-off d-btn-light"></span> </button>
-                                    </div>
-                                </div>
+                                <select class="custom-select custom-select-sm form-control form-control d-inp-light" name="mes_pagado_up" id="mes_pagado_up">
+                                    <option selected value="<?php echo $campos['mes_pagado']; ?>"><?php echo $campos['mes_pagado']; ?></option>
+                                    <option value="Enero">Enero</option>
+                                    <option value="Febrero">Febrero</option>
+                                    <option value="Marzo">Marzo</option>
+                                    <option value="Abril">Abril</option>
+                                    <option value="Mayo">Mayo</option>
+                                    <option value="Junio">Junio</option>
+                                    <option value="Julio">Julio</option>
+                                    <option value="Agosto">Agosto</option>
+                                    <option value="Septiembre">Septiembre</option>
+                                    <option value="Octubre">Octubre</option>
+                                    <option value="Noviembre">Noviembre</option>
+                                    <option value="Dicimebre">Dicimebre</option>
+                                </select>
                             </div>
                         </div>
                         <div class=" row justify-content-center">
                             <button type="submit" class="btn btn-inverse-primary mr-2">&nbsp; Actualizar Datos</button>
-                            <a href="<?php echo SERVERURL; ?>usuarios/" class="btn btn-inverse-danger">&nbsp; Cancelar</a>
+                            <a href="<?php echo SERVERURL; ?>facturacion/" class="btn btn-inverse-danger">&nbsp; Cancelar</a>
                         </div>
                     </form>
                 </div>
@@ -120,4 +155,17 @@ if ($datos_factura->rowCount() == 1) {
             $('.icon').removeClass('mdi mdi-eye').addClass('mdi mdi-eye-off');
         }
     }
+</script>
+
+<!----Script para datepicker -->
+<script>
+    $(function() {
+        $('[data-toggle="datepicker"]').datepicker({
+            autoHide: true,
+            zIndex: 2048,
+            format: "yyyy-mm-dd",
+            language: "es"
+
+        });
+    });
 </script>
