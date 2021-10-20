@@ -213,7 +213,7 @@ class facturaControlador extends facturaModelo
 		<table class="table table-hover">
 			<thead>
 				<tr class="text-center">
-					<th class="d-th text-light col-sm-auto">#</th>
+					<th class="d-th text-light col-sm-auto">ID</th>
 					<th class="d-th text-light col-sm-auto">CLIENTE</th>
 					<th class="d-th text-light col-sm-auto">FECHA</th>
 					<th class="d-th text-light col-sm-auto">MES</th>
@@ -315,9 +315,9 @@ class facturaControlador extends facturaModelo
         $inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
         $hoy = date('Y-m-d');
         if (isset($busqueda) && $busqueda != "") {
-            $consulta = "SELECT SQL_CALC_FOUND_ROWS factura.idfactura, factura.id_cliente, cliente.nombre_cliente, factura.fecha, factura.id_estado_pago, factura.fecha_pago, producto_servicio.nombre_producto_servicio, detalle_factura.id_detalle_factura, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE (factura.id_estado_pago=1 AND factura.fecha_pago='$hoy' AND cliente.nombre_cliente LIKE '%$busqueda%') ORDER BY factura.fecha_pago DESC LIMIT $inicio, $registros";
+            $consulta = "SELECT SQL_CALC_FOUND_ROWS factura.idfactura, factura.id_cliente, cliente.nombre_cliente, factura.fecha, factura.id_estado_pago, factura.fecha_pago, producto_servicio.nombre_producto_servicio, detalle_factura.id_detalle_factura, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE (factura.id_estado_pago=1 AND factura.fecha_pago='$hoy' AND cliente.nombre_cliente LIKE '%$busqueda%') ORDER BY factura.fecha ASC LIMIT $inicio, $registros";
         } else {
-            $consulta = "SELECT SQL_CALC_FOUND_ROWS factura.idfactura, factura.id_cliente, cliente.nombre_cliente, factura.fecha, factura.id_estado_pago, factura.fecha_pago, producto_servicio.nombre_producto_servicio, detalle_factura.id_detalle_factura, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=1 AND factura.fecha_pago='$hoy' ORDER BY factura.fecha_pago DESC LIMIT $inicio, $registros";
+            $consulta = "SELECT SQL_CALC_FOUND_ROWS factura.idfactura, factura.id_cliente, cliente.nombre_cliente, factura.fecha, factura.id_estado_pago, factura.fecha_pago, producto_servicio.nombre_producto_servicio, detalle_factura.id_detalle_factura, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=1 AND factura.fecha_pago='$hoy' ORDER BY factura.fecha ASC LIMIT $inicio, $registros";
         }
 
         $conexion = mainModel::conectar();
@@ -332,7 +332,7 @@ class facturaControlador extends facturaModelo
 		<table class="table table-hover">
 			<thead>
 				<tr class="text-center">
-					<th class="d-th text-light col-sm-auto">#</th>
+					<th class="d-th text-light col-sm-auto">ID</th>
 					<th class="d-th text-light col-sm-auto">CLIENTE</th>
 					<th class="d-th text-light col-sm-auto">FECHA PAGO</th>
 					<th class="d-th text-light col-sm-auto">MES</th>
@@ -369,7 +369,7 @@ class facturaControlador extends facturaModelo
                             </a>
                         </td>
                         <td>
-                            <a href="' . SERVERURL . 'facturas/invoice.php?id=' . mainModel::encryption($rows['id_cliente']) . '&idf=' . mainModel::encryption($rows['idfactura']) . '" type="button" class="btn btn-outline-primary btn-icon-text" target="_blank">
+                            <a href="' . SERVERURL . 'facturas/invoice.php?id=' . mainModel::encryption($rows['id_cliente']) . '&idf=' . mainModel::encryption($rows['idfactura']) . '&op=t' . '" type="button" class="btn btn-outline-primary btn-icon-text" target="_blank">
                                 <i class="mdi mdi-printer"></i>
                             </a>
                         </td>
@@ -446,7 +446,7 @@ class facturaControlador extends facturaModelo
             <table class="table table-hover">
                 <thead>
                     <tr class="text-center">
-                        <th class="d-th text-light col-sm-auto">#</th>
+                        <th class="d-th text-light col-sm-auto">ID</th>
                         <th class="d-th text-light col-sm-auto">CLIENTE</th>
                         <th class="d-th text-light col-sm-auto">FECHA PAGO</th>
                         <th class="d-th text-light col-sm-auto">MES</th>
@@ -483,7 +483,7 @@ class facturaControlador extends facturaModelo
                                 </a>
                             </td>
                             <td>
-                                <a href="' . SERVERURL . 'facturas/invoice.php?id=' . mainModel::encryption($rows['id_cliente']) . '&idf=' . mainModel::encryption($rows['idfactura']) . '" type="button" class="btn btn-outline-primary btn-icon-text" target="_blank">
+                                <a href="' . SERVERURL . 'facturas/invoice.php?id=' . mainModel::encryption($rows['id_cliente']) . '&idf=' . mainModel::encryption($rows['idfactura']) . '&op=h' . '" type="button" class="btn btn-outline-primary btn-icon-text" target="_blank">
                                     <i class="mdi mdi-printer"></i>
                                 </a>
                             </td>
@@ -543,6 +543,15 @@ class facturaControlador extends facturaModelo
         $id = mainModel::limpiar_cadena($id);
 
         return facturaModelo::datosDetalleFacturaModelo($id, $fechaHoy);
+    } //fin controlador
+
+    // Controlador datos de las facturas pendientes en el reporte del PDF
+    public function datosFacturasPendientesControlador($idcliente)
+    {
+        $idcliente = mainModel::decryption($idcliente);
+        $idcliente = mainModel::limpiar_cadena($idcliente);
+
+        return facturaModelo::datosFacturasPendientesModelo($idcliente);
     } //fin controlador
 
 

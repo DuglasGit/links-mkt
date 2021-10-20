@@ -5,6 +5,7 @@ require_once "../config/APP.php";
 
 $id = (isset($_GET['id'])) ? $_GET['id'] : 0;
 $idfactura = (isset($_GET['idf'])) ? $_GET['idf'] : 0;
+$opcion = (isset($_GET['op'])) ? $_GET['op'] : 0;
 
 //Instancia al controlador Factura
 require_once "../controllers/facturaControlador.php";
@@ -25,7 +26,7 @@ if ($datos_factura->rowCount() == 1) {
 
 	//Obtener datos del usuario que imprime la factura
 	session_start(['name' => 'LMR']);
-	
+
 
 	require "./fpdf.php";
 
@@ -48,27 +49,27 @@ if ($datos_factura->rowCount() == 1) {
 
 	/*----------  INFO. EMPRESA  ----------*/
 	$pdf->SetFont('Arial', '', 9);
-	$pdf->Cell(0, 6, utf8_decode($datos_empresa['domicilio'].", ".$datos_empresa['nombre_municipio'].", ".$datos_empresa['nombre_departamento']), 0, 0, 'C');
+	$pdf->Cell(0, 6, utf8_decode($datos_empresa['domicilio'] . ", " . $datos_empresa['nombre_municipio'] . ", " . $datos_empresa['nombre_departamento']), 0, 0, 'C');
 	$pdf->SetFont('Courier', 'B', 12);
 	$pdf->SetTextColor(169, 0, 0);
 	$pdf->Cell(-35, 10, utf8_decode($datos_factura['idfactura']), '', 0, 'C');
 	$pdf->Ln(4);
 	$pdf->SetFont('Arial', '', 9);
 	$pdf->SetTextColor(33, 33, 33);
-	$pdf->Cell(0, 6, utf8_decode("Teléfonos: ".$datos_empresa['telefono_empresa']), 0, 0, 'C');
+	$pdf->Cell(0, 6, utf8_decode("Teléfonos: " . $datos_empresa['telefono_empresa']), 0, 0, 'C');
 	$pdf->Ln(4);
-	$pdf->Cell(0, 6, utf8_decode("Correo: ".$datos_empresa['correo_empresa']), 0, 0, 'C');
+	$pdf->Cell(0, 6, utf8_decode("Correo: " . $datos_empresa['correo_empresa']), 0, 0, 'C');
 
 	$pdf->Ln(10);
 	$pdf->SetFont('Arial', '', 9);
 	$pdf->SetTextColor(33, 33, 33);
-	$pdf->Cell(27, 8, utf8_decode('Fecha de Emisión:'), 0, 0);
+	$pdf->Cell(47, 8, utf8_decode('Fecha de Emisión de la Factura:'), 0, 0);
 	$pdf->SetTextColor(97, 97, 97);
 	$pdf->Cell(27, 8, utf8_decode(date("d/m/Y", strtotime($datos_factura['fecha']))), 0, 0);
 	$pdf->Ln(4);
 	$fechaActual = date('d/m/Y H:i:s');
 	$pdf->SetTextColor(33, 33, 33);
-	$pdf->Cell(38, 8, utf8_decode('Fecha de Pago Realizado:'), 0, 0);
+	$pdf->Cell(30, 8, utf8_decode('Fecha de Impresión:'), 0, 0);
 	$pdf->SetTextColor(97, 97, 97);
 	$pdf->Cell(27, 8, utf8_decode($fechaActual), 0, 0);
 	$pdf->Ln(4);
@@ -117,42 +118,102 @@ if ($datos_factura->rowCount() == 1) {
 
 	$pdf->SetTextColor(97, 97, 97);
 
+
 	//detalles de la factura
 	$fechaHoy = date('Y/m/d');
 	$ins_det_factura = new facturaControlador();
-	$datos_detalle_factura = $ins_det_factura->datosDetalleFacturaControlador($id, $fechaHoy);
-	$datos_detalle_factura = $datos_detalle_factura->fetchAll();
-
+	$datos_detalle_factura = "";
 	$total = 0;
-	$mes_ini="";
-	$mes_fin="";
-	foreach($datos_detalle_factura as $items) {
-		
-		$subtotal = $items['cantidad'] * $items['precio'];
-		$subtotal=number_format($subtotal, 2, '.','');
-		$pdf->Cell(15, 8, utf8_decode($items['cantidad']), 'L', 0, 'C');
-		$pdf->Cell(106, 8, utf8_decode($items['id_producto_servicio'] . " - " . $items['nombre_producto_servicio'] . " - " . $items['mes_pagado']), 'L', 0, 'C');
-		$pdf->Cell(25, 8, utf8_decode(MONEDA . $items['precio']), 'L', 0, 'C');
+	$mes_ini = "";
+	$mes_fin = "";
+
+	if ($opcion == 't') {
+		$datos_detalle_factura = $ins_det_factura->datosDetalleFacturaControlador($id, $fechaHoy);
+		$datos_detalle_factura = $datos_detalle_factura->fetchAll();
+		foreach ($datos_detalle_factura as $items) {
+
+			$subtotal = $items['cantidad'] * $items['precio'];
+			$subtotal = number_format($subtotal, 2, '.', '');
+			$pdf->Cell(15, 8, utf8_decode($items['cantidad']), 'L', 0, 'C');
+			$pdf->Cell(106, 8, utf8_decode($items['id_factura'] . " - " . $items['id_producto_servicio'] . " - " . $items['nombre_producto_servicio'] . " - " . $items['mes_pagado']), 'L', 0);
+			$pdf->Cell(25, 8, utf8_decode(MONEDA . $items['precio']), 'L', 0, 'C');
+			$pdf->Cell(35, 8, utf8_decode(MONEDA . $subtotal), 'LR', 0, 'C');
+			if ($total == 0) {
+				$mes_ini = $items['mes_pagado'];
+				$mes_fin = $mes_ini;
+			} else {
+				$mes_fin = $mes_ini . "-" . $items['mes_pagado'];
+			}
+			$pdf->Ln(8);
+			$total += $subtotal;
+		}
+	} else if ($opcion == 'h') {
+		$datos_detalle_factura = $ins_det_factura->datosDetalleFacturaControlador($id, 0);
+		$datos = $datos_detalle_factura->fetch();
+		$subtotal = $datos['cantidad'] * $datos['precio'];
+		$subtotal = number_format($subtotal, 2, '.', '');
+		$pdf->Cell(15, 8, utf8_decode($datos['cantidad']), 'L', 0, 'C');
+		$pdf->Cell(106, 8, utf8_decode($datos['id_factura'] . " - " . $datos['id_producto_servicio'] . " - " . $datos['nombre_producto_servicio'] . " - " . $datos['mes_pagado']), 'L', 0, 'C');
+		$pdf->Cell(25, 8, utf8_decode(MONEDA . $datos['precio']), 'L', 0, 'C');
 		$pdf->Cell(35, 8, utf8_decode(MONEDA . $subtotal), 'LR', 0, 'C');
-		if($total==0){
-			$mes_ini=$items['mes_pagado'];
-			$mes_fin=$mes_ini;
-		}else{
-			$mes_fin=$mes_ini."-".$items['mes_pagado'];
+		if ($total == 0) {
+			$mes_ini = $datos['mes_pagado'];
+			$mes_fin = $mes_ini;
+		} else {
+			$mes_fin = $mes_ini . "-" . $datos['mes_pagado'];
 		}
 		$pdf->Ln(8);
-		$total+=$subtotal;
+		$total += $subtotal;
 	}
+
 	$pdf->SetTextColor(33, 33, 33);
 	$pdf->Cell(15, 8, utf8_decode(''), 'T', 0, 'C');
 	$pdf->Cell(106, 8, utf8_decode(''), 'T', 0, 'C');
 	$pdf->Cell(25, 8, utf8_decode('TOTAL'), 'LTB', 0, 'C');
-	$pdf->Cell(35, 8, utf8_decode(MONEDA .number_format($total,2,'.','')), 'LRTB', 0, 'C');
+	$pdf->Cell(35, 8, utf8_decode(MONEDA . number_format($total, 2, '.', '')), 'LRTB', 0, 'C');
 
-	
+	$pdf->SetFont('Courier', 'B', 8);
+	$ins_facturas_pendientes = new facturaControlador();
+	$datosp = $ins_facturas_pendientes->datosFacturasPendientesControlador($id);
+	$pendientes = "";
+	if ($datosp->RowCount() <= 0) {
+		$pdf->Ln(12);
+
+		$pdf->SetTextColor(97, 97, 97);
+		$pdf->MultiCell(0, 3, utf8_decode("SOLVENCIA: \nNO tiene pagos pendientes"), 0, 'J', false);
+	} else if ($datosp->RowCount() == 1) {
+		$pdf->Ln(12);
+		foreach ($datosp as $val){
+			$pendientes = $val['mes_pagado'];
+		}
+		$pdf->SetTextColor(97, 97, 97);
+		$pdf->MultiCell(0, 3, utf8_decode("SOLVENCIA: \nPendiente de pagar el mes de: " . $pendientes), 0, 'J', false);
+	} else if ($datosp->RowCount() > 1) {
+		$pdf->Ln(12);
+		
+		$total_pendientes = $datosp->RowCount();
+		$contador = 1;
+		foreach ($datosp as $val) {
+			if ($total_pendientes == 2 && $contador == 1) {
+				$pendientes = $pendientes . $val['mes_pagado'] . " y ";
+			} else if ($total_pendientes == 2 && $contador == 2) {
+				$pendientes = $pendientes . $val['mes_pagado'];
+			}else if ($total_pendientes > 2 && $contador >= 1 && $contador != $total_pendientes && $contador != $total_pendientes-1) {
+				$pendientes = $pendientes . $val['mes_pagado'] . ", ";
+			} else if ($total_pendientes > 2 && $contador >= 1 && $contador == $total_pendientes-1) {
+				$pendientes = $pendientes . $val['mes_pagado'] . " y ";
+			} else if ($total_pendientes > 2 && $contador >= 1 && $contador == $total_pendientes) {
+				$pendientes = $pendientes . $val['mes_pagado'];
+			}
+			$contador++;
+		}
+		$pdf->SetTextColor(97, 97, 97);
+		$pdf->MultiCell(0, 3, utf8_decode("SOLVENCIA: \nPendiente de pagar los meses de: " . $pendientes), 0, 'J', false);
+	}
 
 
-	$pdf->Output("I", "Factura_".$datos_factura['idfactura']."_".$datos_factura['nombre_cliente']."_".$mes_fin.".pdf", true);
+
+	$pdf->Output("I", "Factura_" . $datos_factura['idfactura'] . "_" . $datos_factura['nombre_cliente'] . "_" . $mes_fin . ".pdf", true);
 } else {
 ?>
 	<!DOCTYPE html>

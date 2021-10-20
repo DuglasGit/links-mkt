@@ -123,26 +123,41 @@ class facturaModelo extends mainModel
                     return $sql;
                     break;
                 }
-                case "unico_cancelado_pdf": {
-                    $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, factura.idfactura, factura.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, factura.fecha, factura.id_estado_pago, producto_servicio.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.cantidad, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN municipio ON (cliente.id_municipio=municipio.id_municipio) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=1 AND factura.idfactura=:ID");
+            case "unico_cancelado_pdf": {
+                    $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, factura.idfactura, factura.id_cliente, factura.fecha_pago, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, factura.fecha, factura.id_estado_pago, producto_servicio.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.cantidad, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN municipio ON (cliente.id_municipio=municipio.id_municipio) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=1 AND factura.idfactura=:ID");
                     $sql->bindParam(":ID", $id);
                     $sql->execute();
                     return $sql;
                     break;
                 }
         }
-
     }
 
     // Modelo datos del deltalle de la factura
     protected static function datosDetalleFacturaModelo($idcliente, $fechaHoy)
     {
-        $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, detalle_factura.cantidad, detalle_factura.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM detalle_factura JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) JOIN factura ON(detalle_factura.id_factura=factura.idfactura) WHERE factura.id_estado_pago=1 AND factura.id_cliente=:ID AND factura.fecha_pago=:FECHA_PAGO");
-        $sql->bindParam(":ID", $idcliente);
-        $sql->bindParam(":FECHA_PAGO", $fechaHoy);
+        if ($fechaHoy == 0) {
+            $sql = mainModel::conectar()->prepare("SELECT factura.fecha, detalle_factura.id_detalle_factura, detalle_factura.id_factura, detalle_factura.cantidad, detalle_factura.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM detalle_factura JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) JOIN factura ON(detalle_factura.id_factura=factura.idfactura) WHERE factura.id_estado_pago=1 AND factura.id_cliente=:ID ORDER BY factura.fecha");
+            $sql->bindParam(":ID", $idcliente);
+            $sql->execute();
+            return $sql;
+        } else {
+            $sql = mainModel::conectar()->prepare("SELECT factura.fecha, detalle_factura.id_detalle_factura, detalle_factura.id_factura, detalle_factura.cantidad, detalle_factura.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM detalle_factura JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) JOIN factura ON(detalle_factura.id_factura=factura.idfactura) WHERE factura.id_estado_pago=1 AND factura.id_cliente=:ID AND factura.fecha_pago=:FECHA_PAGO ORDER BY factura.fecha");
+            $sql->bindParam(":ID", $idcliente);
+            $sql->bindParam(":FECHA_PAGO", $fechaHoy);
+            $sql->execute();
+            return $sql;
+        }
+    }
 
+
+    // modelo para buscar las facturas pendientes en el PDF al imprimir las facturas
+    protected static function datosFacturasPendientesModelo($idcliente)
+    {
+        $sql = mainModel::conectar()->prepare("SELECT factura.fecha, detalle_factura.mes_pagado FROM detalle_factura JOIN factura ON(detalle_factura.id_factura=factura.idfactura) WHERE factura.id_cliente=:ID AND factura.id_estado_pago=2 ORDER BY factura.fecha");
+        $sql->bindParam(":ID", $idcliente);
         $sql->execute();
-        return $sql;
+        return $sql;   
     }
 
 

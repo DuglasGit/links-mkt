@@ -35,7 +35,7 @@ if (!isset($_SESSION['busqueda_factura_cancelada_hoy']) && empty($_SESSION['busq
                             <div class="input-group">
                                 <input type="search" class="form-control" name="busqueda_inicial" id="busqueda_inicial" placeholder="Buscar Cliente" aria-label="Buscar Cliente" aria-describedby="basic-addon2">
                                 <div class="input-group-append">
-                                    <button class="btn btn-sm btn-inverse-primary" type="submit">Buscar</button>
+                                    <button class="btn btn-sm btn-inverse-success" type="submit">Buscar</button>
                                 </div>
                             </div>
                         </div>
