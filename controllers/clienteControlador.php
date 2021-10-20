@@ -282,7 +282,7 @@ class clienteControlador extends clienteModelo
 		return $tabla;
 	} // fin controlador
 
-
+	//Controlador para agregar nuevo cliente a la base de datos y al router
 	public function agregarClienteControlador()
 	{
 		$nombreCliente = mainModel::limpiar_cadena($_POST['nombreCliente']);
@@ -301,9 +301,33 @@ class clienteControlador extends clienteModelo
 		$perfil = mainModel::limpiar_cadena($_POST['perfil']);
 		$ipCliente = mainModel::limpiar_cadena($_POST['ipCliente']);
 
+		// comprobar privilegios
+		session_start(['name' => 'LMR']);
+		if ($_SESSION['id_rol_lmr'] > 2) {
+			$alerta = [
+				"Alerta" => "exitoredireccion",
+				"Titulo" => "PETICIÓN DENEGADA",
+				"Texto" => "No tienes los permisos necesarios para realizar esta operación",
+				"Tipo" => "error",
+				"URL" => SERVERURL . "clientes-activos/"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
 
+		/*== comprobar campos vacios ==*/
+		if ($nombreCliente == "" || $municipioCliente == "" || $direccionCliente == "" || $tipoCliente == "" || $planCliente == "" || $ipClientec == "" || $nombreServicio == "" || $passServicio == "" || $tipoServicio == "" || $perfil == "" || $ipCliente == "" || $fechaContratoCliente == "" || $telefonoCliente == "" || $gpsCliente == "" || $estadoContratoCliente == "") {
+			$alerta = [
+				"Alerta" => "simple",
+				"Titulo" => "Ocurrió un error inesperado",
+				"Texto" => "No has llenado todos los campos que son obligatorios",
+				"Tipo" => "error"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
 
-		/*== Comprobando Nmbre Usuario ==*/
+		/*== Comprobando Nmbre del cliente ==*/
 		$check_usuario = mainModel::ejecutar_consulta_simple("SELECT nombre_cliente FROM cliente WHERE nombre_cliente='$nombreCliente'");
 
 		if ($check_usuario->rowCount() > 0) {
@@ -424,6 +448,20 @@ class clienteControlador extends clienteModelo
 		// recibiendo ip
 		$ip = mainModel::decryption($_POST['cliente_ip_update']);
 
+		// comprobar privilegios
+		session_start(['name' => 'LMR']);
+		if ($_SESSION['id_rol_lmr'] > 2) {
+			$alerta = [
+				"Alerta" => "exitoredireccion",
+				"Titulo" => "PETICIÓN DENEGADA",
+				"Texto" => "No tienes los permisos necesarios para realizar esta operación",
+				"Tipo" => "error",
+				"URL" => SERVERURL . "clientes-activos/"
+			];
+			echo json_encode($alerta);
+			exit();
+		}
+
 		//comprobar el Cliente en la base de datos
 		$check_cliente = mainModel::ejecutar_consulta_simple("SELECT * FROM contrato_servicio WHERE ip_asignada='$ip'");
 
@@ -459,7 +497,7 @@ class clienteControlador extends clienteModelo
 		$ipClienteU = mainModel::limpiar_cadena($_POST['ipCliente_Up']);
 
 		/*== comprobar campos vacios ==*/
-		if ($nombreClienteU == "" || $municipioClienteU == "" || $direccionClienteU == "" || $tipoClienteU == "" || $planClienteU == "" || $ipClientecU == "" || $nombreServicioU == "" || $passServicioU == "" || $tipoServicioU == "" || $perfilU == "" || $ipClienteU == "") {
+		if ($nombreClienteU == "" || $municipioClienteU == "" || $direccionClienteU == "" || $tipoClienteU == "" || $planClienteU == "" || $ipClientecU == "" || $nombreServicioU == "" || $passServicioU == "" || $tipoServicioU == "" || $perfilU == "" || $ipClienteU == "" || $fechaContratoClienteU == "" || $telefonoClienteU == "" || $gpsClienteU == "" || $estadoContratoClienteU == "") {
 			$alerta = [
 				"Alerta" => "simple",
 				"Titulo" => "Ocurrió un error inesperado",
@@ -605,7 +643,7 @@ class clienteControlador extends clienteModelo
 
 		// comprobar privilegios
 		session_start(['name' => 'LMR']);
-		if ($_SESSION['id_rol_lmr'] != 1) {
+		if ($_SESSION['id_rol_lmr'] > 2) {
 			$alerta = [
 				"Alerta" => "simple",
 				"Titulo" => "ACCIÓN DENEGADA",
@@ -701,7 +739,7 @@ class clienteControlador extends clienteModelo
 
 		// comprobar privilegios
 		session_start(['name' => 'LMR']);
-		if ($_SESSION['id_rol_lmr'] != 1) {
+		if ($_SESSION['id_rol_lmr'] > 2) {
 			$alerta = [
 				"Alerta" => "simple",
 				"Titulo" => "ACCIÓN DENEGADA",

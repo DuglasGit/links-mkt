@@ -1,6 +1,6 @@
 <nav class="navbar p-0 fixed-top d-flex flex-row d-pri">
     <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo-mini" href="../../index.html"><img src="<?php echo SERVERURL; ?>views/assets/images/logo-links-s.svg" alt="logo" /></a>
+        <a class="navbar-brand brand-logo-mini" href="<?php echo SERVERURL; ?>home/"><img src="<?php echo SERVERURL; ?>views/assets/images/logo-links-s.svg" alt="logo" /></a>
     </div>
     <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -105,7 +105,13 @@
             <li class="nav-item dropdown">
                 <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
                     <div class="navbar-profile">
-                        <img class="img-xs rounded-circle" src="<?php echo SERVERURL; ?>views/assets/images/faces/face15.jpg" alt="">
+                    <?php if ($_SESSION['id_rol_lmr'] == 1) { ?>
+                            <img class="img-xs rounded-circle" src="<?php echo SERVERURL; ?>views/assets/images/faces/admin.jpg" alt="">
+                        <?php } else if ($_SESSION['id_rol_lmr'] == 2) { ?>
+                            <img class="img-xs rounded-circle" src="<?php echo SERVERURL; ?>views/assets/images/faces/office.jpg" alt="">
+                        <?php } else if ($_SESSION['id_rol_lmr'] == 3) { ?>
+                            <img class="img-xs rounded-circle" src="<?php echo SERVERURL; ?>views/assets/images/faces/tecnico.jpg" alt="">
+                        <?php } ?>
                         <p class="mb-0 d-none d-sm-block navbar-profile-name"><?php echo $_SESSION['usuario_lmr']; ?></p>
                         <i class="mdi mdi-menu-down d-none d-sm-block"></i>
                     </div>

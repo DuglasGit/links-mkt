@@ -8,7 +8,13 @@
             <div class="profile-desc">
                 <div class="profile-pic">
                     <div class="count-indicator">
-                        <img class="img-xs rounded-circle" src="<?php echo SERVERURL; ?>views/assets/images/faces/face15.jpg" alt="">
+                        <?php if ($_SESSION['id_rol_lmr'] == 1) { ?>
+                            <img class="img-xs rounded-circle" src="<?php echo SERVERURL; ?>views/assets/images/faces/admin.jpg" alt="">
+                        <?php } else if ($_SESSION['id_rol_lmr'] == 2) { ?>
+                            <img class="img-xs rounded-circle" src="<?php echo SERVERURL; ?>views/assets/images/faces/office.jpg" alt="">
+                        <?php } else if ($_SESSION['id_rol_lmr'] == 3) { ?>
+                            <img class="img-xs rounded-circle" src="<?php echo SERVERURL; ?>views/assets/images/faces/tecnico.jpg" alt="">
+                        <?php } ?>
                         <span class="count bg-success"></span>
                     </div>
                     <div class="profile-name">
@@ -16,23 +22,7 @@
                         <span><?php echo $_SESSION['rol_lmr']; ?></span>
                     </div>
                 </div>
-                <?php if ($_SESSION['id_rol_lmr'] == 1) { ?>
-                    <a href="#" id="profile-dropdown" data-toggle="dropdown">
-                        <i class="mdi mdi-dots-vertical"></i>
-                    </a>
-                <?php } ?>
-                <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
-                    <a href="#" class="dropdown-item preview-item" data-toggle="modal" data-target="#modalEditarUsuario">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-dark rounded-circle">
-                                <i class="mdi mdi-account-settings text-primary"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <p class="preview-subject ellipsis mb-1 text-small">Ajustes de cuenta</p>
-                        </div>
-                    </a>
-                </div>
+
             </div>
         </li>
         <li class="nav-item nav-category">
@@ -73,7 +63,7 @@
             </div>
         </li>
 
-
+        <?php if ($_SESSION['id_rol_lmr'] <2) { ?>
         <li class="nav-item menu-items">
             <a class="nav-link" data-toggle="collapse" href="#ui-facturas" aria-expanded="false" aria-controls="ui-facturas">
                 <span class="menu-icon">
@@ -90,6 +80,7 @@
                 </ul>
             </div>
         </li>
+        <?php } ?>
         <li class="nav-item menu-items">
             <a class="nav-link" data-toggle="collapse" href="#ui-trabajos" aria-expanded="false" aria-controls="ui-trabajos">
                 <span class="menu-icon">

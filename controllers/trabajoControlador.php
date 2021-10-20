@@ -33,7 +33,7 @@ class trabajoControlador extends trabajoModelo
 
         // comprobar privilegios
         session_start(['name' => 'LMR']);
-        if ($_SESSION['id_rol_lmr'] != 1) {
+        if ($_SESSION['id_rol_lmr'] >2) {
             $alerta = [
                 "Alerta" => "simple",
                 "Titulo" => "PETICIÓN DENEGADA",
@@ -105,7 +105,7 @@ class trabajoControlador extends trabajoModelo
 
         // comprobar privilegios
         session_start(['name' => 'LMR']);
-        if ($_SESSION['id_rol_lmr'] != 1) {
+        if ($_SESSION['id_rol_lmr'] >2) {
             $alerta = [
                 "Alerta" => "exitoredireccion",
                 "Titulo" => "PETICIÓN DENEGADA",
@@ -377,7 +377,7 @@ class trabajoControlador extends trabajoModelo
 
         // comprobar privilegios
         session_start(['name' => 'LMR']);
-        if ($_SESSION['id_rol_lmr'] != 1) {
+        if ($_SESSION['id_rol_lmr'] >2) {
             $alerta = [
                 "Alerta" => "exitoredireccion",
                 "Titulo" => "PETICIÓN DENEGADA",
@@ -513,6 +513,18 @@ class trabajoControlador extends trabajoModelo
         $id_orden = mainModel::decryption($_POST['trabajo_finalizado_delete']);
         $id_orden = mainModel::limpiar_cadena($id_orden);
 
+        // comprobar privilegios
+        session_start(['name' => 'LMR']);
+        if ($_SESSION['id_rol_lmr'] >3) {
+            $alerta = [
+                "Alerta" => "simple",
+                "Titulo" => "PETICIÓN DENEGADA",
+                "Texto" => "No tienes los permisos necesarios para realizar esta operación",
+                "Tipo" => "error"
+            ];
+            echo json_encode($alerta);
+            exit();
+        }
 
         //comprobar la orden de trabajo en la base de datos
         $check_trabajo = mainModel::ejecutar_consulta_simple("SELECT id_orden_trabajo FROM trabajo_terminado WHERE id_orden_trabajo='$id_orden'");
@@ -587,6 +599,19 @@ class trabajoControlador extends trabajoModelo
         $id_orden = mainModel::decryption($_POST['orden_trabajo_finish']);
         $id_orden = mainModel::limpiar_cadena($id_orden);
 
+
+        // comprobar privilegios
+        session_start(['name' => 'LMR']);
+        if ($_SESSION['id_rol_lmr'] >3) {
+            $alerta = [
+                "Alerta" => "simple",
+                "Titulo" => "PETICIÓN DENEGADA",
+                "Texto" => "No tienes los permisos necesarios para realizar esta operación",
+                "Tipo" => "error"
+            ];
+            echo json_encode($alerta);
+            exit();
+        }
 
         //comprobar la orden de trabajo en la base de datos
         $check_trabajo = mainModel::ejecutar_consulta_simple("SELECT id_orden_trabajo FROM orden_trabajo WHERE id_orden_trabajo='$id_orden'");

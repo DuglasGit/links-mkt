@@ -1,6 +1,6 @@
 <?php
 if ($login_controlador->encryption($_SESSION['id_lmr']) != $pagina[1]) {
-    if ($_SESSION['id_rol_lmr'] != 1) {
+    if ($_SESSION['id_rol_lmr'] >2) {
         $login_controlador->forzar_cierre_sesion_controlador();
         exit();
     }

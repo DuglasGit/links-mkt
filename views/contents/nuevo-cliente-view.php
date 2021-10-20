@@ -1,9 +1,8 @@
 <?php
-if ($_SESSION['id_rol_lmr'] != 1) {
+if ($_SESSION['id_rol_lmr'] >2) {
     $login_controlador->forzar_cierre_sesion_controlador();
     exit();
 }
-
 ?>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
