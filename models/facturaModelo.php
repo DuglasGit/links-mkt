@@ -4,7 +4,7 @@ require_once "mainModel.php";
 class facturaModelo extends mainModel
 {
 
-    /* -- Modelo agregar orden trabaja --*/
+    /* -- Modelo generar facturas en serie --*/
     protected static function generarFacturaEnSerieModelo($datos)
     {
 
@@ -82,35 +82,22 @@ class facturaModelo extends mainModel
         }
     }
 
-    /* -- Modelo Eliminar orden trabaja --*/
-    protected static function eliminar_trabajo_modelo($id)
+
+    /* -- Modelo Eliminar factura y detalle cuando está pendiente de pago --*/
+    protected static function EliminarDetalleFacturaModelo($id, $tabla)
     {
-
-        $sql = mainModel::conectar()->prepare("DELETE FROM orden_trabajo WHERE id_orden_trabajo=:ID_ORDEN_TRABAJO");
-
-        $sql->bindParam(":ID_ORDEN_TRABAJO", $id);
-        $sql->execute();
-
-        return $sql;
-    }
-
-
-    /* -- Modelo Eliminar orden trabajo --*/
-    protected static function eliminar_trabajo_terminado_modelo($id, $opcion, $operacion)
-    {
-        switch ($opcion) {
-            case 1: {
-                    $sql = mainModel::conectar()->prepare("DELETE FROM trabajo_terminado WHERE id_orden_trabajo=:ID_ORDEN_TRABAJO");
-                    $sql->bindParam(":ID_ORDEN_TRABAJO", $id);
+        switch ($tabla) {
+            case "detalle": {
+                    $sql = mainModel::conectar()->prepare("DELETE FROM detalle_factura WHERE id_detalle_factura=:ID");
+                    $sql->bindParam(":ID", $id);
                     $sql->execute();
                     return $sql;
 
                     break;
                 }
-            case 2: {
-                    $sql = mainModel::conectar()->prepare("UPDATE orden_trabajo SET estado_orden=:ESTADO_ORDEN WHERE id_orden_trabajo=:ID_ORDEN_TRABAJO");
-                    $sql->bindParam(":ESTADO_ORDEN", $operacion);
-                    $sql->bindParam(":ID_ORDEN_TRABAJO", $id);
+            case "factura": {
+                    $sql = mainModel::conectar()->prepare("DELETE FROM factura WHERE idfactura=:ID");
+                    $sql->bindParam(":ID", $id);
                     $sql->execute();
                     return $sql;
                     break;
@@ -118,95 +105,46 @@ class facturaModelo extends mainModel
         }
     }
 
-
-    /* -- Modelo Finalizar orden trabajo --*/
-    protected static function finalizar_trabajo_modelo($id, $opcion, $operacion)
-    {
-        switch ($opcion) {
-            case 1: {
-                    $sql = mainModel::conectar()->prepare("INSERT INTO trabajo_terminado (id_orden_trabajo) VALUES(:ID_ORDEN_TRABAJO)");
-                    $sql->bindParam(":ID_ORDEN_TRABAJO", $id);
-                    $sql->execute();
-                    return $sql;
-
-                    break;
-                }
-            case 2: {
-                    $sql = mainModel::conectar()->prepare("UPDATE orden_trabajo SET estado_orden=:ESTADO_ORDEN WHERE id_orden_trabajo=:ID_ORDEN_TRABAJO");
-                    $sql->bindParam(":ESTADO_ORDEN", $operacion);
-                    $sql->bindParam(":ID_ORDEN_TRABAJO", $id);
-                    $sql->execute();
-                    return $sql;
-                    break;
-                }
-        }
-    }
-
-    // Modelo datos del orden trabaja
+    // Modelo para datos de la edición de la factura Pendiente de pago
     protected static function datosFacturaModelo($tipo, $id)
     {
-        if ($tipo == "Unico") {
-            $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, factura.idfactura, factura.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, factura.fecha, factura.id_estado_pago, producto_servicio.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.cantidad, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN municipio ON (cliente.id_municipio=municipio.id_municipio) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=2 AND factura.idfactura=:ID");
-            $sql->bindParam(":ID", $id);
+        switch ($tipo) {
+            case "Unico": {
+                    $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, factura.idfactura, factura.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, factura.fecha, factura.id_estado_pago, producto_servicio.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.cantidad, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN municipio ON (cliente.id_municipio=municipio.id_municipio) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=2 AND factura.idfactura=:ID");
+                    $sql->bindParam(":ID", $id);
+                    $sql->execute();
+                    return $sql;
+                    break;
+                }
+            case "unico_cancelado": {
+                    $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, factura.idfactura, factura.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, factura.fecha, factura.id_estado_pago, producto_servicio.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.cantidad, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN municipio ON (cliente.id_municipio=municipio.id_municipio) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=1 AND factura.idfactura=:ID");
+                    $sql->bindParam(":ID", $id);
+                    $sql->execute();
+                    return $sql;
+                    break;
+                }
+                case "unico_cancelado_pdf": {
+                    $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, factura.idfactura, factura.id_cliente, cliente.nombre_cliente, cliente.telefono_cliente, municipio.nombre_municipio, cliente.domicilio, factura.fecha, factura.id_estado_pago, producto_servicio.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.cantidad, detalle_factura.precio, detalle_factura.mes_pagado FROM factura JOIN cliente ON (factura.id_cliente=cliente.id_cliente) JOIN municipio ON (cliente.id_municipio=municipio.id_municipio) JOIN detalle_factura ON (factura.idfactura=detalle_factura.id_factura) JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) WHERE factura.id_estado_pago=1 AND factura.idfactura=:ID");
+                    $sql->bindParam(":ID", $id);
+                    $sql->execute();
+                    return $sql;
+                    break;
+                }
         }
 
-        $sql->execute();
-        return $sql;
-    }
-
-    // Modelo datos del usuario que atiende
-    protected static function datosUsuarioFacturaModelo($idfactura)
-    {
-        $sql = mainModel::conectar()->prepare("SELECT usuario.id_usuario, usuario.nombre_usuario, rol_usuario.id_rol, rol_usuario.nombre_rol FROM usuario JOIN rol_usuario ON (usuario.id_rol=rol_usuario.id_rol) JOIN factura ON (factura.id_usuario=usuario.id_usuario) WHERE factura.idfactura=:ID");
-        $sql->bindParam(":ID", $idfactura);
-
-        $sql->execute();
-        return $sql;
     }
 
     // Modelo datos del deltalle de la factura
-    protected static function datosDetalleFacturaModelo($idcliente)
+    protected static function datosDetalleFacturaModelo($idcliente, $fechaHoy)
     {
-        $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, detalle_factura.cantidad, detalle_factura.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM detalle_factura JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) JOIN factura ON(detalle_factura.id_factura=factura.idfactura) WHERE factura.id_estado_pago=2 AND factura.id_cliente=:ID");
+        $sql = mainModel::conectar()->prepare("SELECT detalle_factura.id_detalle_factura, detalle_factura.cantidad, detalle_factura.id_producto_servicio, producto_servicio.nombre_producto_servicio, detalle_factura.precio, detalle_factura.mes_pagado FROM detalle_factura JOIN producto_servicio ON (detalle_factura.id_producto_servicio=producto_servicio.id_producto_servicio) JOIN factura ON(detalle_factura.id_factura=factura.idfactura) WHERE factura.id_estado_pago=1 AND factura.id_cliente=:ID AND factura.fecha_pago=:FECHA_PAGO");
         $sql->bindParam(":ID", $idcliente);
+        $sql->bindParam(":FECHA_PAGO", $fechaHoy);
 
         $sql->execute();
         return $sql;
     }
 
-    //modelo para llenar select de usuario responsable del trabajo
-    protected static function datosResponsable($tipo, $id)
-    {
-
-        switch ($tipo) {
-            case 0: {
-                    $sql = mainModel::conectar()->prepare("SELECT usuario.id_usuario, usuario.nombre_usuario FROM usuario JOIN orden_trabajo ON (usuario.id_usuario=orden_trabajo.id_usuario) WHERE orden_trabajo.id_orden_trabajo=:ID");
-                    $sql->bindParam(":ID", $id);
-                    $sql->execute();
-                    return $sql;
-                    break;
-                }
-            case 1: {
-                    $sql = mainModel::conectar()->prepare("SELECT id_usuario, nombre_usuario FROM usuario");
-                    $sql->execute();
-                    return $sql;
-                    break;
-                }
-            case 2: {
-                    $sql = mainModel::conectar()->prepare("SELECT tipo_trabajo.id_tipo_trabajo, tipo_trabajo.nombre_tipo_trabajo FROM tipo_trabajo JOIN orden_trabajo ON (tipo_trabajo.id_tipo_trabajo=orden_trabajo.id_tipo_trabajo) WHERE orden_trabajo.id_orden_trabajo=:ID");
-                    $sql->bindParam(":ID", $id);
-                    $sql->execute();
-                    return $sql;
-                    break;
-                }
-            case 3: {
-                    $sql = mainModel::conectar()->prepare("SELECT id_tipo_trabajo, nombre_tipo_trabajo FROM tipo_trabajo");
-                    $sql->execute();
-                    return $sql;
-                    break;
-                }
-        }
-    }
 
     // Modelo para actualizar la factura
     protected static function actualizarFacturaModelo($datos)
@@ -222,7 +160,7 @@ class facturaModelo extends mainModel
         return $sql;
     }
 
-    // Modelo para actualizar la factura
+    // Modelo para actualizar el detalle de la factura
     protected static function actualizarDetalleFacturaModelo($datos)
     {
         $sql = mainModel::conectar()->prepare("UPDATE detalle_factura SET id_factura=:IDFACTURA, id_producto_servicio=:ID_PRODUCTO_SERVICIO, precio=:PRECIO, mes_pagado=:MES_PAGADO WHERE id_detalle_factura=:ID_DETALLE_FACTURA");
@@ -237,7 +175,21 @@ class facturaModelo extends mainModel
     }
 
 
-    //modelo para llenar selects de formulario actualizar-cliente
+    // Modelo para actualizar estado del pago de la factura
+    protected static function PagarFacturaModelo($datos)
+    {
+        $sql = mainModel::conectar()->prepare("UPDATE factura SET id_usuario=:ID_USUARIO, id_estado_pago=:ID_ESTADO_PAGO, fecha_pago=:FECHA_PAGO WHERE idfactura=:IDFACTURA");
+        $sql->bindParam(":ID_USUARIO", $datos['ID_USUARIO']);
+        $sql->bindParam(":ID_ESTADO_PAGO", $datos['ID_ESTADO_PAGO']);
+        $sql->bindParam(":FECHA_PAGO", $datos['FECHA_PAGO']);
+        $sql->bindParam(":IDFACTURA", $datos['IDFACTURA']);
+        $sql->execute();
+
+        return $sql;
+    }
+
+
+    //modelo para llenar selects de formulario actualizar-factura
     protected static function datosSelect($tipo, $id, $tabla)
     {
         switch ($tabla) {

@@ -15,7 +15,7 @@
             <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#modalNuevaFactura">
                 <i class="mdi mdi-file d-block mb-1"></i> Generar Facturas Individuales </button>
             <a type="button" href="<?php echo SERVERURL; ?>facturas-canceladas/" class="btn btn-outline-secondary">
-                <i class="mdi mdi-file-check d-block mb-1"></i> Listar Facturas Pagadas </a>
+                <i class="mdi mdi-file-check d-block mb-1"></i> Ver Facturas Pagadas Hoy </a>
         </div>
     </div>
 </div>
@@ -31,11 +31,11 @@ if (!isset($_SESSION['busqueda_factura']) && empty($_SESSION['busqueda_factura']
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12 col-md-10">
-                    <form class="form-inline FormularioAjax" action="<?php echo SERVERURL; ?>ajax/buscadorAjax.php" method="POST" autocomplete="off">
+                    <form class="form-inline FormularioAjax" action="<?php echo SERVERURL; ?>ajax/buscadorAjax.php" method="POST" data-form="search" autocomplete="off">
                         <input type="hidden" name="modulo" value="factura">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="search" class="form-control" name="busqueda_inicial" id="busqueda_inicial" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input type="search" class="form-control" name="busqueda_inicial" id="busqueda_inicial" placeholder="Buscar Cliente" aria-label="Buscar Cliente" aria-describedby="basic-addon2">
                                 <div class="input-group-append">
                                     <button class="btn btn-sm btn-inverse-primary" type="submit">Buscar</button>
                                 </div>
@@ -70,7 +70,7 @@ if (!isset($_SESSION['busqueda_factura']) && empty($_SESSION['busqueda_factura']
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12 col-md-10">
-                    <form class="form-inline FormularioAjax" action="<?php echo SERVERURL; ?>ajax/buscadorAjax.php" method="POST" autocomplete="off">
+                    <form class="form-inline FormularioAjax" action="<?php echo SERVERURL; ?>ajax/buscadorAjax.php" method="POST" data-form="search-delete" autocomplete="off">
                         <input type="hidden" name="modulo" value="factura">
                         <input type="hidden" name="eliminar_busqueda" value="eliminar">
                         <div class="my-1 mr-sm-2 flexbox">
@@ -169,7 +169,7 @@ if (!isset($_SESSION['busqueda_factura']) && empty($_SESSION['busqueda_factura']
                             <select class="custom-select-sm form-control form-control-sm d-inp-white" name="precio_reg" id="precio_reg">
                                 <option selected value="">Seleccionar</option>
                                 <?php foreach ($select_precio as $opciones) : ?>
-                                    <option value="<?php echo $opciones['precio'] ?>"><?php echo $opciones['precio']." | ".$opciones['nombre_plan']; ?></option>
+                                    <option value="<?php echo $opciones['precio'] ?>"><?php echo $opciones['precio'] . " | " . $opciones['nombre_plan']; ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>

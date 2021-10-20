@@ -10,7 +10,7 @@ $idfactura = (isset($_GET['idf'])) ? $_GET['idf'] : 0;
 require_once "../controllers/facturaControlador.php";
 $ins_factura = new facturaControlador();
 
-$datos_factura = $ins_factura->datosFacturaControlador("Unico", $idfactura);
+$datos_factura = $ins_factura->datosFacturaControlador("unico_cancelado_pdf", $idfactura);
 
 if ($datos_factura->rowCount() == 1) {
 
@@ -24,9 +24,7 @@ if ($datos_factura->rowCount() == 1) {
 	$datos_empresa = $datos_empresa->fetch();
 
 	//Obtener datos del usuario que imprime la factura
-	$datos_usuario = $ins_factura->datosUsuarioFacturaControlador($id);
-	$datos_usuario = $datos_usuario->fetch();
-
+	session_start(['name' => 'LMR']);
 	
 
 	require "./fpdf.php";
@@ -77,7 +75,7 @@ if ($datos_factura->rowCount() == 1) {
 	$pdf->SetTextColor(33, 33, 33);
 	$pdf->Cell(21, 8, utf8_decode('Atendido por:'), "", 0, 0);
 	$pdf->SetTextColor(97, 97, 97);
-	$pdf->Cell(13, 8, utf8_decode($datos_usuario['nombre_usuario']), 0, 0);
+	$pdf->Cell(13, 8, utf8_decode($_SESSION['usuario_lmr']), 0, 0);
 
 	$pdf->Ln(8);
 
@@ -120,8 +118,9 @@ if ($datos_factura->rowCount() == 1) {
 	$pdf->SetTextColor(97, 97, 97);
 
 	//detalles de la factura
+	$fechaHoy = date('Y/m/d');
 	$ins_det_factura = new facturaControlador();
-	$datos_detalle_factura = $ins_det_factura->datosDetalleFacturaControlador($id);
+	$datos_detalle_factura = $ins_det_factura->datosDetalleFacturaControlador($id, $fechaHoy);
 	$datos_detalle_factura = $datos_detalle_factura->fetchAll();
 
 	$total = 0;

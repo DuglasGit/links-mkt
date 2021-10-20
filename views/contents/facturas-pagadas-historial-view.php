@@ -11,26 +11,26 @@
     <div class="card-body text-center">
         <div class="btn-group" role="group" aria-label="Basic example">
             <a type="button" href="<?php echo SERVERURL; ?>facturacion/" class="btn btn-outline-secondary">
-                <i class="mdi mdi-file-check d-block mb-1"></i> Ver Facturas Pendientes de Pago </a>
-            <a type="button" href="<?php echo SERVERURL; ?>facturas-pagadas-historial/" class="btn btn-outline-secondary">
-                <i class="mdi mdi-file-check d-block mb-1"></i> Ver Historial de Pagos </a>
+                <i class="mdi mdi-file-check d-block mb-1"></i> Ver Facturas No Pagadas </a>
+            <a type="button" href="<?php echo SERVERURL; ?>facturas-canceladas/" class="btn btn-outline-secondary">
+                <i class="mdi mdi-file-check d-block mb-1"></i> Ver Factruas Pagadas Hoy </a>
         </div>
     </div>
 </div>
 
 <?php
-if (!isset($_SESSION['busqueda_factura_cancelada_hoy']) && empty($_SESSION['busqueda_factura_cancelada_hoy'])) {
+if (!isset($_SESSION['busqueda_factura_historial']) && empty($_SESSION['busqueda_factura_historial'])) {
 ?>
     <!-- card tabla usuarios -->
     <div class="card d-pri">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-light text-center">LISTA DE FACTURAS PAGADAS HOY</h6>
+            <h6 class="m-0 font-weight-bold text-light text-center">HISTORIAL DE PAGOS REALIZADOS HASTA LA FECHA</h6>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12 col-md-10">
                     <form class="form-inline FormularioAjax" action="<?php echo SERVERURL; ?>ajax/buscadorAjax.php" method="POST" data-form="search" autocomplete="off">
-                        <input type="hidden" name="modulo" value="factura_cancelada_hoy">
+                        <input type="hidden" name="modulo" value="factura_historial">
                         <div class="form-group">
                             <div class="input-group">
                                 <input type="search" class="form-control" name="busqueda_inicial" id="busqueda_inicial" placeholder="Buscar Cliente" aria-label="Buscar Cliente" aria-describedby="basic-addon2">
@@ -49,7 +49,7 @@ if (!isset($_SESSION['busqueda_factura_cancelada_hoy']) && empty($_SESSION['busq
                 require_once "./controllers/facturaControlador.php";
                 $ins_trabajo = new facturaControlador();
 
-                echo $ins_trabajo->PaginadorFacturasCanceladasControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
+                echo $ins_trabajo->PaginadorHistorialFacturasCanceladasControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
 
                 ?>
             </div>
@@ -63,16 +63,16 @@ if (!isset($_SESSION['busqueda_factura_cancelada_hoy']) && empty($_SESSION['busq
     <!-- card tabla facturas -->
     <div class="card d-pri">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-light text-center">LISTA DE FACTURAS PAGADAS HOY</h6>
+            <h6 class="m-0 font-weight-bold text-light text-center">HISTORIAL DE PAGOS REALIZADOS HASTA LA FECHA</h6>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12 col-md-10">
                     <form class="form-inline FormularioAjax" action="<?php echo SERVERURL; ?>ajax/buscadorAjax.php" method="POST" data-form="search-delete" autocomplete="off">
-                        <input type="hidden" name="modulo" value="factura_cancelada_hoy">
+                        <input type="hidden" name="modulo" value="factura_historial">
                         <input type="hidden" name="eliminar_busqueda" value="eliminar">
                         <div class="my-1 mr-sm-2 flexbox">
-                            <label class="text-warning">“Resultados de la Búsqueda=><?php echo $_SESSION['busqueda_factura_cancelada_hoy']; ?>”</label>
+                            <label class="text-warning">“Resultados de la Búsqueda=><?php echo $_SESSION['busqueda_factura_historial']; ?>”</label>
                         </div>
 
                         <button type="submit" class="btn btn-sm btn-inverse-danger"><i class="far fa-trash-alt"></i> &nbsp; ELIMINAR BÚSQUEDA</button>
@@ -88,7 +88,7 @@ if (!isset($_SESSION['busqueda_factura_cancelada_hoy']) && empty($_SESSION['busq
                 require_once "./controllers/facturaControlador.php";
                 $ins_trabajo = new facturaControlador();
 
-                echo $ins_trabajo->PaginadorFacturasCanceladasControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], $_SESSION['busqueda_factura_cancelada_hoy']);
+                echo $ins_trabajo->PaginadorHistorialFacturasCanceladasControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], $_SESSION['busqueda_factura_historial']);
 
                 ?>
             </div>

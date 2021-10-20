@@ -7,6 +7,8 @@ if (isset($_POST['busqueda_inicial']) || isset($_POST['eliminar_busqueda']) || i
 
     $data_url = [
         "factura" => "facturacion",
+        "factura_cancelada_hoy" => "facturas-canceladas",
+        "factura_historial" => "facturas-pagadas-historial",
         "cliente" => "cliente-search",
         "dosinput" => "dosinput-search"
     ];

@@ -2,12 +2,12 @@
 $peticionAjax = true;
 require_once "../config/APP.php";
 
-if (isset($_POST['fechaAsignada']) || isset($_POST['mes']) || isset($_POST['factura_id_update']) || isset($_POST['id_cliente_reg'])) {
+if (isset($_POST['fechaAsignada']) || isset($_POST['mes']) || isset($_POST['factura_id_update']) || isset($_POST['factura_cancelada_id_update']) || isset($_POST['factura_cancelada_id_updateH']) || isset($_POST['id_cliente_reg']) || isset($_POST['idfactura_pay']) || isset($_POST['idfactura_delete'])) {
 
     /*--------- Instancia al controlador ---------*/
     require_once "../controllers/facturaControlador.php";
     $ins_factura = new facturaControlador();
-    
+
     /*--------- Generar facturas en Serie ---------*/
     if (isset($_POST['fechaAsignada']) && isset($_POST['mes'])) {
         echo $ins_factura->generarFacturasEnSerieCOntrolador();
@@ -18,26 +18,31 @@ if (isset($_POST['fechaAsignada']) || isset($_POST['mes']) || isset($_POST['fact
         echo $ins_factura->generarFacturaIndividualControlador();
     }
 
-    // /*--------- Eliminar una orden de trabajo ---------*/
-    // if (isset($_POST['orden_trabajo_id_delete'])) {
-    //     echo $ins_trabajo->eliminarTrabajoControlador();
-    // }
+    /*--------- Pagar factura individual ---------*/
+    if (isset($_POST['idfactura_pay']) && isset($_POST['idfactura_detalle_pay'])) {
+        echo $ins_factura->PagarFacturaIndividualControlador();
+    }
 
-    //  /*--------- Eliminar una orden de trabajo finalizada---------*/
-    //  if (isset($_POST['trabajo_finalizado_delete'])) {
-    //     echo $ins_trabajo->eliminarTrabajoTerminadoControlador();
-    // }
+    /*--------- Eliminar una factura pendiente de pago ---------*/
+    if (isset($_POST['idfactura_delete']) && isset($_POST['idfactura_detalle_delete'])) {
+        echo $ins_factura->eliminarFacturaControlador();
+    }
 
-    // /*--------- Finalizar orden de Trabajo ---------*/
-    // if (isset($_POST['orden_trabajo_finish'])) {
-    //     echo $ins_trabajo->finalizarTrabajoControlador();
-    // }
 
-    // actualizar factura y detalle factura
-    if(isset($_POST['factura_id_update'])&&isset($_POST['id_detalle_update'])){
+    // actualizar factura y detalle factura Pendiente
+    if (isset($_POST['factura_id_update']) && isset($_POST['id_detalle_update'])) {
         echo $ins_factura->actualizarFacturaControlador();
     }
-    
+
+    // actualizar factura y detalle factura Cancelada de hoy
+    if (isset($_POST['factura_cancelada_id_update']) && isset($_POST['id_detalle_cancelado_update'])) {
+        echo $ins_factura->actualizarFacturaCanceladaControlador();
+    }
+
+    // actualizar factura y detalle factura Cancelada en el historial
+    if (isset($_POST['factura_cancelada_id_updateH']) && isset($_POST['id_detalle_cancelado_updateH'])) {
+        echo $ins_factura->actualizarFacturaCanceladaHistorialControlador();
+    }
 
 } else {
     session_start(['name' => 'LMR']);

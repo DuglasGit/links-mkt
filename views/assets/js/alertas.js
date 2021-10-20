@@ -33,9 +33,13 @@ function enviar_formulario_ajax(e) {
 	} else if (tipo === "update") {
 		texto_alerta = "Los datos del sistema serán actualizados";
 	} else if (tipo === "search") {
-		texto_alerta = "Se eliminará la búsqueda";
+		texto_alerta = "Se Realizará una búsqueda en la báse de datos";
+	} else if (tipo === "search-delete"){
+		texto_alerta = "Se eliminará la búsqueda actual";
 	} else if (tipo === "saveserie") {
 		texto_alerta = "Este proceso tardará un momento en completarse";
+	}else if(tipo === "pay"){
+		texto_alerta = "Se Registrará el pago de la Factura Seleccionada";
 	} else {
 		texto_alerta = "Confirmar Busqueda";
 	}

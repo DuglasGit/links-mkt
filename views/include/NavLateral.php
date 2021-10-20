@@ -86,6 +86,7 @@
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>facturacion/">Facturas Pendientes</a></li>
                     <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>facturas-canceladas/">Facturas Canceladas</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>facturas-pagadas-historial/">Historial de Pagos</a></li>
                 </ul>
             </div>
         </li>
