@@ -63,7 +63,7 @@
             </div>
         </li>
 
-        <?php if ($_SESSION['id_rol_lmr'] <2) { ?>
+        <?php if ($_SESSION['id_rol_lmr'] <=2) { ?>
         <li class="nav-item menu-items">
             <a class="nav-link" data-toggle="collapse" href="#ui-facturas" aria-expanded="false" aria-controls="ui-facturas">
                 <span class="menu-icon">
