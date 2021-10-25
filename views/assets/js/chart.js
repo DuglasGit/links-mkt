@@ -5,10 +5,10 @@ $(function() {
    */
   'use strict';
   var data = {
-    labels: ["2013", "2014", "2014", "2015", "2016", "2017"],
+    labels: ["MAY", "JUN", "JUL", "AGO", "SEP", "OCT"],
     datasets: [{
       label: '# of Votes',
-      data: [10, 19, 3, 5, 2, 3],
+      data: [10, 19, 3, 8, 15, 10],
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -89,7 +89,7 @@ $(function() {
   
   var doughnutPieData = {
     datasets: [{
-      data: [30, 40, 30],
+      data: [10, 171],
       backgroundColor: [
         'rgba(255, 99, 132, 0.5)',
         'rgba(54, 162, 235, 0.5)',
@@ -110,9 +110,8 @@ $(function() {
 
     // These labels appear in the legend and in the tooltips when hovering different arcs
     labels: [
-      'Pink',
-      'Blue',
-      'Yellow',
+      'suspendidos',
+      'activos',
     ]
   };
   var doughnutPieOptions = {
@@ -123,9 +122,9 @@ $(function() {
     }
   };
   var areaData = {
-    labels: ["2013", "2014", "2015", "2016", "2017"],
+    labels: ["7-PM", "8-PM", "9-PM", "10-PM", "11-PM"],
     datasets: [{
-      label: '# of Votes',
+      label: '# picos kb/ps',
       data: [12, 19, 3, 5, 2, 3],
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',

@@ -266,22 +266,34 @@ class RouterR
 	}
 
 
-	public static function suspenderClientePPP($id)
+	public static function suspenderClientePPP($id, $name, $ip)
 	{
 		$API = new RouterosAPI();
 		$exito = 0;
-
+		$list = "Moroso";
 		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
-			$API->comm("/ppp/secret/disable", array(
-				"numbers" => $id
-			));
+			$API->write("/ip/firewall/address-list/getall", false);
+			$API->write('?address=' . $ip, false);
+			$API->write('?list=' . $list, true);
+			$READ = $API->read(false);
+			$ARRAY = $API->parseResponse($READ); // busco si ya existe
+			if (count($ARRAY) > 0) {
+				$exito = 0;
+			} else { // si no existe lo creo
+				$API->write("/ip/firewall/address-list/add", false);
+				$API->write('=address=' . $ip, false);   // IP
+				$API->write('=list=' . $list, false);       // lista
+				$API->write('=comment=' . $name, true);  // comentario
+				$READ = $API->read(false);
+				$ARRAY = $API->parseResponse($READ);
+				$exito = 1;
+			}
 			$API->disconnect();
-			$exito = 1;
 		}
 		return $exito;
 	}
 
-	public static function reactivarClientePPP($id)
+	public static function reactivarClientePPPOE($id)
 	{
 		$API = new RouterosAPI();
 		$exito = 0;
@@ -295,6 +307,34 @@ class RouterR
 		}
 		return $exito;
 	}
+
+	public static function reactivarClientePPP($id, $name, $ip)
+	{
+		$list = "Moroso";
+		$API = new RouterosAPI();
+		$exito = 0;
+
+		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+			$API->write("/ip/firewall/address-list/getall", false);
+			$API->write('?address=' . $ip, false);
+			$API->write('?list=' . $list, true);
+			$READ = $API->read(false);
+			$ARRAY = $API->parseResponse($READ); // busco si ya existe
+			if (count($ARRAY) > 0) {
+				$id = $ARRAY[0]['.id'];
+				$API->write('/ip/firewall/address-list/remove', false);
+				$API->write('=.id=' . $id, true);
+				$READ = $API->read(false);
+				$exito = 1;
+			} else { // si no existe lo creo
+				$exito = 0;
+			}
+			$API->disconnect();
+		}
+
+		return $exito;
+	}
+
 
 	public static function grap()
 	{

@@ -47,7 +47,7 @@
                 </a>
             </li>
         <?php } ?>
-        <li class="nav-item menu-items">
+        <!-- <li class="nav-item menu-items">
             <a class="nav-link" data-toggle="collapse" href="#ui-clientes" aria-expanded="false" aria-controls="ui-clientes">
                 <span class="menu-icon">
                     <i class="mdi mdi-account-multiple-outline text-danger"></i>
@@ -59,6 +59,22 @@
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>clientes-activos/">Clientes Activos</a></li>
                     <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>clientes-suspendidos/">Clientes Suspendidos</a></li>
+                </ul>
+            </div>
+        </li> -->
+        <li class="nav-item menu-items">
+            <a class="nav-link" data-toggle="collapse" href="#ui-clientes" aria-expanded="false" aria-controls="ui-clientes">
+                <span class="menu-icon">
+                    <i class="mdi mdi-account-multiple-outline text-danger"></i>
+                </span>
+                <span class="menu-title text-danger">Clientes PPPOE</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-clientes">
+                <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>pppoe-activos/">Registrados</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>pppoe-activos/">Activos</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>pppoe-suspendidos">Suspendidos</a></li>
                 </ul>
             </div>
         </li>
