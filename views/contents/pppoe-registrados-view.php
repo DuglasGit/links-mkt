@@ -147,40 +147,6 @@ if ($data == "Desconectado") {
 
     <?php } ?>
 
-
-    <!-- card contenedor de tabla de clientes
-    <div class="card">
-
-        <div class="card-header py-3 text-center">
-            <h4 class="m-0 font-weight-bold text-danger">CLIENTES PPPOE REGISTRADOS EN EL ROUTER MIKROTIK</h4>
-        </div>
-        <div class="card-body">
-
-
-            <div class="row">
-
-                <div class="col-sm-12 col-md-4">
-                    <div class="form-group row justify-content-center">
-                        <div class="input-group border border-light rounded">
-                            <input type="search" id="myInput" class="form-control form-control-sm text-light" placeholder="Buscar..." aria-controls="dataTable">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="row justify-content-center">
-                <br>
-                <?php
-                require_once "./controllers/pppoeControlador.php";
-                $ins_cliente = new pppoeControlador();
-
-                echo $ins_cliente->PaginadorClientesRegistradosControlador($pagina[1], 10, $_SESSION['id_rol_lmr'], $_SESSION['id_lmr'], $pagina[0], "");
-
-                ?>
-            </div>
-        </div>
-
-    </div> -->
 <?php } ?>
 
 

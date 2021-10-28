@@ -10,6 +10,8 @@ if (isset($_POST['busqueda_inicial']) || isset($_POST['eliminar_busqueda']) || i
         "factura_cancelada_hoy" => "facturas-canceladas",
         "factura_historial" => "facturas-pagadas-historial",
         "cli_registrados" => "pppoe-registrados",
+        "cli_activos" => "pppoe-activos",
+        "cli_suspendidos" => "pppoe-suspendidos",
         "dosinput" => "dosinput-search"
     ];
 

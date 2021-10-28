@@ -55,7 +55,7 @@ class pppoeControlador extends pppoeModelo
 
 		$encontrados = [];
 		$consulta = "";
-		$total=0;
+		$total = 0;
 
 		if (isset($busqueda) && $busqueda != "") {
 
@@ -93,7 +93,7 @@ class pppoeControlador extends pppoeModelo
 			$consulta = array_slice($clientesActivos, $inicio, $registros);
 			$total = count($clientesActivos);
 		}
-		
+
 
 		$Npaginas = ceil($total / $registros);
 
@@ -235,15 +235,46 @@ class pppoeControlador extends pppoeModelo
 			$c++;
 		}
 
-		$consulta = $clientesActivos;
+		$encontrados = [];
+		$consulta = "";
+		$total = 0;
 
 		if (isset($busqueda) && $busqueda != "") {
+
+			$reemplazo = "_";
+			//regex para espacios en blanco
+			$reemplazar = "/\s+/";
+			$busqueda = preg_replace($reemplazar, $reemplazo, $busqueda);
+			//Demilitador 'i' para no diferenciar mayus y minus
+			$busqueda = "/$busqueda/i";
+			$c = 0;
+			foreach ($clientesActivos as $val) {
+				if (preg_match($busqueda, $val['name'])) {
+					$encontrados[$c]['.id'] = $val['.id'];
+					$encontrados[$c]['name'] = $val['name'];
+					$encontrados[$c]['service'] = $val['service'];
+					$encontrados[$c]['caller-id'] = $val['caller-id'];
+					$encontrados[$c]['password'] = $val['password'];
+					$encontrados[$c]['profile'] = $val['profile'];
+					$encontrados[$c]['remote-address'] = $val['remote-address'];
+					$encontrados[$c]['routes'] = $val['routes'];
+					$encontrados[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
+					$encontrados[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
+					$encontrados[$c]['last-logged-out'] = $val['last-logged-out'];
+					$encontrados[$c]['disabled'] = $val['disabled'];
+					$encontrados[$c]['status'] = $val['status'];
+
+					$c++;
+				}
+			}
+			$consulta = $encontrados;
+
 			$consulta = array_slice($consulta, $inicio, $registros);
+			$total = count($consulta);
 		} else {
 			$consulta = array_slice($clientesActivos, $inicio, $registros);
+			$total = count($clientesActivos);
 		}
-
-		$total = count($clientesActivos);
 
 		$Npaginas = ceil($total / $registros);
 
@@ -253,14 +284,14 @@ class pppoeControlador extends pppoeModelo
 		<table class="table table-hover">
 			<thead>
 				<tr class="text-center">
-					<th class="text-danger col-md-auto d-th">ID</th>
-					<th class="text-danger col-md-auto d-th">NOMBRE DEL CLIENTE</th>
-					<th class="text-danger col-md-auto d-th">PLAN</th>
-					<th class="text-danger col-md-auto d-th">PASS</th>
-					<th class="text-danger col-md-auto d-th">IP ASIGNADA</th>
-					<th class="text-danger col-md-auto d-th">TIEMPO ACT</th>
-					<th class="text-danger col-md-auto d-th">STATUS</th>
-                    <th class="text-danger col-md-auto d-th">ACCIONES</th>
+					<th class="text-primary col-md-auto d-th">ID</th>
+					<th class="text-primary col-md-auto d-th">NOMBRE DEL CLIENTE</th>
+					<th class="text-primary col-md-auto d-th">PLAN</th>
+					<th class="text-primary col-md-auto d-th">PASS</th>
+					<th class="text-primary col-md-auto d-th">IP ASIGNADA</th>
+					<th class="text-primary col-md-auto d-th">TIEMPO ACT</th>
+					<th class="text-primary col-md-auto d-th">STATUS</th>
+                    <th class="text-primary col-md-auto d-th">ACCIONES</th>
 				</tr>
 			</thead>
 			<tbody id="myTable">
@@ -370,15 +401,39 @@ class pppoeControlador extends pppoeModelo
 			}
 		}
 
-		$consulta = $clientesSuspendidos;
+		$encontrados = [];
+		$consulta = "";
+		$total = 0;
 
 		if (isset($busqueda) && $busqueda != "") {
+
+			$reemplazo = "_";
+			//regex para espacios en blanco
+			$reemplazar = "/\s+/";
+			$busqueda = preg_replace($reemplazar, $reemplazo, $busqueda);
+			//Demilitador 'i' para no diferenciar mayus y minus
+			$busqueda = "/$busqueda/i";
+			$c = 0;
+			foreach ($clientesSuspendidos as $val) {
+				if (preg_match($busqueda, $val['comment'])) {
+
+					$encontrados[$c]['.id'] = $val['.id'];
+					$encontrados[$c]['comment'] = $val['comment'];
+					$encontrados[$c]['creation-time'] = $val['creation-time'];
+					$encontrados[$c]['address'] = $val['address'];
+					$encontrados[$c]['list'] = $val['list'];
+
+					$c++;
+				}
+			}
+			$consulta = $encontrados;
+
 			$consulta = array_slice($consulta, $inicio, $registros);
+			$total = count($consulta);
 		} else {
 			$consulta = array_slice($clientesSuspendidos, $inicio, $registros);
+			$total = count($clientesSuspendidos);
 		}
-
-		$total = count($clientesSuspendidos);
 
 		$Npaginas = ceil($total / $registros);
 
@@ -791,7 +846,7 @@ class pppoeControlador extends pppoeModelo
 		//$ip = mainModel::limpiar_cadena($ip);
 
 		//comprobando el usuario principal
-		if ($id == "*1" || $id == "*2" || $id == "*9E") {
+		if ($id == "*1" || $id == "*C1" || $id == "*2" || $id == "*9E") {
 			$alerta = [
 				"Alerta" => "simple",
 				"Titulo" => "ACCIÓN DENEGADA",
