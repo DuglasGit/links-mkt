@@ -105,3 +105,11 @@ if ($data == "Desconectado") {
         });
     });
 </script>
+
+<!----Script para mostrar password del cliente PPPoE -->
+<script>
+    $(document).on("click", ".open-mostrarPass", function() {
+        var pass = $(this).data('id');
+        $(".modal-body #pass").val(pass);
+    });
+</script>

@@ -345,6 +345,97 @@ hr{
     color: rgba(51, 255, 0, 0.685) !important;
 }
 
+
+/*Input search danger*/
+.d-inp-danger{
+    border: none !important;
+    border-bottom: 1px solid #FC424A33 !important;
+    border-top: 1px solid #FC424A33 !important;
+    border-left: 1px solid #FC424A33 !important;
+    border-right: 1px solid #FC424A33 !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: #FC424A !important;
+}
+
+.d-inp-danger:focus, .d-inp-danger:active{
+    color: #FC424A !important;
+    box-shadow: 0 0 15px #FC424A;
+}
+
+
+/*Input search PRIMARY*/
+.d-inp-primary{
+    border: none !important;
+    border-bottom: 1px solid #0090e733 !important;
+    border-top: 1px solid #0090e733 !important;
+    border-left: 1px solid #0090e733 !important;
+    border-right: 1px solid #0090e733 !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: #0090e7 !important;
+}
+
+.d-inp-primary:focus, .d-inp-primary:active{
+    color: #0090e7 !important;
+    box-shadow: 0 0 15px #0090e7;
+}
+
+/*Input search warning*/
+.d-inp-warning{
+    border: none !important;
+    border-bottom: 1px solid #ffab0033 !important;
+    border-top: 1px solid #ffab0033 !important;
+    border-left: 1px solid #ffab0033 !important;
+    border-right: 1px solid #ffab0033 !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: #ffab00 !important;
+}
+
+.d-inp-warning:focus, .d-inp-warning:active{
+    color: #ffab00 !important;
+    box-shadow: 0 0 15px #ffab00;
+}
+
+/*Input search success*/
+.d-inp-success{
+    border: none !important;
+    border-bottom: 1px solid #00d25b33 !important;
+    border-top: 1px solid #00d25b33 !important;
+    border-left: 1px solid #00d25b33 !important;
+    border-right: 1px solid #00d25b33 !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: #00d25b !important;
+}
+
+.d-inp-success:focus, .d-inp-success:active{
+    color: #00d25b !important;
+    box-shadow: 0 0 15px #00d25b;
+}
+
+/*Input search blanco*/
+.d-inp-blanco{
+    border: none !important;
+    border-bottom: 1px solid #E4EAEC33 !important;
+    border-top: 1px solid #E4EAEC33 !important;
+    border-left: 1px solid #E4EAEC33 !important;
+    border-right: 1px solid #E4EAEC33 !important;
+    outline: none !important;
+    background-color: transparent !important;
+    color: #E4EAEC !important;
+}
+
+.d-inp-blanco:focus, .d-inp-blanco:active{
+    color: #E4EAEC !important;
+    box-shadow: 0 0 15px #E4EAEC;
+}
+
+.d-btn-bl.d-btn-bl:hover{
+color:#FC424A !important;
+}
+
 /*form generar facturas*/
 .d-inp-white{
     border: none !important;
@@ -387,14 +478,16 @@ hr{
     height: 75px !important;
 }
 
-.d-table{
-    font-size: 10px !important; 
+/*tamaño de texto de las tablas*/
+.d-tbl{
+    font-size: 12px !important; 
     }
     
 .d-td{
-    font-size: 10px !important; 
+    font-size: 12px !important; 
     }
     
 .d-th{
-    font-size: 10px !important; 
+    font-size: 12px !important; 
     }
+

@@ -72,9 +72,9 @@
             </a>
             <div class="collapse" id="ui-clientes">
                 <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>pppoe-activos/">Registrados</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>pppoe-registrados/">Registrados</a></li>
                     <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>pppoe-activos/">Activos</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>pppoe-suspendidos">Suspendidos</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="<?php echo SERVERURL; ?>pppoe-suspendidos/">Suspendidos</a></li>
                 </ul>
             </div>
         </li>

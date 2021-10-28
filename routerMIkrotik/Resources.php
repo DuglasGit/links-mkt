@@ -5,6 +5,7 @@ require('routeros_api.class.php');
 
 class RouterR
 {
+	// función para obtener información del routerboard
 	public static function RouterConnect()
 	{
 		$API = new RouterosAPI();
@@ -59,9 +60,10 @@ class RouterR
 			$data->poe = 0;
 		}
 		return $data;
-	}
+	}// fin
 
 
+	//función para obtener la lista de clientes del routerboard
 	public static function RouterClientes()
 	{
 		$API = new RouterosAPI();
@@ -81,8 +83,56 @@ class RouterR
 		} else {
 			return "Desconectado";
 		}
-	}
+	}//fin
 
+
+	//función para obtener la lista de clientes Activos del routerboard
+	public static function RouterClientesActivos()
+	{
+		$API = new RouterosAPI();
+		$data = new StdClass();
+		$hoy = date('Y-m-d');
+		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+			$API->write('/ppp/active/print');
+
+			$READ = $API->read(false);
+			$ARRAY = $API->parseResponse($READ);
+			$API->disconnect();
+
+			$count = count($ARRAY);
+
+			$arrayclientes = $ARRAY;
+			return json_encode($arrayclientes);
+		} else {
+			return "Desconectado";
+		}
+	}//fin
+
+
+	//función para obtener la lista de clientes Activos del routerboard
+	public static function RouterClientesSuspendidos()
+	{
+		$API = new RouterosAPI();
+		$data = new StdClass();
+		$hoy = date('Y-m-d');
+		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+			$API->write('/ip/firewall/address-list/print');
+
+			$READ = $API->read(false);
+			$ARRAY = $API->parseResponse($READ);
+			$API->disconnect();
+
+			$count = count($ARRAY);
+
+			$arrayclientes = $ARRAY;
+			return json_encode($arrayclientes);
+		} else {
+			return "Desconectado";
+		}
+	}//fin
+
+
+	//obtener la lista de perfiles del routerboard
 	public static function pppSecretProfile()
 	{
 		$API = new RouterosAPI();
@@ -96,8 +146,10 @@ class RouterR
 			$profilearray = $ARRAY;
 		}
 		return json_encode($profilearray);
-	}
+	}//fin
 
+
+	//funcion para agregar un cliente al routerboard
 	public static function pppAgregarClientePPP($datos)
 	{
 		$exito = 0;
@@ -115,8 +167,9 @@ class RouterR
 			$exito = 1;
 		}
 		return $exito;
-	}
+	}//fin
 
+	//función para enviar parametros a la función pppmodificarCliente
 	public static function pppModificarClientePPP($datos)
 	{
 		$exito = 0;
@@ -143,8 +196,10 @@ class RouterR
 		}
 
 		return $exito;
-	}
+	}// fin
 
+
+	//función que modifica un cliente y recibe parametros de la funcion modificarClientePPP
 	public static function pppModificarCliente($id, $name, $set, $opcion)
 	{
 		$API = new RouterosAPI();
@@ -263,9 +318,10 @@ class RouterR
 				}
 		}
 		return $respuesta;
-	}
+	}//fin
 
 
+	//función que suspende un cliente en el routerboard
 	public static function suspenderClientePPP($id, $name, $ip)
 	{
 		$API = new RouterosAPI();
@@ -291,23 +347,24 @@ class RouterR
 			$API->disconnect();
 		}
 		return $exito;
-	}
+	}//fin
 
-	public static function reactivarClientePPPOE($id)
-	{
-		$API = new RouterosAPI();
-		$exito = 0;
+	// public static function reactivarClientePPPOE($id)
+	// {
+	// 	$API = new RouterosAPI();
+	// 	$exito = 0;
 
-		if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
-			$API->comm("/ppp/secret/enable", array(
-				"numbers" => $id
-			));
-			$API->disconnect();
-			$exito = 1;
-		}
-		return $exito;
-	}
+	// 	if ($API->connect(IP_ROUTER, USER_ROUTER, PASS_ROUTER)) {
+	// 		$API->comm("/ppp/secret/enable", array(
+	// 			"numbers" => $id
+	// 		));
+	// 		$API->disconnect();
+	// 		$exito = 1;
+	// 	}
+	// 	return $exito;
+	// }
 
+	//función que reactiva un clinete en el routerboard
 	public static function reactivarClientePPP($id, $name, $ip)
 	{
 		$list = "Moroso";
@@ -333,9 +390,10 @@ class RouterR
 		}
 
 		return $exito;
-	}
+	}//fin
 
 
+	//función para graficar trafico de red del routerboard
 	public static function grap()
 	{
 		$Port = 8084;
@@ -398,5 +456,5 @@ class RouterR
 			print json_encode($result, JSON_NUMERIC_CHECK);
 		}
 		$API->disconnect();
-	}
+	}//fin
 }

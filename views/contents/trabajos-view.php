@@ -157,6 +157,7 @@ if ($_SESSION['id_rol_lmr'] >3) {
     });
 </script>
 
+<!----Script para mostrar descripcion del trabajo -->
 <script>
     $(document).on("click", ".open-mostrarDescripcion", function() {
         var descripcion = $(this).data('id');

@@ -12,7 +12,7 @@ class pppoeControlador extends pppoeModelo
 {
 
 	// COntrolador Paginar cliente
-	public function PaginadorClientesActivosControlador($pagina, $registros, $rol, $id, $url, $busqueda)
+	public function PaginadorClientesRegistradosControlador($pagina, $registros, $rol, $id, $url, $busqueda)
 	{
 		$pagina = mainModel::limpiar_cadena($pagina);
 		$registros = mainModel::limpiar_cadena($registros);
@@ -21,6 +21,7 @@ class pppoeControlador extends pppoeModelo
 		$url = mainModel::limpiar_cadena($url);
 		$busqueda = mainModel::limpiar_cadena($busqueda);
 		$clientes = RouterR::RouterClientes();
+
 		$url = SERVERURL . $url . "/";
 		$tabla = "";
 
@@ -33,33 +34,66 @@ class pppoeControlador extends pppoeModelo
 		$c = 0;
 		foreach ($datosCliente as $val) {
 
+			$clientesActivos[$c]['.id'] = $val['.id'];
+			$clientesActivos[$c]['name'] = $val['name'];
+			$clientesActivos[$c]['service'] = $val['service'];
+			$clientesActivos[$c]['caller-id'] = $val['caller-id'];
+			$clientesActivos[$c]['password'] = $val['password'];
+			$clientesActivos[$c]['profile'] = $val['profile'];
+			$clientesActivos[$c]['remote-address'] = $val['remote-address'];
+			$clientesActivos[$c]['routes'] = $val['routes'];
+			$clientesActivos[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
+			$clientesActivos[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
+			$clientesActivos[$c]['last-logged-out'] = $val['last-logged-out'];
 			if ($val['disabled'] == "false") {
-
-				$clientesActivos[$c]['.id'] = $val['.id'];
-				$clientesActivos[$c]['name'] = $val['name'];
-				$clientesActivos[$c]['service'] = $val['service'];
-				$clientesActivos[$c]['caller-id'] = $val['caller-id'];
-				$clientesActivos[$c]['password'] = $val['password'];
-				$clientesActivos[$c]['profile'] = $val['profile'];
-				$clientesActivos[$c]['remote-address'] = $val['remote-address'];
-				$clientesActivos[$c]['routes'] = $val['routes'];
-				$clientesActivos[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
-				$clientesActivos[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
-				$clientesActivos[$c]['last-logged-out'] = $val['last-logged-out'];
-				$clientesActivos[$c]['disabled'] = $val['disabled'];
-				$c++;
+				$clientesActivos[$c]['disabled'] = 'Enabled';
+			} else {
+				$clientesActivos[$c]['disabled'] = 'Disabled';
 			}
+			$c++;
 		}
 
-		$consulta = $clientesActivos;
+		$encontrados = [];
+
+		$consulta = "";
+
+
+
+
+
 
 		if (isset($busqueda) && $busqueda != "") {
+
+			$busqueda="/$busqueda/";
+			$c = 0;
+			foreach ($datosCliente as $val) {
+
+				//Demilitador 'i' para no diferenciar mayus y minus
+				if (preg_match($busqueda, $val['name'])) {
+					$encontrados[$c]['name'] = $val;
+					$encontrados[$c]['.id'] = $val['.id'];
+					$encontrados[$c]['name'] = $val['name'];
+					$encontrados[$c]['service'] = $val['service'];
+					$encontrados[$c]['caller-id'] = $val['caller-id'];
+					$encontrados[$c]['password'] = $val['password'];
+					$encontrados[$c]['profile'] = $val['profile'];
+					$encontrados[$c]['remote-address'] = $val['remote-address'];
+					$encontrados[$c]['routes'] = $val['routes'];
+					$encontrados[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
+					$encontrados[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
+					$encontrados[$c]['last-logged-out'] = $val['last-logged-out'];
+					$encontrados[$c]['disabled'] = $val['disabled'];
+
+					$c++;
+				}
+			}
+			$consulta = $encontrados;
+
 			$consulta = array_slice($consulta, $inicio, $registros);
 		} else {
 			$consulta = array_slice($clientesActivos, $inicio, $registros);
 		}
-
-		$total = count($clientesActivos);
+		$total = count($consulta);
 
 		$Npaginas = ceil($total / $registros);
 
@@ -90,11 +124,6 @@ class pppoeControlador extends pppoeModelo
 			array_multisort($ids, SORT_ASC, $consulta);
 
 			foreach ($consulta as $data) {
-				if ($data['disabled'] == "false") {
-					$data['disabled'] = "Activo";
-				} else {
-					$data['disabled'] = "Suspendido";
-				}
 
 				$tabla .= '
 					<tr class="text-center">
@@ -110,11 +139,170 @@ class pppoeControlador extends pppoeModelo
 								<a href="' . SERVERURL . 'actualizar-cliente/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-primary btn-sm d-btn" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i>Editar</a>
 							</div>
 							<div class="col-md-4">
-								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/pppoeAjax.php" method="POST" data-form="disabled" autocomplete="off">
+								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="disabled" autocomplete="off">
 									<input type="hidden" name="cliente_id_disabled" value="' . mainModel::encryption($data['.id']) . '">
 									<input type="hidden" name="cliente_name_disabled" value="' . mainModel::encryption($data['name']) . '">
 									<input type="hidden" name="cliente_ip_disabled" value="' . mainModel::encryption($data['remote-address']) . '">
 									<button type="submit" class="btn btn-inverse-warning btn-sm d-btn" data-toggle="modal" data-title="SUSPENDER"><i class="mdi mdi-lan-disconnect"></i>Suspender</button>
+								</form>
+							</div>
+					</div>
+                    </tr>';
+				$contador++;
+			}
+			$registro_final = $contador - 1;
+		} else {
+			if ($total >= 1) {
+				$tabla .= '<tr><td colspan="9">
+				<a href="' . $url . '" class="btn btn-inverse-warning btn-icon-text">Haga clic aqui para recargar el listado</a>
+				</td></tr>';
+			} else {
+				$tabla .= '<tr><td colspan="9">No hay registros en el sistema</td></tr>';
+			}
+		}
+
+		$tabla .= '</tbody></table></div>';
+
+		if ($total >= 1 && $pagina <= $Npaginas) {
+			$tabla .= '
+			<div class="row col-md-12 justify-content-center">
+				<p class="text-center">
+				Mostrando usuario ' . $registro_inicial . ' al ' . $registro_final . ' de un total de ' . $total . '
+				</p>
+			</div>';
+
+			$tabla .= mainModel::paginador_tablas($pagina, $Npaginas, $url, 5);
+		}
+
+		return $tabla;
+	} // fin controlador
+
+	// COntrolador Paginar cliente
+	public function PaginadorClientesActivosControlador($pagina, $registros, $rol, $id, $url, $busqueda)
+	{
+		$pagina = mainModel::limpiar_cadena($pagina);
+		$registros = mainModel::limpiar_cadena($registros);
+		$rol = mainModel::limpiar_cadena($rol);
+		$id = mainModel::limpiar_cadena($id);
+		$url = mainModel::limpiar_cadena($url);
+		$busqueda = mainModel::limpiar_cadena($busqueda);
+		$clientes = RouterR::RouterClientes();
+		$clientesAc = RouterR::RouterClientesActivos();
+		$suspendidos = RouterR::RouterClientesSuspendidos();
+		$clientesAc = json_decode($clientesAc, true);
+		$suspendidos = json_decode($suspendidos, true);
+		$ipActivos = array_column($clientesAc, 'address');
+		$ipSuspendidos = array_column($suspendidos, 'address');
+		$uptime = array_column($clientesAc, 'address', 'uptime');
+
+		$url = SERVERURL . $url . "/";
+		$tabla = "";
+
+
+		$pagina = (isset($pagina) && $pagina > 0) ? (int)$pagina : 1;
+		$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
+		$datosCliente = json_decode($clientes, true);
+
+		$clientesActivos = [];
+		$c = 0;
+		foreach ($datosCliente as $val) {
+			if (in_array($val['remote-address'], $ipActivos)) {
+
+				$clientesActivos[$c]['.id'] = $val['.id'];
+				$clientesActivos[$c]['name'] = $val['name'];
+				$clientesActivos[$c]['service'] = $val['service'];
+				$clientesActivos[$c]['caller-id'] = $val['caller-id'];
+				$clientesActivos[$c]['password'] = $val['password'];
+				$clientesActivos[$c]['profile'] = $val['profile'];
+				$clientesActivos[$c]['remote-address'] = $val['remote-address'];
+				$clientesActivos[$c]['routes'] = $val['routes'];
+				$clientesActivos[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
+				$clientesActivos[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
+				$clientesActivos[$c]['last-logged-out'] = $val['last-logged-out'];
+				$clientesActivos[$c]['disabled'] = '--';
+				$clientesActivos[$c]['status'] = '';
+				$c++;
+			}
+		}
+
+		$c = 0;
+		foreach ($clientesActivos as $val) {
+			if (in_array($val['remote-address'], $ipSuspendidos)) {
+				$clientesActivos[$c]['status'] = 'locked';
+			} else {
+				$clientesActivos[$c]['status'] = 'Active';
+			}
+			$c++;
+		}
+
+		$consulta = $clientesActivos;
+
+		if (isset($busqueda) && $busqueda != "") {
+			$consulta = array_slice($consulta, $inicio, $registros);
+		} else {
+			$consulta = array_slice($clientesActivos, $inicio, $registros);
+		}
+
+		$total = count($clientesActivos);
+
+		$Npaginas = ceil($total / $registros);
+
+		$tabla .= '
+		<div class="table-responsive">
+
+		<table class="table table-hover">
+			<thead>
+				<tr class="text-center">
+					<th class="text-danger col-md-auto d-th">ID</th>
+					<th class="text-danger col-md-auto d-th">NOMBRE DEL CLIENTE</th>
+					<th class="text-danger col-md-auto d-th">PLAN</th>
+					<th class="text-danger col-md-auto d-th">PASS</th>
+					<th class="text-danger col-md-auto d-th">IP ASIGNADA</th>
+					<th class="text-danger col-md-auto d-th">TIEMPO ACT</th>
+					<th class="text-danger col-md-auto d-th">STATUS</th>
+                    <th class="text-danger col-md-auto d-th">ACCIONES</th>
+				</tr>
+			</thead>
+			<tbody id="myTable">
+		';
+
+		if ($total >= 1 && $pagina <= $Npaginas) {
+			$contador = $inicio + 1;
+			$registro_inicial = $inicio + 1;
+
+			$ids  = array_column($consulta, '.id');
+
+			array_multisort($ids, SORT_ASC, $consulta);
+
+			foreach ($consulta as $data) {
+
+				if (in_array($data['remote-address'], $uptime)) {
+
+					$data['disabled'] = array_search($data['remote-address'], $uptime);
+				}
+
+				$tabla .= '
+					<tr class="text-center">
+                        <td class="d-td">' . $data['.id'] . '</td>
+                        <td class="text-secondary d-td">' . $data['name'] . '</td>
+                        <td class="text-secondary d-td">' . $data['profile'] . '</td>
+						<td class="d-td">
+                        	<a data-toggle="modal" data-id="' . $data['password'] . '" class="open-mostrarPass btn btn-inverse-warning btn-sm d-btn btn-icon-text" href="#mostrarPass"><i class="mdi mdi-eye btn-icon-prepend"></i>Ver</a>
+                        </td>
+                        <td class="text-secondary d-td">' . $data['remote-address'] . '</td>
+						<td class="text-secondary d-td">' . $data['disabled'] . '</td>
+						<td class="text-secondary d-td">' . $data['status'] . '</td>
+                        <td class="d-td">
+						<div class="row">
+							<div class="col-md-4">
+								<a href="' . SERVERURL . 'actualizar-cliente/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-primary btn-sm d-btn" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i>Editar</a>
+							</div>
+							<div class="col-md-4">
+								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/pppoeAjax.php" method="POST" data-form="disabled" autocomplete="off">
+									<input type="hidden" name="cliente_id_disabled" value="' . mainModel::encryption($data['.id']) . '">
+									<input type="hidden" name="cliente_name_disabled" value="' . mainModel::encryption($data['name']) . '">
+									<input type="hidden" name="cliente_ip_disabled" value="' . mainModel::encryption($data['remote-address']) . '">
+									<button type="submit" class="btn btn-inverse-danger btn-sm d-btn" data-toggle="modal" data-title="SUSPENDER"><i class="mdi mdi-lan-disconnect"></i>Suspender</button>
 								</form>
 							</div>
 					</div>
@@ -158,46 +346,39 @@ class pppoeControlador extends pppoeModelo
 		$id = mainModel::limpiar_cadena($id);
 		$url = mainModel::limpiar_cadena($url);
 		$busqueda = mainModel::limpiar_cadena($busqueda);
-		$clientes = RouterR::RouterClientes();
+		$suspendidos = RouterR::RouterClientesSuspendidos();
 		$url = SERVERURL . $url . "/";
 
 		$tabla = "";
 
 		$pagina = (isset($pagina) && $pagina > 0) ? (int)$pagina : 1;
 		$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
-		$datosCliente = json_decode($clientes, true);
+		$datosSuspendidos = json_decode($suspendidos, true);
 
-		$clientesActivos = [];
+		$clientesSuspendidos = [];
 		$c = 0;
-		foreach ($datosCliente as $val) {
+		foreach ($datosSuspendidos as $val) {
 
-			if ($val['disabled'] == "true") {
+			if ($val['list'] == "Moroso") {
 
-				$clientesActivos[$c]['.id'] = $val['.id'];
-				$clientesActivos[$c]['name'] = $val['name'];
-				$clientesActivos[$c]['service'] = $val['service'];
-				$clientesActivos[$c]['caller-id'] = $val['caller-id'];
-				$clientesActivos[$c]['password'] = $val['password'];
-				$clientesActivos[$c]['profile'] = $val['profile'];
-				$clientesActivos[$c]['remote-address'] = $val['remote-address'];
-				$clientesActivos[$c]['routes'] = $val['routes'];
-				$clientesActivos[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
-				$clientesActivos[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
-				$clientesActivos[$c]['last-logged-out'] = $val['last-logged-out'];
-				$clientesActivos[$c]['disabled'] = $val['disabled'];
+				$clientesSuspendidos[$c]['.id'] = $val['.id'];
+				$clientesSuspendidos[$c]['comment'] = $val['comment'];
+				$clientesSuspendidos[$c]['creation-time'] = $val['creation-time'];
+				$clientesSuspendidos[$c]['address'] = $val['address'];
+				$clientesSuspendidos[$c]['list'] = $val['list'];
 				$c++;
 			}
 		}
 
-		$consulta = $clientesActivos;
+		$consulta = $clientesSuspendidos;
 
 		if (isset($busqueda) && $busqueda != "") {
 			$consulta = array_slice($consulta, $inicio, $registros);
 		} else {
-			$consulta = array_slice($clientesActivos, $inicio, $registros);
+			$consulta = array_slice($clientesSuspendidos, $inicio, $registros);
 		}
 
-		$total = count($clientesActivos);
+		$total = count($clientesSuspendidos);
 
 		$Npaginas = ceil($total / $registros);
 
@@ -209,10 +390,9 @@ class pppoeControlador extends pppoeModelo
 				<tr class="text-center">
 					<th class="text-warning col-md-auto">ID</th>
 					<th class="text-warning col-md-auto">NOMBRE DEL CLIENTE</th>
-					<th class="text-warning col-md-auto">PLAN</th>
-					<th class="text-warning col-md-auto">PASSWORD</th>
+					<th class="text-warning col-md-auto">FECHA SUSPENSIÓN</th>
 					<th class="text-warning col-md-auto">IP ASIGNADA</th>
-					<th class="text-warning col-md-auto">ESTADO</th>
+					<th class="text-warning col-md-auto">CLASIFICACION</th>
                     <th class="text-warning col-md-auto">ACCIONES</th>
 				</tr>
 			</thead>
@@ -228,31 +408,26 @@ class pppoeControlador extends pppoeModelo
 			array_multisort($ids, SORT_ASC, $consulta);
 
 			foreach ($consulta as $data) {
-				if ($data['disabled'] == "false") {
-					$data['disabled'] = "Activo";
-				} else {
-					$data['disabled'] = "Suspendido";
-				}
 
 				$tabla .= '
 					<tr class="text-center">
                         <td>' . $data['.id'] . '</td>
-                        <td class="text-secondary">' . $data['name'] . '</td>
-                        <td class="text-secondary">' . $data['profile'] . '</td>
-                        <td class="text-secondary">' . $data['password'] . '</td>
-                        <td class="text-secondary">' . $data['remote-address'] . '</td>
-						<td class="text-secondary">' . $data['disabled'] . '</td>
+                        <td class="text-secondary">' . $data['comment'] . '</td>
+                        <td class="text-secondary">' . $data['creation-time'] . '</td>
+                        <td class="text-secondary">' . $data['address'] . '</td>
+                        <td class="text-secondary">' . $data['list'] . '</td>
                         <td>
-						<div class="row">
-							<div class="col-md-4">
-								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="enabled" autocomplete="off">
-									<input type="hidden" name="cliente_id_enabled" value="' . mainModel::encryption($data['.id']) . '">
-									<input type="hidden" name="cliente_name_enabled" value="' . mainModel::encryption($data['name']) . '">
-									<input type="hidden" name="cliente_ip_enabled" value="' . mainModel::encryption($data['remote-address']) . '">
-									<button type="submit" class="btn btn-inverse-success btn-sm d-btn" data-toggle="modal" data-title="REACTIVAR"><i class="mdi mdi-lan-disconnect"></i>Reactivar</button>
-								</form>
+							<div class="row">
+								<div class="col-md-4">
+									<form class="FormularioAjax" action="' . SERVERURL . 'ajax/pppoeAjax.php" method="POST" data-form="enabled" autocomplete="off">
+										<input type="hidden" name="cliente_id_enabled" value="' . mainModel::encryption($data['.id']) . '">
+										<input type="hidden" name="cliente_name_enabled" value="' . mainModel::encryption($data['comment']) . '">
+										<input type="hidden" name="cliente_ip_enabled" value="' . mainModel::encryption($data['address']) . '">
+										<button type="submit" class="btn btn-inverse-success btn-sm d-btn" data-toggle="modal" data-title="REACTIVAR"><i class="mdi mdi-lan-disconnect"></i>Reactivar</button>
+									</form>
+								</div>
 							</div>
-					</div>
+						</td>
                     </tr>';
 				$contador++;
 			}
@@ -273,7 +448,7 @@ class pppoeControlador extends pppoeModelo
 			$tabla .= '
 			<div class="row col-md-12 justify-content-center">
 				<p class="text-center">
-				Mostrando usuario ' . $registro_inicial . ' al ' . $registro_final . ' de un total de ' . $total . '
+				Mostrando cliente ' . $registro_inicial . ' al ' . $registro_final . ' de un total de ' . $total . '
 				</p>
 			</div>';
 

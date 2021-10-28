@@ -44,6 +44,25 @@
     </div>
 </div>
 
+<!-- Modal de ver password cliente PPPoE-->
+<div class="modal fade" id="mostrarPass" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog d-md-warning d-bdr-light rounded" role="document" style="width:250px;">
+        <div class="modal-content d-mc-black">
+            <div class="modal-header d-bdr-black">
+                <h5 class="modal-title w-100 text-center text-warning" id="exampleModalLabel">PASSWORD</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control d-inp-light" name="pass" id="pass" readonly></input>
+            </div>
+            <div class="modal-footer justify-content-center d-bdr-black">
+                <button type="button" class="btn btn-inverse-warning" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal de ver descripcion del trabajo -->
 <div class="modal fade" id="mostrarDescripcion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

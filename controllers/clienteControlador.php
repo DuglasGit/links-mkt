@@ -12,6 +12,143 @@ class clienteControlador extends clienteModelo
 {
 
 	// COntrolador Paginar cliente
+	public function PaginadorClientesRegistradosControlador($pagina, $registros, $rol, $id, $url, $busqueda)
+	{
+		$pagina = mainModel::limpiar_cadena($pagina);
+		$registros = mainModel::limpiar_cadena($registros);
+		$rol = mainModel::limpiar_cadena($rol);
+		$id = mainModel::limpiar_cadena($id);
+		$url = mainModel::limpiar_cadena($url);
+		$busqueda = mainModel::limpiar_cadena($busqueda);
+		$clientes = RouterR::RouterClientes();
+		$url = SERVERURL . $url . "/";
+		$tabla = "";
+
+
+		$pagina = (isset($pagina) && $pagina > 0) ? (int)$pagina : 1;
+		$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
+		$datosCliente = json_decode($clientes, true);
+
+		$clientesActivos = [];
+		$c = 0;
+		foreach ($datosCliente as $val) {
+
+			if ($val['disabled'] == "false") {
+
+				$clientesActivos[$c]['.id'] = $val['.id'];
+				$clientesActivos[$c]['name'] = $val['name'];
+				$clientesActivos[$c]['service'] = $val['service'];
+				$clientesActivos[$c]['caller-id'] = $val['caller-id'];
+				$clientesActivos[$c]['password'] = $val['password'];
+				$clientesActivos[$c]['profile'] = $val['profile'];
+				$clientesActivos[$c]['remote-address'] = $val['remote-address'];
+				$clientesActivos[$c]['routes'] = $val['routes'];
+				$clientesActivos[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
+				$clientesActivos[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
+				$clientesActivos[$c]['last-logged-out'] = $val['last-logged-out'];
+				$clientesActivos[$c]['disabled'] = $val['disabled'];
+				$c++;
+			}
+		}
+
+		$consulta = $clientesActivos;
+
+		if (isset($busqueda) && $busqueda != "") {
+			$consulta = array_slice($consulta, $inicio, $registros);
+		} else {
+			$consulta = array_slice($clientesActivos, $inicio, $registros);
+		}
+
+		$total = count($clientesActivos);
+
+		$Npaginas = ceil($total / $registros);
+
+		$tabla .= '
+		<div class="table-responsive">
+
+		<table class="table table-hover">
+			<thead>
+				<tr class="text-center">
+					<th class="text-danger col-md-auto">ID</th>
+					<th class="text-danger col-md-auto">NOMBRE DEL CLIENTE</th>
+					<th class="text-danger col-md-auto">PLAN</th>
+					<th class="text-danger col-md-auto">PASSWORD</th>
+					<th class="text-danger col-md-auto">IP ASIGNADA</th>
+					<th class="text-danger col-md-auto">ESTADO</th>
+                    <th class="text-danger col-md-auto">ACCIONES</th>
+				</tr>
+			</thead>
+			<tbody id="myTable">
+		';
+
+		if ($total >= 1 && $pagina <= $Npaginas) {
+			$contador = $inicio + 1;
+			$registro_inicial = $inicio + 1;
+
+			$ids  = array_column($consulta, '.id');
+
+			array_multisort($ids, SORT_ASC, $consulta);
+
+			foreach ($consulta as $data) {
+				if ($data['disabled'] == "false") {
+					$data['disabled'] = "Activo";
+				} else {
+					$data['disabled'] = "Suspendido";
+				}
+
+				$tabla .= '
+					<tr class="text-center">
+                        <td>' . $data['.id'] . '</td>
+                        <td class="text-secondary">' . $data['name'] . '</td>
+                        <td class="text-secondary">' . $data['profile'] . '</td>
+                        <td class="text-secondary">' . $data['password'] . '</td>
+                        <td class="text-secondary">' . $data['remote-address'] . '</td>
+						<td class="text-secondary">' . $data['disabled'] . '</td>
+                        <td>
+						<div class="row">
+							<div class="col-md-4">
+								<a href="' . SERVERURL . 'actualizar-cliente/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-primary btn-sm d-btn" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i>Editar</a>
+							</div>
+							<div class="col-md-4">
+								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="disabled" autocomplete="off">
+									<input type="hidden" name="cliente_id_disabled" value="' . mainModel::encryption($data['.id']) . '">
+									<input type="hidden" name="cliente_name_disabled" value="' . mainModel::encryption($data['name']) . '">
+									<input type="hidden" name="cliente_ip_disabled" value="' . mainModel::encryption($data['remote-address']) . '">
+									<button type="submit" class="btn btn-inverse-warning btn-sm d-btn" data-toggle="modal" data-title="SUSPENDER"><i class="mdi mdi-lan-disconnect"></i>Suspender</button>
+								</form>
+							</div>
+					</div>
+                    </tr>';
+				$contador++;
+			}
+			$registro_final = $contador - 1;
+		} else {
+			if ($total >= 1) {
+				$tabla .= '<tr><td colspan="9">
+				<a href="' . $url . '" class="btn btn-inverse-warning btn-icon-text">Haga clic aqui para recargar el listado</a>
+				</td></tr>';
+			} else {
+				$tabla .= '<tr><td colspan="9">No hay registros en el sistema</td></tr>';
+			}
+		}
+
+		$tabla .= '</tbody></table></div>';
+
+		if ($total >= 1 && $pagina <= $Npaginas) {
+			$tabla .= '
+			<div class="row col-md-12 justify-content-center">
+				<p class="text-center">
+				Mostrando usuario ' . $registro_inicial . ' al ' . $registro_final . ' de un total de ' . $total . '
+				</p>
+			</div>';
+
+			$tabla .= mainModel::paginador_tablas($pagina, $Npaginas, $url, 5);
+		}
+
+		return $tabla;
+	} // fin controlador
+
+	// COntrolador Paginar cliente
 	public function PaginadorClientesActivosControlador($pagina, $registros, $rol, $id, $url, $busqueda)
 	{
 		$pagina = mainModel::limpiar_cadena($pagina);
