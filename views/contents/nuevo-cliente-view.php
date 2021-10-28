@@ -129,7 +129,7 @@ $data = json_decode($data, true);
 
                     <div class=" row justify-content-center">
                         <button type="submit" class="btn btn-inverse-primary mr-2">&nbsp; Registrar Cliente</button>
-                        <a href="<?php echo SERVERURL; ?>clientes-activos/" class="btn btn-inverse-danger">&nbsp; Cancelar</a>
+                        <a href="<?php echo SERVERURL; ?>pppoe-registrados/" class="btn btn-inverse-danger">&nbsp; Cancelar</a>
                     </div>
                 </form>
             </div>

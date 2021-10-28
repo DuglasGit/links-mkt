@@ -54,21 +54,19 @@ class pppoeControlador extends pppoeModelo
 		}
 
 		$encontrados = [];
-
 		$consulta = "";
-
-
-
-
-
+		$total=0;
 
 		if (isset($busqueda) && $busqueda != "") {
 
-			$busqueda="/$busqueda/";
+			$reemplazo = "_";
+			//regex para espacios en blanco
+			$reemplazar = "/\s+/";
+			$busqueda = preg_replace($reemplazar, $reemplazo, $busqueda);
+			//Demilitador 'i' para no diferenciar mayus y minus
+			$busqueda = "/$busqueda/i";
 			$c = 0;
 			foreach ($datosCliente as $val) {
-
-				//Demilitador 'i' para no diferenciar mayus y minus
 				if (preg_match($busqueda, $val['name'])) {
 					$encontrados[$c]['name'] = $val;
 					$encontrados[$c]['.id'] = $val['.id'];
@@ -90,10 +88,12 @@ class pppoeControlador extends pppoeModelo
 			$consulta = $encontrados;
 
 			$consulta = array_slice($consulta, $inicio, $registros);
+			$total = count($consulta);
 		} else {
 			$consulta = array_slice($clientesActivos, $inicio, $registros);
+			$total = count($clientesActivos);
 		}
-		$total = count($consulta);
+		
 
 		$Npaginas = ceil($total / $registros);
 
@@ -136,10 +136,10 @@ class pppoeControlador extends pppoeModelo
                         <td>
 						<div class="row">
 							<div class="col-md-4">
-								<a href="' . SERVERURL . 'actualizar-cliente/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-primary btn-sm d-btn" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i>Editar</a>
+								<a href="' . SERVERURL . 'actualizar-pppoe/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-primary btn-sm d-btn" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i>Editar</a>
 							</div>
 							<div class="col-md-4">
-								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/clienteAjax.php" method="POST" data-form="disabled" autocomplete="off">
+								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/pppoeAjax.php" method="POST" data-form="disabled" autocomplete="off">
 									<input type="hidden" name="cliente_id_disabled" value="' . mainModel::encryption($data['.id']) . '">
 									<input type="hidden" name="cliente_name_disabled" value="' . mainModel::encryption($data['name']) . '">
 									<input type="hidden" name="cliente_ip_disabled" value="' . mainModel::encryption($data['remote-address']) . '">

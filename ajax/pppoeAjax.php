@@ -20,7 +20,7 @@ if (isset($_POST['nombreCliente']) || isset($_POST['cliente_ip_update'])|| isset
     }
 
     // suspender cliente
-    if(isset($_POST['cliente_id_disabled'])){
+    if(isset($_POST['cliente_id_disabled']) && isset($_POST['cliente_name_disabled']) && isset($_POST['cliente_ip_disabled'])){
         echo $ins_cliente->suspenderClienteControlador();
     }
 
