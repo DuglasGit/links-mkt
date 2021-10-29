@@ -21,7 +21,16 @@ class pppoeControlador extends pppoeModelo
 		$url = mainModel::limpiar_cadena($url);
 		$busqueda = mainModel::limpiar_cadena($busqueda);
 		$clientes = RouterR::RouterClientes();
-
+		$clientesdb = mainModel::ejecutar_consulta_simple("SELECT cliente.nombre_cliente, cliente.id_cliente FROM cliente JOIN contrato_servicio ON (cliente.id_cliente=contrato_servicio.id_cliente)");
+		$clientesdb = $clientesdb->fetchAll();
+		$clientesdb = array_column($clientesdb, 'nombre_cliente');
+		$clientesdbFormateado = [];
+		$c = 0;
+		foreach ($clientesdb as $val) {
+			$clientesdbFormateado[$c] = mainModel::formatearNombreServicio($val);
+			$c++;
+		}
+		//print_r($clientesdbFormateado);
 		$url = SERVERURL . $url . "/";
 		$tabla = "";
 
@@ -30,25 +39,29 @@ class pppoeControlador extends pppoeModelo
 		$inicio = ($pagina > 0) ? (($pagina * $registros) - $registros) : 0;
 		$datosCliente = json_decode($clientes, true);
 
-		$clientesActivos = [];
+		$Registrados = [];
 		$c = 0;
 		foreach ($datosCliente as $val) {
 
-			$clientesActivos[$c]['.id'] = $val['.id'];
-			$clientesActivos[$c]['name'] = $val['name'];
-			$clientesActivos[$c]['service'] = $val['service'];
-			$clientesActivos[$c]['caller-id'] = $val['caller-id'];
-			$clientesActivos[$c]['password'] = $val['password'];
-			$clientesActivos[$c]['profile'] = $val['profile'];
-			$clientesActivos[$c]['remote-address'] = $val['remote-address'];
-			$clientesActivos[$c]['routes'] = $val['routes'];
-			$clientesActivos[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
-			$clientesActivos[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
-			$clientesActivos[$c]['last-logged-out'] = $val['last-logged-out'];
+			$Registrados[$c]['.id'] = $val['.id'];
+			$Registrados[$c]['name'] = $val['name'];
+			$Registrados[$c]['service'] = $val['service'];
+			$Registrados[$c]['caller-id'] = $val['caller-id'];
+			$Registrados[$c]['password'] = $val['password'];
+			$Registrados[$c]['profile'] = $val['profile'];
+			$Registrados[$c]['remote-address'] = $val['remote-address'];
+			$Registrados[$c]['routes'] = $val['routes'];
+			$Registrados[$c]['limit-bytes-in'] = $val['limit-bytes-in'];
+			$Registrados[$c]['limit-bytes-out'] = $val['limit-bytes-out'];
+			$Registrados[$c]['last-logged-out'] = $val['last-logged-out'];
 			if ($val['disabled'] == "false") {
-				$clientesActivos[$c]['disabled'] = 'Enabled';
+				$Registrados[$c]['disabled'] = 'Enabled';
 			} else {
-				$clientesActivos[$c]['disabled'] = 'Disabled';
+				$Registrados[$c]['disabled'] = 'Disabled';
+			}
+
+			if (!(in_array($val['name'], $clientesdbFormateado))) {
+				$Registrados[$c]['disabled'] = 'Unregistered';
 			}
 			$c++;
 		}
@@ -58,7 +71,6 @@ class pppoeControlador extends pppoeModelo
 		$total = 0;
 
 		if (isset($busqueda) && $busqueda != "") {
-
 			$reemplazo = "_";
 			//regex para espacios en blanco
 			$reemplazar = "/\s+/";
@@ -90,8 +102,8 @@ class pppoeControlador extends pppoeModelo
 			$consulta = array_slice($consulta, $inicio, $registros);
 			$total = count($consulta);
 		} else {
-			$consulta = array_slice($clientesActivos, $inicio, $registros);
-			$total = count($clientesActivos);
+			$consulta = array_slice($Registrados, $inicio, $registros);
+			$total = count($Registrados);
 		}
 
 
@@ -132,22 +144,49 @@ class pppoeControlador extends pppoeModelo
                         <td class="text-secondary">' . $data['profile'] . '</td>
                         <td class="text-secondary">' . $data['password'] . '</td>
                         <td class="text-secondary">' . $data['remote-address'] . '</td>
-						<td class="text-secondary">' . $data['disabled'] . '</td>
-                        <td>
-						<div class="row">
+						';
+				if ($data['disabled'] == 'Unregistered') {
+					$tabla .= '
+					<td>
+						<div class="row justify-content-center">
+							<div class="col-md-auto">
+								<a href="' . SERVERURL . 'actualizar-pppoe/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-success btn-sm d-btn" data-title="registrar"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i>Registrar</a>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="row justify-content-center">
+							<div class="col-md-4">
+								<a class="btn btn-outline-primary btn-sm d-btn" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i>Editar</a>
+							</div>
+							<div class="col-md-4">
+								<a class="btn btn-outline-warning btn-sm d-btn" data-toggle="modal" data-title="SUSPENDER"><i class="mdi mdi-lan-disconnect"></i>Suspender</a>
+								
+							</div>
+						</div>
+					</td>
+                    </tr>';
+				} else {
+					$tabla .= '
+					<td class="text-secondary">' . $data['disabled'] . '</td>
+					<td>
+						<div class="row justify-content-center">
 							<div class="col-md-4">
 								<a href="' . SERVERURL . 'actualizar-pppoe/' . mainModel::encryption($data['remote-address']) . '/" type="button" class="btn btn-inverse-primary btn-sm d-btn" data-title="EDITAR"><i class="mdi mdi-lead-pencil btn-icon-prepend"></i>Editar</a>
 							</div>
 							<div class="col-md-4">
 								<form class="FormularioAjax" action="' . SERVERURL . 'ajax/pppoeAjax.php" method="POST" data-form="disabled" autocomplete="off">
-									<input type="hidden" name="cliente_id_disabled" value="' . mainModel::encryption($data['.id']) . '">
-									<input type="hidden" name="cliente_name_disabled" value="' . mainModel::encryption($data['name']) . '">
-									<input type="hidden" name="cliente_ip_disabled" value="' . mainModel::encryption($data['remote-address']) . '">
+									<input type="hidden" name="pppoe_id_disabled" value="' . mainModel::encryption($data['.id']) . '">
+									<input type="hidden" name="pppoe_name_disabled" value="' . mainModel::encryption($data['name']) . '">
+									<input type="hidden" name="pppoe_ip_disabled" value="' . mainModel::encryption($data['remote-address']) . '">
 									<button type="submit" class="btn btn-inverse-warning btn-sm d-btn" data-toggle="modal" data-title="SUSPENDER"><i class="mdi mdi-lan-disconnect"></i>Suspender</button>
 								</form>
 							</div>
-					</div>
+						</div>
+					</td>
                     </tr>';
+				}
+
 				$contador++;
 			}
 			$registro_final = $contador - 1;
@@ -837,9 +876,9 @@ class pppoeControlador extends pppoeModelo
 	public function suspenderClienteControlador()
 	{
 		//recibiendo id del usuario
-		$id = mainModel::decryption($_POST['cliente_id_disabled']);
-		$name = mainModel::decryption($_POST['cliente_name_disabled']);
-		$ip = mainModel::decryption($_POST['cliente_ip_disabled']);
+		$id = mainModel::decryption($_POST['pppoe_id_disabled']);
+		$name = mainModel::decryption($_POST['pppoe_name_disabled']);
+		$ip = mainModel::decryption($_POST['pppoe_ip_disabled']);
 		$status = "Suspendido";
 		//$id = mainModel::limpiar_cadena($id);
 		$name = mainModel::limpiar_cadena($name);

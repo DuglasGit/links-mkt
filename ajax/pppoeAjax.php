@@ -2,7 +2,7 @@
 $peticionAjax = true;
 require_once "../config/APP.php";
 
-if (isset($_POST['nombreCliente']) || isset($_POST['cliente_ip_update'])|| isset($_POST['cliente_id_disabled']) || isset($_POST['cliente_id_enabled'])) {
+if (isset($_POST['nombreCliente']) || isset($_POST['cliente_ip_update'])|| isset($_POST['pppoe_id_disabled']) || isset($_POST['pppoe_id_enabled'])) {
 
     /*--------- Instancia al controlador ---------*/
     require_once "../controllers/pppoeControlador.php";
@@ -20,7 +20,7 @@ if (isset($_POST['nombreCliente']) || isset($_POST['cliente_ip_update'])|| isset
     }
 
     // suspender cliente
-    if(isset($_POST['cliente_id_disabled']) && isset($_POST['cliente_name_disabled']) && isset($_POST['cliente_ip_disabled'])){
+    if(isset($_POST['pppoe_id_disabled']) && isset($_POST['pppoe_name_disabled']) && isset($_POST['pppoe_ip_disabled'])){
         echo $ins_cliente->suspenderClienteControlador();
     }
 
